@@ -30,6 +30,7 @@ public class RiskClientGUI {
         gamestateManager = new GameStateManager();
         riskServer = new RiskServer();
         window = new JFrame();
+        riskLobby = new RiskLobby();
     }
 
     public void createGameWindow() {
@@ -95,10 +96,14 @@ public class RiskClientGUI {
                 if (name.length() < 3) {
                     JOptionPane.showMessageDialog(new JFrame(), "Your username cannot have less than 3 letters");
                 } else {
-                    riskLobby = new RiskLobby();
-                    riskServer.addPlayer(name);
+                    try {
+                        riskServer.addPlayer(name);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                     riskLobby.getPlayerJList().setModel(riskServer.addPlayerToModel(name));
                     gamestateManager.enterLobby();
+
                     gameManager();
                 }
             } else {
@@ -141,7 +146,11 @@ public class RiskClientGUI {
                     if (name.length() < 3) {
                         JOptionPane.showMessageDialog(new JFrame(), "Your username cannot have less than 3 letters");
                     } else {
-                        riskServer.addPlayer(name);
+                        try {
+                            riskServer.addPlayer(name);
+                        } catch (RemoteException ex) {
+                            throw new RuntimeException(ex);
+                        }
                         riskLobby.getPlayerJList().setModel(riskServer.addPlayerToModel(name));
                     }
                 } else {
@@ -154,7 +163,11 @@ public class RiskClientGUI {
             } else {
                 String name = JOptionPane.showInputDialog("Please enter the player you want to remove");
                 if (!name.isEmpty()){
-                    riskServer.removePlayer(name);
+                    try {
+                        riskServer.removePlayer(name);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                     riskLobby.getPlayerJList().setModel(riskServer.removePlayerFromModel(name));
                 }
             }

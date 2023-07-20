@@ -1,7 +1,11 @@
 package de.hsbremen.risk.server;
 
+import de.hsbremen.risk.common.GameEventListener;
 import de.hsbremen.risk.common.ServerRemote;
 import de.hsbremen.risk.common.entities.cards.Card;
+import de.hsbremen.risk.common.events.GameActionEvent;
+import de.hsbremen.risk.common.events.GameEvent;
+import de.hsbremen.risk.common.events.GameLobbyEvent;
 import de.hsbremen.risk.common.exceptions.*;
 import de.hsbremen.risk.common.entities.*;
 import de.hsbremen.risk.common.entities.missions.*;
@@ -16,6 +20,11 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+
+import static de.hsbremen.risk.common.events.GameLobbyEvent.GameLobbyEventType.PLAYER_ENTERED;
+import static de.hsbremen.risk.common.events.GameLobbyEvent.GameLobbyEventType.PLAYER_LEFT;
 
 public class RiskServer extends UnicastRemoteObject implements ServerRemote {
 
@@ -27,12 +36,15 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
     // GameManager
     private Turn currentTurn;
     private Attack attack;
+    private List<GameEventListener> listeners;
 
     public RiskServer() throws RemoteException {
         filePersistenceManager = new FilePersistenceManager();
         playerManager = new PlayerManager();
         worldManager = new WorldManager();
         cardManager = new CardManager();
+        listeners = new Vector<>();
+       // allPlayers = new Vector<>();
     }
 
     public Turn getCurrentTurn() {
@@ -183,8 +195,10 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         return worldManager.getAmountOfCountriesOwnedBy(player.getUsername());
     }
 
-    public void addPlayer(String username){
+    public void addPlayer(String username) throws RemoteException {
         playerManager.createPlayer(username);
+        notifyListeners(new GameLobbyEvent(getPlayer(username), PLAYER_ENTERED));
+        System.out.println();
     }
 
     public Country getCountry(int countryId) {
@@ -196,8 +210,9 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
     }
 
 
-    public void removePlayer(String username) {
+    public void removePlayer(String username) throws RemoteException {
         playerManager.removePlayer(username);
+        notifyListeners(new GameLobbyEvent(getPlayer(username), PLAYER_LEFT));
     }
 
     public void removeAllPlayers() {
@@ -361,6 +376,25 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
 
     public Player getPlayer(String username) {
        return playerManager.getPlayer(username);
+    }
+
+    private void notifyListeners(GameEvent event) throws RemoteException {
+        for (GameEventListener listener : listeners) {
+            // notify every listener in a dedicated thread
+            // (a notification should not block another one).
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        listener.handleGameEvent(event);
+                    } catch (RemoteException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            });
+            t.start();
+        }
     }
 
 
