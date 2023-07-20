@@ -39,10 +39,6 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         return this.currentTurn;
     }
 
-    public Turn.Phase getCurrentPhase() {
-        return this.currentTurn.getPhase();
-    }
-
     public ArrayList<Player> getWinner() {
         int mostCountriesOccupied = 0;
         ArrayList<Player> leadingPlayer = null;
