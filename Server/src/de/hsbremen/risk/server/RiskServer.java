@@ -184,7 +184,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         return worldManager.getAmountOfCountriesOwnedBy(player.getUsername());
     }
 
-    public boolean addPlayer(String username) {
+    public boolean addPlayer(String username){
         return playerManager.createPlayer(username);
     }
 
@@ -246,7 +246,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         return worldManager.isPlayerOccupantOfGivenCountry(player, countryId);
     }
 
-    public boolean isAttackLegal(Attack attack) throws Exception {
+    public boolean isAttackLegal(Attack attack) throws DoNotOccupyCountryException, OccupyTargetCountry, NoArmiesLeftException {
         if (!getCountry(attack.getOriginCountry()).getOccupiedBy().equals(this.currentTurn.getPlayer().getUsername())) {
             throw new DoNotOccupyCountryException(getCountry(attack.getOriginCountry()));
         }
