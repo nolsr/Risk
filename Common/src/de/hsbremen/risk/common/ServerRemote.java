@@ -14,8 +14,6 @@ public interface ServerRemote extends Remote {
 
     Turn getCurrentTurn() throws RemoteException;
 
-    Turn.Phase getCurrentPhase() throws RemoteException;
-
     void nextTurn() throws RemoteException, UnplacedArmiesException, GameEndedException;
 
     void startGame() throws RemoteException;
