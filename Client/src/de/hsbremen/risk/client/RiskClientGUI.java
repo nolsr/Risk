@@ -53,7 +53,7 @@ public class RiskClientGUI {
                 mainMenu();
             }
             case LOBBY -> {
-                riskLobby = new RiskLobby();
+               // riskLobby = new RiskLobby();
                 changePanel(window, riskLobby);
                 System.out.println("Game Manager Lobby Menu");
                 lobbyMenu();
@@ -89,8 +89,21 @@ public class RiskClientGUI {
     private void mainMenu() {
         System.out.println("Main Menu");
         startScreen.getNewGameButton().addActionListener(e -> {
-            gamestateManager.enterLobby();
-            gameManager();
+            String name = JOptionPane.showInputDialog("Please enter your username");
+
+            if (riskServer.getPlayer(name) == null) {
+                if (name.length() < 3) {
+                    JOptionPane.showMessageDialog(new JFrame(), "Your username cannot have less than 3 letters");
+                } else {
+                    riskLobby = new RiskLobby();
+                    riskServer.addPlayer(name);
+                    riskLobby.getPlayerJList().setModel(riskServer.addPlayerToModel(name));
+                    gamestateManager.enterLobby();
+                    gameManager();
+                }
+            } else {
+                JOptionPane.showMessageDialog(new JFrame(), name + " is already taken");
+            }
         });
         startScreen.getLoadGameButton().addActionListener(e -> {
             String name = JOptionPane.showInputDialog("Please type in the file you want to load.");
