@@ -1,5 +1,6 @@
 package de.hsbremen.risk.server;
 
+import de.hsbremen.risk.common.ServerRemote;
 import de.hsbremen.risk.common.entities.cards.Card;
 import de.hsbremen.risk.common.exceptions.*;
 import de.hsbremen.risk.common.entities.*;
@@ -9,9 +10,11 @@ import org.json.JSONObject;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-public class Risk {
+public class RiskServer extends UnicastRemoteObject implements ServerRemote {
 
     private final PlayerManager playerManager;
     private final WorldManager worldManager;
@@ -22,7 +25,7 @@ public class Risk {
     private Turn currentTurn;
     private Attack attack;
 
-    public Risk() {
+    public RiskServer() throws RemoteException {
         filePersistenceManager = new FilePersistenceManager();
         playerManager = new PlayerManager();
         worldManager = new WorldManager();
