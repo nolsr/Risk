@@ -1,6 +1,6 @@
 package de.hsbremen.risk.client;
 
-import de.hsbremen.risk.server.Risk;
+import de.hsbremen.risk.server.RiskServer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +9,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.rmi.RemoteException;
 
 public class RiskClientGUI {
 
@@ -19,15 +20,15 @@ public class RiskClientGUI {
 
     private final JFrame window;
 
-    private final Risk risk;
+    private final RiskServer riskServer;
 
     private final GameStateManager gamestateManager;
 
     private final boolean quitGame = false;
 
-    public RiskClientGUI() {
+    public RiskClientGUI() throws RemoteException {
         gamestateManager = new GameStateManager();
-        risk = new Risk();
+        riskServer = new RiskServer();
         window = new JFrame();
     }
 
@@ -58,7 +59,7 @@ public class RiskClientGUI {
                 lobbyMenu();
             }
             case IN_GAME -> {
-                inGame = new RiskInGame(this.risk);
+                inGame = new RiskInGame(this.riskServer);
                 changePanel(window, inGame);
                 turnMenu();
 
@@ -94,7 +95,7 @@ public class RiskClientGUI {
         startScreen.getLoadGameButton().addActionListener(e -> {
             String name = JOptionPane.showInputDialog("Please type in the file you want to load.");
             try {
-                if (risk.loadGame(name)) {
+                if (riskServer.loadGame(name)) {
                     gamestateManager.enterGame();
                 } else if (name != null){
                     JOptionPane.showMessageDialog(new JFrame(), "Couldn't find the file " + name + ".json");
@@ -111,9 +112,9 @@ public class RiskClientGUI {
         System.out.println("Lobby Menu");
 
         riskLobby.getStartGameButton().addActionListener(e -> {
-            if (risk.getModel().size() >= 3 && risk.getModel().size() <= 6) {
+            if (riskServer.getModel().size() >= 3 && riskServer.getModel().size() <= 6) {
                 gamestateManager.enterGame();
-                risk.startGame();
+                riskServer.startGame();
                 System.out.println("Game gestartet");
                 gameManager();
             } else {
@@ -123,31 +124,31 @@ public class RiskClientGUI {
         riskLobby.getAddPlayerButton().addActionListener(e -> {
                 String name = JOptionPane.showInputDialog("Please enter your username");
 
-                if (risk.getPlayer(name) == null) {
+                if (riskServer.getPlayer(name) == null) {
                     if (name.length() < 3) {
                         JOptionPane.showMessageDialog(new JFrame(), "Your username cannot have less than 3 letters");
                     } else {
-                        risk.addPlayer(name);
-                        riskLobby.getPlayerJList().setModel(risk.addPlayerToModel(name));
+                        riskServer.addPlayer(name);
+                        riskLobby.getPlayerJList().setModel(riskServer.addPlayerToModel(name));
                     }
                 } else {
                     JOptionPane.showMessageDialog(new JFrame(), name + " is already taken");
                 }
         });
         riskLobby.getRemovePlayerButton().addActionListener(e -> {
-            if (risk.getModel().size() == 0) {
+            if (riskServer.getModel().size() == 0) {
                 JOptionPane.showMessageDialog(new JFrame(), "There are no players signed up for the game yet");
             } else {
                 String name = JOptionPane.showInputDialog("Please enter the player you want to remove");
                 if (!name.isEmpty()){
-                    risk.removePlayer(name);
-                    riskLobby.getPlayerJList().setModel(risk.removePlayerFromModel(name));
+                    riskServer.removePlayer(name);
+                    riskLobby.getPlayerJList().setModel(riskServer.removePlayerFromModel(name));
                 }
             }
         });
         riskLobby.getExitButton().addActionListener(e -> {
-            risk.getModel().clear();
-            risk.getPlayerList().clear();
+            riskServer.getModel().clear();
+            riskServer.getPlayerList().clear();
             gamestateManager.exitLobby();
             gameManager();
         });
@@ -161,7 +162,7 @@ public class RiskClientGUI {
                     if (name.isEmpty()) {
                         JOptionPane.showMessageDialog(new JFrame(), "Please use at least one character as your file name");
                     } else {
-                        risk.saveGame(name);
+                        riskServer.saveGame(name);
                     }
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
@@ -176,7 +177,7 @@ public class RiskClientGUI {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RemoteException {
         RiskClientGUI riskClientGUI = new RiskClientGUI();
         riskClientGUI.createGameWindow();
     }

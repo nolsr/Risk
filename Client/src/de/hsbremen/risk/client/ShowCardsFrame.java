@@ -1,6 +1,6 @@
 package de.hsbremen.risk.client;
 
-import de.hsbremen.risk.server.Risk;
+import de.hsbremen.risk.server.RiskServer;
 import de.hsbremen.risk.common.exceptions.InvalidCardCombinationException;
 import de.hsbremen.risk.common.entities.Player;
 import de.hsbremen.risk.common.entities.cards.Card;
@@ -20,7 +20,7 @@ public class ShowCardsFrame extends JPanel {
     private final int[] chosenCard = new int[3];
     private int clickCounter;
 
-    public ShowCardsFrame(Player currentPlayer, Risk risk,boolean stack) {
+    public ShowCardsFrame(Player currentPlayer, RiskServer riskServer, boolean stack) {
         super();
 
         this.setLayout(new BorderLayout());
@@ -56,7 +56,7 @@ public class ShowCardsFrame extends JPanel {
                     try {
                         JFrame thisFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
                         thisFrame.dispose();
-                        risk.tradeCards(chosenCard);
+                        riskServer.tradeCards(chosenCard);
                         JOptionPane.showMessageDialog(null, "You have successfully traded your cards!");
                     } catch (InvalidCardCombinationException ex) {
 
