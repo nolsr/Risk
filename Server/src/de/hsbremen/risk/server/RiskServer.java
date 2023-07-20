@@ -198,7 +198,6 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
     public void addPlayer(String username) throws RemoteException {
         playerManager.createPlayer(username);
         notifyListeners(new GameLobbyEvent(getPlayer(username), PLAYER_ENTERED));
-        System.out.println();
     }
 
     public Country getCountry(int countryId) {

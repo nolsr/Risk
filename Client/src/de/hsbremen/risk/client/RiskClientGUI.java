@@ -1,5 +1,8 @@
 package de.hsbremen.risk.client;
 
+import de.hsbremen.risk.common.GameEventListener;
+import de.hsbremen.risk.common.events.GameControlEvent;
+import de.hsbremen.risk.common.events.GameEvent;
 import de.hsbremen.risk.server.RiskServer;
 
 import javax.swing.*;
@@ -10,8 +13,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 
-public class RiskClientGUI {
+public class RiskClientGUI extends UnicastRemoteObject// implements GameEventListener
+ {
 
     // GameState Windows
     private RiskLobby riskLobby;
@@ -42,6 +47,7 @@ public class RiskClientGUI {
         window.setLayout(new BorderLayout());
 
         gameManager();
+        //handleGameEvent();
     }
 
     public void gameManager() {
@@ -54,7 +60,7 @@ public class RiskClientGUI {
                 mainMenu();
             }
             case LOBBY -> {
-               // riskLobby = new RiskLobby();
+                // riskLobby = new RiskLobby();
                 changePanel(window, riskLobby);
                 System.out.println("Game Manager Lobby Menu");
                 lobbyMenu();
@@ -87,6 +93,60 @@ public class RiskClientGUI {
         }
     }
 
+    /*
+    @Override
+    public void handleGameEvent(GameEvent event) {
+        GameStateManager.GameState state = gamestateManager.getGameState();
+        GameControlEvent gce = (GameControlEvent) event;
+        //switch(gce.getType())
+        switch (state) {
+            case MAIN_MENU -> {
+                startScreen = new RiskStartScreen();
+                changePanel(window, startScreen);
+                System.out.println("Game Manager Main Menu");
+                mainMenu();
+            }
+            case LOBBY -> {
+               // riskLobby = new RiskLobby();
+                changePanel(window, riskLobby);
+                System.out.println("Game Manager Lobby Menu");
+                lobbyMenu();
+            }
+            case IN_GAME -> {
+
+                inGame = new RiskInGame(this.riskServer);
+                JOptionPane.showMessageDialog(new JFrame(),
+                        "The game has just begun... It's player " + gce.getPlayer().getUsername() + "'s turn.",
+                        "Game Started",
+                        JOptionPane.INFORMATION_MESSAGE);
+                changePanel(window, inGame);
+                turnMenu();
+
+                window.addComponentListener(new ComponentAdapter() {
+                    @Override
+                    public void componentResized(ComponentEvent e) {
+                        super.componentResized(e);
+                        window.setVisible(true);
+                        inGame.redrawMap();
+                        window.setVisible(true);
+                    }
+                });
+
+                window.addWindowStateListener(new WindowAdapter() {
+                    @Override
+                    public void windowStateChanged(WindowEvent e) {
+                        super.windowStateChanged(e);
+                        window.setVisible(true);
+                        inGame.redrawMap();
+                        window.setVisible(true);
+                    }
+                });
+            }
+        }
+    }
+
+     */
+
     private void mainMenu() {
         System.out.println("Main Menu");
         startScreen.getNewGameButton().addActionListener(e -> {
@@ -105,6 +165,7 @@ public class RiskClientGUI {
                     gamestateManager.enterLobby();
 
                     gameManager();
+                    //handleGameEvent();
                 }
             } else {
                 JOptionPane.showMessageDialog(new JFrame(), name + " is already taken");
@@ -119,6 +180,7 @@ public class RiskClientGUI {
                     JOptionPane.showMessageDialog(new JFrame(), "Couldn't find the file " + name + ".json");
                 }
                 gameManager();
+                // handleGameEvent();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -135,6 +197,7 @@ public class RiskClientGUI {
                 riskServer.startGame();
                 System.out.println("Game gestartet");
                 gameManager();
+                //handleGameEvent();
             } else {
                 JOptionPane.showMessageDialog(new JFrame(), "You can only start the game if you have a minimum of 3 players and a maximum of 6 players");
             }
@@ -177,6 +240,7 @@ public class RiskClientGUI {
             riskServer.getPlayerList().clear();
             gamestateManager.exitLobby();
             gameManager();
+            //handleGameEvent();
         });
     }
 
