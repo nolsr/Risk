@@ -2,11 +2,14 @@ package de.hsbremen.risk.client;
 
 import de.hsbremen.risk.client.components.DarkList;
 import de.hsbremen.risk.client.components.LightButton;
+import de.hsbremen.risk.common.GameEventListener;
+import de.hsbremen.risk.common.events.GameEvent;
+import de.hsbremen.risk.common.events.GameLobbyEvent;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class RiskLobby extends JPanel {
+public class RiskLobby extends JPanel implements GameEventListener {
     private JButton startGameButton = new LightButton("Start Game");
     private JButton addPlayerButton = new LightButton("Add Player");
     private JButton removePlayerButton = new LightButton("Remove Player");
@@ -47,5 +50,12 @@ public class RiskLobby extends JPanel {
 
     public JButton getExitButton() {
         return exitButton;
+    }
+
+    public void handleGameEvent(GameEvent event) {
+        if (!(event instanceof GameLobbyEvent)) {
+            return;
+        }
+        System.out.println(((GameLobbyEvent) event).getType());
     }
 }
