@@ -10,7 +10,10 @@ import org.json.JSONObject;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.rmi.ConnectException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
@@ -184,8 +187,8 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         return worldManager.getAmountOfCountriesOwnedBy(player.getUsername());
     }
 
-    public boolean addPlayer(String username){
-        return playerManager.createPlayer(username);
+    public void addPlayer(String username){
+        playerManager.createPlayer(username);
     }
 
     public Country getCountry(int countryId) {
@@ -269,7 +272,6 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
 
         // Setting lost armies
         if (result.getWinningDefendingDice() == defendingDiceCount) {
-            System.out.println("verteiidigt");
             this.attack.setAmount(0);
         } else {
             this.getCountry(this.attack.getTargetCountry()).decreaseArmy(result.getWinningAttackingDice());
@@ -365,4 +367,34 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
        return playerManager.getPlayer(username);
     }
 
+
+    public static void main(String[] args) {
+        String serviceName = "Risk Server";
+
+        Registry registry;
+        ServerRemote server = null;
+
+        try {
+            server = new RiskServer();
+
+            registry = LocateRegistry.getRegistry();
+            registry.rebind(serviceName, server);
+            System.out.println("Local registry-object found.");
+            System.out.println("Game-Server running...");
+        } catch (ConnectException ce) {
+            System.out.println("No registry found.");
+            try {
+                registry = LocateRegistry.createRegistry(1099);
+                System.out.println("Registry created.");
+                registry.rebind(serviceName, server);
+                System.out.println("Game-Server running...");
+            } catch (RemoteException e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        } catch (RemoteException e1) {
+            System.out.println(e1.getMessage());
+            e1.printStackTrace();
+        }
+    }
 }

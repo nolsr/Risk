@@ -8,9 +8,9 @@ public class GameActionEvent extends GameEvent {
     @Serial
     private static final long serialVersionUID = 1177860608466305601L;
 
-    public enum GameControlEventType { ATTACK, DEFEND, MOVE, DRAW, DISTRIBUTE };
+    public enum GameControlEventType { ATTACK, DEFEND, MOVE, DRAW, DISTRIBUTE }
 
-    private GameControlEventType type;
+    private final GameControlEventType type;
 
     public GameActionEvent(Player player, GameControlEventType type) {
         super(player);

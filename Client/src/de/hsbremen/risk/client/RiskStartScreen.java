@@ -11,7 +11,7 @@ import java.awt.*;
 
 public class RiskStartScreen extends JPanel {
 
-    private JButton newGameButton = new LightButton("New Game");
+    private JButton newGameButton = new LightButton("Enter Lobby");
     private JButton loadGameButton = new LightButton("Load Game");
     private JButton quitGameButton = new LightButton("Quit Game");
 
@@ -20,7 +20,6 @@ public class RiskStartScreen extends JPanel {
         this.setOpaque(false);
         this.setLayout(new FlowLayout(FlowLayout.CENTER));
         add(newGameButton, BorderLayout.CENTER);
-        add(loadGameButton, BorderLayout.CENTER);
         add(quitGameButton);
     }
 
