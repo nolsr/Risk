@@ -8,10 +8,10 @@ public class GameControlEvent extends GameEvent {
     @Serial
     private static final long serialVersionUID = -5597502502428648233L;
 
-    public enum GameControlEventType { GAME_STARTED, NEXT_PHASE, NEXT_TURN, GAME_OVER };
+    public enum GameControlEventType { GAME_STARTED, NEXT_PHASE, NEXT_TURN, GAME_OVER }
 
-    private GameControlEventType type;
-    private Turn turn;
+    private final GameControlEventType type;
+    private final Turn turn;
 
     public GameControlEvent(Turn turn, GameControlEventType type) {
         super(turn.getPlayer());

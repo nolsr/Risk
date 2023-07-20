@@ -24,8 +24,6 @@ public class RiskLobby extends JPanel {
         controlPanel.setOpaque(false);
         controlPanel.setLayout(new FlowLayout());
         controlPanel.add(startGameButton, BorderLayout.CENTER);
-        controlPanel.add(addPlayerButton, BorderLayout.CENTER);
-        controlPanel.add(removePlayerButton, BorderLayout.CENTER);
 
         this.add(controlPanel, BorderLayout.NORTH);
         this.add(playerJList, BorderLayout.CENTER);

@@ -10,7 +10,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public interface ServerRemote extends Remote {
-    boolean addPlayer(String username) throws RemoteException;
+    void addPlayer(String username) throws RemoteException;
 
     Turn getCurrentTurn() throws RemoteException;
 
