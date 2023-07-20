@@ -1,5 +1,10 @@
 package de.hsbremen.risk.client;
 
+import de.hsbremen.risk.common.GameEventListener;
+import de.hsbremen.risk.common.events.GameActionEvent;
+import de.hsbremen.risk.common.events.GameControlEvent;
+import de.hsbremen.risk.common.events.GameEvent;
+import de.hsbremen.risk.common.events.GameLobbyEvent;
 import de.hsbremen.risk.server.RiskServer;
 import de.hsbremen.risk.common.exceptions.*;
 import de.hsbremen.risk.common.entities.*;
@@ -8,7 +13,7 @@ import de.hsbremen.risk.client.components.*;
 import javax.swing.*;
 import java.awt.*;
 
-public class RiskInGame extends JPanel {
+public class RiskInGame extends JPanel implements GameEventListener {
     private final RiskServer riskServer;
     private final RiskMap map;
     private final CurrentTurnPanel currentTurnPanel;
@@ -74,7 +79,6 @@ public class RiskInGame extends JPanel {
             this.showCardsFrame = new ShowCardsFrame(riskServer.getCurrentTurn().getPlayer(), riskServer, false);
             frame.add(showCardsFrame);
             frame.setVisible(true);
-
         });
 
 
@@ -246,59 +250,16 @@ public class RiskInGame extends JPanel {
         return this.controlPanel.getBtnSave();
     }
 
-    /*private void tradeCardsMenu()
-        {
-            int[] tradingCards = new int[3];
-            for (Card card: risk.getCurrentTurn().getPlayer().getCards())
-            {
-                System.out.println(card);
-            }
-            System.out.println("Choose 3 Cards to trade with by Id");
+    public void handleGameEvent(GameEvent event) {
+        // Return if event is meant for different game state
+        if (event instanceof GameLobbyEvent) {
+            return;
+        }
 
-            for(int i = 0; i < 3; i++)
-            {
-                System.out.println("Choose your " +(i+1)+" Card to Trade with");
-                tradingCards[i] = readIntegerInput();
-            }
-            try
-            {
-                if(tradingCards[0] == tradingCards[1] || tradingCards[0] == tradingCards[2] || tradingCards[1] == tradingCards[2] )
-                {
-                    throw new FaultyTradeException(risk.getCurrentTurn().getPlayer());
-                }
-                for(int compId: tradingCards)
-                {
-                    boolean cardIsInHand = false;
-                    for(Card cardId: risk.getCurrentTurn().getPlayer().getCards())
-                    {
-                        if(compId == cardId.getId())
-                        {
-                            cardIsInHand = true;
-                        }
-                    }
-                    try {
-                        if(!cardIsInHand)
-                        {
-                            throw new TradingCardNotOnHandException(risk.getCurrentTurn().getPlayer(), compId);
-                        }
-                    } catch (TradingCardNotOnHandException e) {
-                        System.out.println(e.getMessage());
-                        tradeCardsMenu();
-                    }
-                }
-            } catch (FaultyTradeException e)
-            {
-                System.out.println(e.getMessage());
-                tradeCardsMenu();
-            }
-            try
-            {
-                risk.tradeCards(tradingCards);
-            } catch (InvalidCardCombinationException e) {
-                System.out.println(e.getMessage());
-            }
-
-
+        if (event instanceof GameControlEvent) {
+            System.out.println(((GameControlEvent) event).getType());
+        } else if (event instanceof GameActionEvent) {
+            System.out.println(((GameActionEvent) event).getType());
+        }
     }
-      */
 }
