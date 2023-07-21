@@ -79,6 +79,7 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
         startScreen.getNewGameButton().addActionListener(listener -> {
             String name = JOptionPane.showInputDialog("Please enter your username");
 
+
             if (name == null) {
                 return;
             }
