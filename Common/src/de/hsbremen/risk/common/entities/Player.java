@@ -2,9 +2,15 @@ package de.hsbremen.risk.common.entities;
 
 import de.hsbremen.risk.common.entities.cards.Card;
 import de.hsbremen.risk.common.entities.missions.Mission;
+
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Player {
+public class Player implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -5630139682033064525L;
+
     private final String username;
     private int armies;
     private ArrayList<Card> cards = new ArrayList<>();
@@ -12,6 +18,11 @@ public class Player {
     private boolean entitledToDraw = false;
 
     private double randomNumber;
+
+    public Player(String username) {
+        this.username = username;
+        this.armies = 0;
+    }
 
     public Player(String username, int armyAmount) {
         this.username = username;

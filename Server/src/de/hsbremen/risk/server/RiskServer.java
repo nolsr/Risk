@@ -47,6 +47,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
        // allPlayers = new Vector<>();
     }
 
+
     public Turn getCurrentTurn() {
         return this.currentTurn;
     }
@@ -99,7 +100,10 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         return worldManager.getNeighbourCountries(countryId);
     }
 
-    public void startGame() {
+    public void startGame() throws RemoteException, NotEnoughPlayersException {
+        if (playerManager.getPlayerList().size() < 3) {
+            throw( new NotEnoughPlayersException());
+        }
         playerManager.shufflePlayerList();
         worldManager.assignCountriesToPlayers(getPlayerList());
         cardManager.insertPeaceCard(getPlayerList().size());
@@ -195,9 +199,10 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         return worldManager.getAmountOfCountriesOwnedBy(player.getUsername());
     }
 
-    public void addPlayer(String username) throws RemoteException {
-        playerManager.createPlayer(username);
-        notifyListeners(new GameLobbyEvent(getPlayer(username), PLAYER_ENTERED));
+    public void addPlayer(Player player) throws RemoteException {
+        System.out.println("Adding player" + player.getUsername());
+        playerManager.createPlayer(player);
+        notifyListeners(new GameLobbyEvent(player, PLAYER_ENTERED));
     }
 
     public Country getCountry(int countryId) {
@@ -209,9 +214,12 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
     }
 
 
-    public void removePlayer(String username) throws RemoteException {
-        playerManager.removePlayer(username);
-        notifyListeners(new GameLobbyEvent(getPlayer(username), PLAYER_LEFT));
+    public void removePlayer(Player player) throws RemoteException {
+        System.out.println("Removing player" + player.getUsername());
+        System.out.println(playerManager.getPlayerList().size());
+        playerManager.removePlayer(player);
+        System.out.println(playerManager.getPlayerList().size());
+        notifyListeners(new GameLobbyEvent(player, PLAYER_LEFT));
     }
 
     public void removeAllPlayers() {
@@ -361,8 +369,8 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         return filePersistenceManager.loadFile(datei);
     }
 
-    public DefaultListModel<String> addPlayerToModel(String name) {
-        return playerManager.addPlayerToModel(name);
+    public DefaultListModel<String> updatePlayerModel() throws RemoteException {
+        return playerManager.updatePlayerModel();
     }
 
     public DefaultListModel<String> removePlayerFromModel(String name) {
@@ -386,6 +394,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
                 public void run() {
                     try {
                         listener.handleGameEvent(event);
+                        listener.handleGameEvent(event);
                     } catch (RemoteException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -396,9 +405,17 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         }
     }
 
+    public void addGameEventListener(GameEventListener listener) throws RemoteException {
+        System.out.println("Somebody connected...");
+        listeners.add(listener);
+    }
+
+    public void removeGameEventListener(GameEventListener listener) throws RemoteException {
+        listeners.remove(listener);
+    }
 
     public static void main(String[] args) {
-        String serviceName = "Risk Server";
+        String serviceName = "RiskServer";
 
         Registry registry;
         ServerRemote server = null;
