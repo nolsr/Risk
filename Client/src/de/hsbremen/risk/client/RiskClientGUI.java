@@ -102,7 +102,7 @@ public class RiskClientGUI extends UnicastRemoteObject// implements GameEventLis
         switch (state) {
             case MAIN_MENU -> {
                 startScreen = new RiskStartScreen();
-                changePanel(window, startScreen);
+                changePanel(window, startScreen);w
                 System.out.println("Game Manager Main Menu");
                 mainMenu();
             }
