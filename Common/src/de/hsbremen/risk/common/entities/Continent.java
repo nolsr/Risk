@@ -1,9 +1,13 @@
 package de.hsbremen.risk.common.entities;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Continent
-{
+public class Continent implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 6433989674991593868L;
+
     private final String name;
     private final ArrayList<Country> countryWithin;
     private String ownedBy;

@@ -1,6 +1,12 @@
 package de.hsbremen.risk.common.entities;
 
-public class Movement {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class Movement implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 206943351872184514L;
+
     private int originCountry;
     private int targetCountry;
 

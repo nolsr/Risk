@@ -1,10 +1,15 @@
 package de.hsbremen.risk.common.entities;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-public class AttackResult {
+public class AttackResult implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 528324944731843347L;
+
     private ArrayList<Integer> attackingRolls;
     private ArrayList<Integer> defendingRolls;
     private int winningAttackingDice;

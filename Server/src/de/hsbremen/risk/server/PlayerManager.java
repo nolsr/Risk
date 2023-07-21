@@ -10,7 +10,7 @@ public class PlayerManager {
 
     private ArrayList<Player> playerList = new ArrayList<>();
 
-    private DefaultListModel<String> model = new DefaultListModel<>();
+    private final DefaultListModel<String> model = new DefaultListModel<>();
 
     public Player getPlayer(String username) {
         for (Player player : playerList) {
@@ -34,19 +34,25 @@ public class PlayerManager {
         return model;
     }
 
+    public DefaultListModel<String> updatePlayerModel() {
+        model.removeAllElements();
+        playerList.forEach(p -> model.addElement(p.getUsername()));
+        return model;
+    }
+
     public DefaultListModel<String> getModel() {
         return model;
     }
-    public boolean createPlayer(String username) {
-        if (getPlayer(username) == null) {
-            playerList.add(new Player(username, 0));
+    public boolean createPlayer(Player player) {
+        if (getPlayer(player.getUsername()) == null) {
+            playerList.add(player);
             return true;
         }
         return false;
     }
 
-    public void removePlayer(String username) {
-        playerList.remove(getPlayer(username));
+    public void removePlayer(Player player) {
+        playerList.remove(getPlayer(player.getUsername()));
     }
 
     public void removeAllPlayers() {

@@ -1,6 +1,11 @@
 package de.hsbremen.risk.common.entities;
 
-public class Turn {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class Turn implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -6464158444415807231L;
 
     public enum Phase {
         REINFORCEMENT_PHASE,

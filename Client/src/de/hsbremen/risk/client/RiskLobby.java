@@ -10,14 +10,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RiskLobby extends JPanel implements GameEventListener {
-    private JButton startGameButton = new LightButton("Start Game");
-    private JButton addPlayerButton = new LightButton("Add Player");
-    private JButton removePlayerButton = new LightButton("Remove Player");
+    private final JButton startGameButton = new LightButton("Start Game");
 
-    private JButton exitButton = new LightButton("Back to Main-Menu");
+    private final JButton exitButton = new LightButton("Back to Main-Menu");
 
-    private DarkList playerJList = new DarkList();
-
+    private final DarkList playerJList = new DarkList();
 
     public RiskLobby() {
         super();
@@ -33,20 +30,14 @@ public class RiskLobby extends JPanel implements GameEventListener {
         this.add(exitButton, BorderLayout.SOUTH);
     }
 
-    public JButton getAddPlayerButton() {
-        return addPlayerButton;
-    }
-
-    public JList<String> getPlayerJList() {
+    public DarkList getPlayerJList() {
         return playerJList;
     }
+
     public JButton getStartGameButton() {
         return startGameButton;
     }
 
-    public JButton getRemovePlayerButton() {
-        return removePlayerButton;
-    }
 
     public JButton getExitButton() {
         return exitButton;

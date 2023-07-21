@@ -1,6 +1,12 @@
 package de.hsbremen.risk.common.entities;
 
-public class Attack {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class Attack implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 8659647285194270403L;
+
     private int originCountry;
     private int targetCountry;
     private int amount;

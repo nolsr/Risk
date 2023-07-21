@@ -10,19 +10,24 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public interface ServerRemote extends Remote {
-    void addPlayer(String username) throws RemoteException;
+
+    public void addGameEventListener(GameEventListener listener) throws RemoteException;
+
+    public void removeGameEventListener(GameEventListener listener) throws RemoteException;
+
+    void addPlayer(Player player) throws RemoteException;
 
     Turn getCurrentTurn() throws RemoteException;
 
     void nextTurn() throws RemoteException, UnplacedArmiesException, GameEndedException;
 
-    void startGame() throws RemoteException;
+    void startGame() throws RemoteException, NotEnoughPlayersException;
 
     boolean loadGame(String file) throws IOException, RemoteException;
 
     Country getCountry(int countryId) throws RemoteException;
 
-    void removePlayer(String username) throws RemoteException;
+    void removePlayer(Player player) throws RemoteException;
 
     ArrayList<Player> getPlayerList() throws RemoteException;
 
@@ -44,11 +49,7 @@ public interface ServerRemote extends Remote {
 
     void tradeCards(int[] cardIds) throws InvalidCardCombinationException, RemoteException;
 
-    DefaultListModel<String> addPlayerToModel(String name) throws RemoteException;
-
-    DefaultListModel<String> removePlayerFromModel(String name) throws RemoteException;
-
-    DefaultListModel<String> getModel() throws RemoteException;
+    DefaultListModel<String> updatePlayerModel() throws RemoteException;
 
     Player getPlayer(String username) throws RemoteException;
 
