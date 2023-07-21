@@ -17,27 +17,26 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.io.Serial;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.RemoteServer;
 import java.rmi.server.UnicastRemoteObject;
 
 public class RiskClientGUI extends UnicastRemoteObject implements GameEventListener {
-    // GameState Windows
+    @Serial
+    private static final long serialVersionUID = 8358370513053391721L;
+
+    // Client view states
     private final RiskLobby riskLobby;
-    private RiskStartScreen startScreen;
+    private final RiskStartScreen startScreen;
     private RiskInGame inGame;
+    private final GameStateManager gamestateManager;
 
     private final JFrame window;
 
     private ServerRemote riskServer;
-
-    private final GameStateManager gamestateManager;
-
-    private final boolean quitGame = false;
-
     private Player player;
 
     public RiskClientGUI() throws RemoteException {
@@ -45,63 +44,38 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
         riskServer = new RiskServer();
         window = new JFrame();
         riskLobby = new RiskLobby();
+        startScreen = new RiskStartScreen();
+
+        addStartScreenButtonListeners();
+        addLobbyButtonListeners();
     }
 
     public void createGameWindow() {
         window.setTitle("Risk");
         window.setBackground(new Color(18, 20, 24));
         window.setVisible(true);
-        window.setSize(1600, 900);
+//        window.setSize(1600, 900);
+        window.setSize(600, 400);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setLayout(new BorderLayout());
-
-        gameManager();
+        setView();
     }
 
-    public void gameManager() {
-        GameStateManager.GameState state = gamestateManager.getGameState();
-        switch (state) {
+    public void setView() {
+        switch (gamestateManager.getGameState()) {
             case MAIN_MENU -> {
-                startScreen = new RiskStartScreen();
                 changePanel(window, startScreen);
-                System.out.println("Game Manager Main Menu");
-                mainMenu();
             }
             case LOBBY -> {
                 changePanel(window, riskLobby);
-                System.out.println("Game Manager Lobby Menu");
-                lobbyMenu();
             }
             case IN_GAME -> {
-//                inGame = new RiskInGame(this.riskServer);
-//                changePanel(window, inGame);
-//                turnMenu();
-//
-//                window.addComponentListener(new ComponentAdapter() {
-//                    @Override
-//                    public void componentResized(ComponentEvent e) {
-//                        super.componentResized(e);
-//                        window.setVisible(true);
-//                        inGame.redrawMap();
-//                        window.setVisible(true);
-//                    }
-//                });
-//
-//                window.addWindowStateListener(new WindowAdapter() {
-//                    @Override
-//                    public void windowStateChanged(WindowEvent e) {
-//                        super.windowStateChanged(e);
-//                        window.setVisible(true);
-//                        inGame.redrawMap();
-//                        window.setVisible(true);
-//                    }
-//                });
+                changePanel(window, inGame);
             }
         }
     }
 
-    private void mainMenu() {
-        System.out.println("Main Menu");
+    private void addStartScreenButtonListeners() {
         startScreen.getNewGameButton().addActionListener(listener -> {
             String name = JOptionPane.showInputDialog("Please enter your username");
 
@@ -141,10 +115,9 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
                         } catch (RemoteException ex) {
                             ex.printStackTrace();
                         }
-                        riskLobby.getPlayerJList().setModel(riskServer.updatePlayerModel());
+                        riskLobby.updatePlayerList(riskServer.updatePlayerModel());
                         gamestateManager.enterLobby();
-
-                        gameManager();
+                        setView();
                     }
                 } else {
                     JOptionPane.showMessageDialog(new JFrame(), name + " is already taken");
@@ -152,36 +125,19 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
             } catch (RemoteException | NotBoundException e) {
                 e.printStackTrace();
             }
-
-
         });
-        startScreen.getLoadGameButton().addActionListener(e -> {
-            String name = JOptionPane.showInputDialog("Please type in the file you want to load.");
-            try {
-                if (riskServer.loadGame(name)) {
-                    gamestateManager.enterGame();
-                } else if (name != null) {
-                    JOptionPane.showMessageDialog(new JFrame(), "Couldn't find the file " + name + ".json");
-                }
-                gameManager();
-                // handleGameEvent();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
+        startScreen.getQuitGameButton().addActionListener(e -> {
+            System.exit(0);
         });
-        startScreen.getQuitGameButton().addActionListener(e -> System.exit(0));
     }
 
-    private void lobbyMenu() {
-        System.out.println("Lobby Menu");
-
-        riskLobby.getStartGameButton().addActionListener(listener -> {
+    private void addLobbyButtonListeners() {
+        riskLobby.getStartGameButton().addActionListener(e -> {
             try {
                 riskServer.startGame();
-            } catch (NotEnoughPlayersException e) {
-                JOptionPane.showMessageDialog(null, e.getMessage());
-            }
-            catch (RemoteException remoteException) {
+            } catch (NotEnoughPlayersException notEnoughPlayersException) {
+                JOptionPane.showMessageDialog(null, notEnoughPlayersException.getMessage());
+            } catch (RemoteException remoteException) {
                 remoteException.printStackTrace();
             }
         });
@@ -193,20 +149,25 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
                 remoteException.printStackTrace();
             }
             gamestateManager.exitLobby();
-            gameManager();
+            setView();
+        });
+
+        riskLobby.getLoadGameButton().addActionListener(e -> {
+            String name = JOptionPane.showInputDialog("Please type in the file you want to load.");
+            try {
+                if (riskServer.loadGame(name)) {
+                    gamestateManager.enterGame();
+                } else if (name != null) {
+                    JOptionPane.showMessageDialog(new JFrame(), "Couldn't find the file " + name + ".json");
+                }
+                setView();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         });
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
-    public RiskClientGUI getGameEventListener() {
-        return this;
-    }
-
-    private void turnMenu() {
-        System.out.println("Turn Menu");
+    private void addInGameButtonListeners() {
         inGame.getSaveGameButton().addActionListener(e -> {
             String name = JOptionPane.showInputDialog("Please assign a file name for your saved game.");
             try {
@@ -219,6 +180,25 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
                 throw new RuntimeException(ex);
             }
         });
+        window.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
+                window.setVisible(true);
+                inGame.redrawMap();
+                window.setVisible(true);
+            }
+        });
+
+        window.addWindowStateListener(new WindowAdapter() {
+            @Override
+            public void windowStateChanged(WindowEvent e) {
+                super.windowStateChanged(e);
+                window.setVisible(true);
+                inGame.redrawMap();
+                window.setVisible(true);
+            }
+        });
     }
 
     public void changePanel(JFrame frame, JPanel panel) {
@@ -227,17 +207,33 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
         frame.revalidate();
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
+    public RiskClientGUI getGameEventListener() {
+        return this;
+    }
+
     @Override
     public void handleGameEvent(GameEvent event) throws RemoteException {
-        System.out.println("Received Game Event");
-
         if (event instanceof GameActionEvent) {
 
         } else if (event instanceof GameControlEvent) {
-
+            if (((GameControlEvent) event).getType() == GameControlEvent.GameControlEventType.GAME_STARTED) {
+                inGame = new RiskInGame(this.riskServer, this.riskServer.getPlayerList(),
+                        this.riskServer.getCountries(), this.player, ((GameControlEvent) event).getTurn());
+                addInGameButtonListeners();
+                gamestateManager.enterGame();
+                setView();
+            } else if (((GameControlEvent) event).getType() == GameControlEvent.GameControlEventType.NEXT_PHASE) {
+                inGame.updateTurn(((GameControlEvent) event).getTurn());
+            } else if (((GameControlEvent) event).getType() == GameControlEvent.GameControlEventType.GAME_OVER) {
+                inGame.updateTurn(((GameControlEvent) event).getTurn());
+            }
         } else if (event instanceof GameLobbyEvent) {
             System.out.println("Something happened, update model");
-            riskLobby.getPlayerJList().setModel(riskServer.updatePlayerModel());
+            riskLobby.updatePlayerList(riskServer.updatePlayerModel());
         }
     }
 

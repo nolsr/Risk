@@ -4,6 +4,7 @@ import de.hsbremen.risk.common.GameEventListener;
 import de.hsbremen.risk.common.ServerRemote;
 import de.hsbremen.risk.common.entities.cards.Card;
 import de.hsbremen.risk.common.events.GameActionEvent;
+import de.hsbremen.risk.common.events.GameControlEvent;
 import de.hsbremen.risk.common.events.GameEvent;
 import de.hsbremen.risk.common.events.GameLobbyEvent;
 import de.hsbremen.risk.common.exceptions.*;
@@ -76,24 +77,27 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         return leadingPlayer;
     }
 
-    public void nextTurn() throws UnplacedArmiesException, GameEndedException {
+    public void nextTurn() throws UnplacedArmiesException, GameEndedException, RemoteException {
         if (this.currentTurn.getPhase() == Turn.Phase.GAME_ENDED) {
             throw new GameEndedException();
         }
-        if (this.currentTurn.getPhase() == Turn.Phase.REINFORCEMENT_PHASE &&
-                this.currentTurn.getPlayer().getArmies() > 0) {
-            throw new UnplacedArmiesException();
-        }
+//        if (this.currentTurn.getPhase() == Turn.Phase.REINFORCEMENT_PHASE &&
+//                this.currentTurn.getPlayer().getArmies() > 0) {
+//            throw new UnplacedArmiesException();
+//        }
         if (this.currentTurn.getPhase() == Turn.Phase.DRAWING_PHASE) {
             this.currentTurn = new Turn(getNextPlayer());
             getReinforcementUnits(this.currentTurn.getPlayer());
             worldManager.resetUnitsMoved();
+            notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.NEXT_PHASE));
             return;
         }
         this.currentTurn.nextPhase();
         if (isMissionCompleted(this.currentTurn.getPlayer()) || playerHasPeaceCard(this.currentTurn.getPlayer())) {
             this.currentTurn.setGameEnded();
         }
+
+        notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.NEXT_PHASE));
     }
 
     public ArrayList<Integer> getNeighbourCountries(int countryId) {
@@ -116,6 +120,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
                 checkIfPlayerOwnsContinentAndSet(continent.getName(), player.getUsername());
             }
         getReinforcementUnits(firstTurnPlayer);
+        this.notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.GAME_STARTED));
     }
 
     public boolean loadGame(String file) throws IOException {
@@ -200,7 +205,6 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
     }
 
     public void addPlayer(Player player) throws RemoteException {
-        System.out.println("Adding player" + player.getUsername());
         playerManager.createPlayer(player);
         notifyListeners(new GameLobbyEvent(player, PLAYER_ENTERED));
     }
@@ -209,16 +213,12 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         return worldManager.getCountry(countryId);
     }
 
-    public ArrayList<Country> getCountries() {
+    public ArrayList<Country> getCountries() throws RemoteException {
         return worldManager.getCountries();
     }
 
-
     public void removePlayer(Player player) throws RemoteException {
-        System.out.println("Removing player" + player.getUsername());
-        System.out.println(playerManager.getPlayerList().size());
         playerManager.removePlayer(player);
-        System.out.println(playerManager.getPlayerList().size());
         notifyListeners(new GameLobbyEvent(player, PLAYER_LEFT));
     }
 
@@ -360,7 +360,6 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         Card card1 = cardManager.getCardById(cardIds[0]);
         Card card2 = cardManager.getCardById(cardIds[1]);
         Card card3 = cardManager.getCardById(cardIds[2]);
-        System.out.println(this.currentTurn.getPlayer().getUsername());
         this.currentTurn.getPlayer().removeCards(card1, card2, card3);
         this.currentTurn.getPlayer().increaseArmies(extraUnits);
     }
@@ -394,7 +393,6 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
                 public void run() {
                     try {
                         listener.handleGameEvent(event);
-                        listener.handleGameEvent(event);
                     } catch (RemoteException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -406,7 +404,6 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
     }
 
     public void addGameEventListener(GameEventListener listener) throws RemoteException {
-        System.out.println("Somebody connected...");
         listeners.add(listener);
     }
 

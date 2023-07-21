@@ -1,7 +1,12 @@
 package de.hsbremen.risk.common.entities.cards;
 
-public class WildCard extends Card
-{
+import java.io.Serial;
+import java.io.Serializable;
+
+public class WildCard extends Card implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -3202430453623944592L;
+
     public WildCard()
     {
         super();

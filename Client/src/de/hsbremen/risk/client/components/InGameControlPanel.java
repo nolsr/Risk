@@ -86,6 +86,18 @@ public class InGameControlPanel extends JPanel {
         }
     }
 
+    public void enableControls() {
+        this.btnAction.setEnabled(true);
+        this.btnTradeCards.setEnabled(true);
+        this.btnNextPhase.setEnabled(true);
+    }
+
+    public void disableControls() {
+        this.btnAction.setEnabled(false);
+        this.btnTradeCards.setEnabled(false);
+        this.btnNextPhase.setEnabled(false);
+    }
+
     public DarkButton getBtnSave() {
         return btnSave;
     }

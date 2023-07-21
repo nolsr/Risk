@@ -15,7 +15,6 @@ import java.awt.*;
 public class RiskStartScreen extends JPanel implements GameEventListener {
 
     private JButton newGameButton = new LightButton("Enter Lobby");
-    private JButton loadGameButton = new LightButton("Load Game");
     private JButton quitGameButton = new LightButton("Quit Game");
 
     public RiskStartScreen() {
@@ -28,10 +27,6 @@ public class RiskStartScreen extends JPanel implements GameEventListener {
 
     public JButton getNewGameButton() {
         return newGameButton;
-    }
-
-    public JButton getLoadGameButton() {
-        return loadGameButton;
     }
 
     public JButton getQuitGameButton() {
