@@ -239,8 +239,9 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         return playerManager.getPlayerList().size() >= 2 && playerManager.getPlayerList().size() <= 6;
     }
 
-    public void moveForces(int originCountryId, int targetCountryId, int amount) throws MovementException {
+    public void moveForces(int originCountryId, int targetCountryId, int amount) throws MovementException, RemoteException {
         worldManager.moveForces(originCountryId, targetCountryId, amount, currentTurn.getPlayer());
+        notifyListeners(new GameActionEvent(currentTurn.getPlayer(), GameActionEvent.GameControlEventType.MOVE));
     }
 
     public boolean isMissionCompleted(Player player) {

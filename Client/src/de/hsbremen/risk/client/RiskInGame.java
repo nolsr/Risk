@@ -102,11 +102,11 @@ public class RiskInGame extends JPanel {
 //                    JOptionPane.showMessageDialog(null,
 //                            "Please select an origin country for your attack.");
 //                }
-//                case MOVEMENT_PHASE -> {
-//                    this.movement.reset();
-//                    JOptionPane.showMessageDialog(null,
-//                            "Please select an origin country for your movement.");
-//                }
+                case MOVEMENT_PHASE -> {
+                    this.movement.reset();
+                    JOptionPane.showMessageDialog(null,
+                            "Please select an origin country for your movement.");
+                }
 //                case DRAWING_PHASE -> {
 //                    if (riskServer.getCurrentTurn().getPlayer().getEntitledToDraw()) {
 //                        riskServer.playerDrawsCard(riskServer.getCurrentTurn().getPlayer());
@@ -163,27 +163,27 @@ public class RiskInGame extends JPanel {
 //                    }
 //                }
 //            }
-//            case MOVEMENT_PHASE -> {
-//                if (!this.movement.hasOriginCountry()) {
-//                    this.movement.setOriginCountry(countryId);
-//                    JOptionPane.showMessageDialog(null,
-//                            "Please select a target country for your movement.");
-//                    this.listenToCountryClicked = true;
-//                } else {
-//                    this.movement.setTargetCountry(countryId);
-//                    try {
-//                        int amountOfUnits = Integer.parseInt(JOptionPane.showInputDialog(
-//                                null,
-//                                "How many armies do you want to move?"));
-//                        riskServer.moveForces(this.movement.getOriginCountry(), this.movement.getTargetCountry(), amountOfUnits);
-//                        this.updateGUI();
-//                    } catch (MovementException e) {
-//                        JOptionPane.showMessageDialog(null, e.getMessage());
-//                    } catch (NumberFormatException e) {
-//                        JOptionPane.showMessageDialog(null, "Invalid input for amount of armies");
-//                    }
-//                }
-//            }
+            case MOVEMENT_PHASE -> {
+                if (!this.movement.hasOriginCountry()) {
+                    this.movement.setOriginCountry(countryId);
+                    JOptionPane.showMessageDialog(null,
+                            "Please select a target country for your movement.");
+                    this.listenToCountryClicked = true;
+                } else {
+                    this.movement.setTargetCountry(countryId);
+                    try {
+                        int amountOfUnits = Integer.parseInt(JOptionPane.showInputDialog(
+                                null,
+                                "How many armies do you want to move?"));
+                        riskServer.moveForces(this.movement.getOriginCountry(), this.movement.getTargetCountry(), amountOfUnits);
+                        this.updateGUI();
+                    } catch (MovementException e) {
+                        JOptionPane.showMessageDialog(null, e.getMessage());
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(null, "Invalid input for amount of armies");
+                    }
+                }
+            }
 //        }
     }
 }
@@ -246,7 +246,8 @@ public class RiskInGame extends JPanel {
     public void updateGUI() throws RemoteException {
         this.map.updateCountryInfo(this.riskServer.getPlayerList(), this.riskServer.getCountries());
         this.currentTurnPanel.updateTurnDisplay(this.currentTurn);
-        this.controlPanel.setNewPhaseContent(this.currentTurn);
+        this.controlPanel.setNewPhaseContent(this.riskServer.getCurrentTurn());
+       // this.controlPanel.setNewPhaseContent(this.currentTurn);
         this.redrawMap();
     }
 
