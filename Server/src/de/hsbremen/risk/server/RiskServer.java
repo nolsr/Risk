@@ -39,6 +39,8 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
     private Attack attack;
     private List<GameEventListener> listeners;
 
+    private int defendingDice;
+
     public RiskServer() throws RemoteException {
         filePersistenceManager = new FilePersistenceManager();
         playerManager = new PlayerManager();
@@ -283,8 +285,22 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         return true;
     }
 
-    public void removeAttackingForcesFromOriginCountry() {
+    public void removeAttackingForcesFromOriginCountry() throws RemoteException {
         this.getCountry(this.attack.getOriginCountry()).decreaseArmy(this.attack.getAmount());
+        this.notifyListeners(new GameActionEvent(getPlayer(getCountry(this.attack.getOriginCountry()).getOccupiedBy()), GameActionEvent.GameControlEventType.ATTACK));
+    }
+
+    public void notifyDefending() throws RemoteException {
+        this.notifyListeners(new GameActionEvent(getPlayer(getCountry(this.attack.getTargetCountry()).getOccupiedBy()), GameActionEvent.GameControlEventType.DEFEND));
+        System.out.println(getPlayer(getCountry(this.attack.getTargetCountry()).getOccupiedBy()).getUsername() + " is defending");
+    }
+
+    public void setDefendingDice(int diceAmount) throws RemoteException{
+        this.defendingDice = diceAmount;
+    }
+
+    public int getDefendingDice() throws RemoteException{
+        return this.defendingDice;
     }
 
     public AttackResult attack(int attackingDiceCount, int defendingDiceCount) {

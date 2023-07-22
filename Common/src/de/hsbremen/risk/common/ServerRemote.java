@@ -11,9 +11,9 @@ import java.util.ArrayList;
 
 public interface ServerRemote extends Remote {
 
-    public void addGameEventListener(GameEventListener listener) throws RemoteException;
+    void addGameEventListener(GameEventListener listener) throws RemoteException;
 
-    public void removeGameEventListener(GameEventListener listener) throws RemoteException;
+    void removeGameEventListener(GameEventListener listener) throws RemoteException;
 
     void addPlayer(Player player) throws RemoteException;
 
@@ -54,4 +54,12 @@ public interface ServerRemote extends Remote {
     Player getPlayer(String username) throws RemoteException;
 
     ArrayList<Country> getCountries() throws RemoteException;
+
+    void notifyDefending() throws RemoteException;
+
+    void setDefendingDice(int dice) throws RemoteException;
+
+    int getDefendingDice() throws RemoteException;
+
+    //int getDefendingCountryDice() throws RemoteException;
 }
