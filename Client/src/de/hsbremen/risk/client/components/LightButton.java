@@ -8,5 +8,6 @@ public class LightButton extends JButton {
         super(text);
         this.setBackground(new Color(27, 31, 36));
         this.setForeground(Color.WHITE);
+        this.setFocusPainted(false);
     }
 }

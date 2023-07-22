@@ -1,6 +1,11 @@
 package de.hsbremen.risk.common.entities.cards;
 
-public class UnitCard extends Card {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class UnitCard extends Card implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 2217378977030364185L;
 
     private final String kind = "Unit-Card";
     private final String unit;

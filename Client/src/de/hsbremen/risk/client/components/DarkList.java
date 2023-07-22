@@ -3,7 +3,7 @@ package de.hsbremen.risk.client.components;
 import javax.swing.*;
 import java.awt.*;
 
-public class DarkList extends JList {
+public class DarkList<S> extends JList<S> {
     public DarkList() {
         super();
         this.setBackground(new Color(18, 20, 24) );

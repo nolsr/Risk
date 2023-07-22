@@ -53,5 +53,5 @@ public interface ServerRemote extends Remote {
 
     Player getPlayer(String username) throws RemoteException;
 
-
+    ArrayList<Country> getCountries() throws RemoteException;
 }

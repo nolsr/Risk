@@ -10,16 +10,18 @@ import java.util.ArrayList;
 
 public class InGameInfoPanel extends JPanel {
 
+    private final JLabel playerName;
     private final JLabel countryName = new WhiteLabel("");
 
     private final JLabel countryContinent = new WhiteLabel("");;
     private final JLabel countryUnits = new WhiteLabel("");;
     private final JLabel countryOccupiedBy = new WhiteLabel("");;
 
-    public InGameInfoPanel(ArrayList<Player> players) {
+    public InGameInfoPanel(ArrayList<Player> players, Player player) {
         super();
 
-        DarkList playerList = new DarkList();
+        playerName = new WhiteLabel(player.getUsername());
+        DarkList<String> playerList = new DarkList<>();
         DefaultListModel<String> playerListModel = new DefaultListModel<>();
         playerList.setModel(playerListModel);
         playerList.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(90, 90, 90)));
@@ -28,8 +30,9 @@ public class InGameInfoPanel extends JPanel {
         playerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         playerList.setSelectionBackground(playerList.getBackground());
         playerList.setSelectionForeground(playerList.getBackground());
-        for (int i = 0; i < players.size(); i++) {
-            playerListModel.addElement(players.get(i).getUsername());
+
+        for (Player p : players) {
+            playerListModel.addElement(p.getUsername());
         }
 
         this.setPreferredSize(new Dimension(250, 1920));
@@ -42,6 +45,7 @@ public class InGameInfoPanel extends JPanel {
         countryUnits.setPreferredSize(new Dimension(200, 25));
         countryOccupiedBy.setPreferredSize(new Dimension(200, 25));
 
+        this.add(playerName);
         this.add(playerList);
         this.add(countryName);
         this.add(countryContinent);

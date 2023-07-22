@@ -1,7 +1,12 @@
 package de.hsbremen.risk.common.entities.cards;
 
-public class PeaceCard extends Card
-{
+import java.io.Serial;
+import java.io.Serializable;
+
+public class PeaceCard extends Card implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 755798574227836547L;
+
     public PeaceCard()
     {
         super();

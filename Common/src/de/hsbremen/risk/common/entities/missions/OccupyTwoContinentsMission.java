@@ -4,10 +4,15 @@ import de.hsbremen.risk.common.entities.Continent;
 import de.hsbremen.risk.common.entities.Country;
 import de.hsbremen.risk.common.entities.Player;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class OccupyTwoContinentsMission extends Mission {
+public class OccupyTwoContinentsMission extends Mission implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 4095882400744507829L;
+
     Continent continentOne;
     Continent continentTwo;
     public OccupyTwoContinentsMission(ArrayList<Continent> continents, boolean newGame) {

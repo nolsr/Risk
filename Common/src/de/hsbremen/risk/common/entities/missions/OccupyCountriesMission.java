@@ -3,9 +3,14 @@ package de.hsbremen.risk.common.entities.missions;
 import de.hsbremen.risk.common.entities.Country;
 import de.hsbremen.risk.common.entities.Player;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class OccupyCountriesMission extends Mission {
+public class OccupyCountriesMission extends Mission implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 8034919529414135908L;
+
     int amountOfCountriesToOccupy;
     public OccupyCountriesMission(int playerCount) {
         this.amountOfCountriesToOccupy = 36 - (playerCount * 4);
