@@ -81,10 +81,10 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         if (this.currentTurn.getPhase() == Turn.Phase.GAME_ENDED) {
             throw new GameEndedException();
         }
-//        if (this.currentTurn.getPhase() == Turn.Phase.REINFORCEMENT_PHASE &&
-//                this.currentTurn.getPlayer().getArmies() > 0) {
-//            throw new UnplacedArmiesException();
-//        }
+        if (this.currentTurn.getPhase() == Turn.Phase.REINFORCEMENT_PHASE &&
+                this.currentTurn.getPlayer().getArmies() > 0) {
+            throw new UnplacedArmiesException();
+        }
         if (this.currentTurn.getPhase() == Turn.Phase.DRAWING_PHASE) {
             this.currentTurn = new Turn(getNextPlayer());
             getReinforcementUnits(this.currentTurn.getPlayer());
@@ -239,8 +239,9 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         return playerManager.getPlayerList().size() >= 2 && playerManager.getPlayerList().size() <= 6;
     }
 
-    public void moveForces(int originCountryId, int targetCountryId, int amount) throws MovementException {
+    public void moveForces(int originCountryId, int targetCountryId, int amount) throws MovementException, RemoteException {
         worldManager.moveForces(originCountryId, targetCountryId, amount, currentTurn.getPlayer());
+        notifyListeners(new GameActionEvent(currentTurn.getPlayer(), GameActionEvent.GameControlEventType.MOVE));
     }
 
     public boolean isMissionCompleted(Player player) {
@@ -322,7 +323,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         worldManager.getReinforcementUnits(player);
     }
 
-    public void distributeArmy(int countryId, int amount) throws DoNotOccupyCountryException, NotEnoughArmiesException {
+    public void distributeArmy(int countryId, int amount) throws DoNotOccupyCountryException, NotEnoughArmiesException, RemoteException {
         if (!this.isPlayerOccupantOfGivenCountry(this.getCurrentTurn().getPlayer(), countryId)) {
             throw new DoNotOccupyCountryException(this.getCountry(countryId));
         }
@@ -330,6 +331,8 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
             throw new NotEnoughArmiesException();
         }
         worldManager.distributeArmy(this.currentTurn.getPlayer(), countryId, amount);
+        System.out.println("Country: " + getCountry(countryId).getName() + " amount: " + getCountry(countryId).getArmies());
+        this.notifyListeners(new GameActionEvent(this.currentTurn.getPlayer(), GameActionEvent.GameControlEventType.DISTRIBUTE));
     }
 
     public void saveGame(String file) throws IOException {
