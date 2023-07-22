@@ -322,7 +322,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         worldManager.getReinforcementUnits(player);
     }
 
-    public void distributeArmy(int countryId, int amount) throws DoNotOccupyCountryException, NotEnoughArmiesException {
+    public void distributeArmy(int countryId, int amount) throws DoNotOccupyCountryException, NotEnoughArmiesException, RemoteException {
         if (!this.isPlayerOccupantOfGivenCountry(this.getCurrentTurn().getPlayer(), countryId)) {
             throw new DoNotOccupyCountryException(this.getCountry(countryId));
         }
@@ -330,6 +330,8 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
             throw new NotEnoughArmiesException();
         }
         worldManager.distributeArmy(this.currentTurn.getPlayer(), countryId, amount);
+        System.out.println("Country: " + getCountry(countryId).getName() + " amount: " + getCountry(countryId).getArmies());
+        this.notifyListeners(new GameActionEvent(this.currentTurn.getPlayer(), GameActionEvent.GameControlEventType.DISTRIBUTE));
     }
 
     public void saveGame(String file) throws IOException {

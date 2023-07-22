@@ -219,7 +219,8 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
     @Override
     public void handleGameEvent(GameEvent event) throws RemoteException {
         if (event instanceof GameActionEvent) {
-
+            System.out.println("Something happened, update GUI");
+            inGame.updateGUI();
         } else if (event instanceof GameControlEvent) {
             if (((GameControlEvent) event).getType() == GameControlEvent.GameControlEventType.GAME_STARTED) {
                 inGame = new RiskInGame(this.riskServer, this.riskServer.getPlayerList(),

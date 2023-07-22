@@ -29,7 +29,7 @@ public class RiskInGame extends JPanel {
     private Attack attack;
     private Movement movement;
 
-    public RiskInGame(ServerRemote riskServer, ArrayList<Player> players, ArrayList<Country> countries, Player player, Turn turn) {
+    public RiskInGame(ServerRemote riskServer, ArrayList<Player> players, ArrayList<Country> countries, Player player, Turn turn) throws RemoteException {
         this.riskServer = riskServer;
         this.player = player;
         this.map = new RiskMap(players, countries);
@@ -58,13 +58,13 @@ public class RiskInGame extends JPanel {
     }
 
     private void addEventListeners() {
-//        this.map.addCountryClickedListener(countryId -> {
-//            this.infoPanel.updateInfoPanel(riskServer.getCountry(countryId));
-//            if (listenToCountryClicked) {
-//                this.listenToCountryClicked = false;
-//                this.selectCountry(countryId);
-//            }
-//        });
+        this.map.addCountryClickedListener(countryId -> {
+            this.infoPanel.updateInfoPanel(riskServer.getCountry(countryId));
+            if (listenToCountryClicked) {
+                this.listenToCountryClicked = false;
+                this.selectCountry(countryId);
+            }
+        });
 //
 //        this.controlPanel.getBtnCardStack().addActionListener(e -> {
 //            JFrame frame = new JFrame();
@@ -86,12 +86,13 @@ public class RiskInGame extends JPanel {
 //        });
 //
         this.controlPanel.getBtnNextPhase().addActionListener(e -> onClickNextPhase());
-//        this.controlPanel.getBtnAction().addActionListener(e -> {
-//            this.listenToCountryClicked = true;
-//            switch (riskServer.getCurrentTurn().getPhase()) {
-//                case REINFORCEMENT_PHASE -> JOptionPane.showMessageDialog(null,
-//                        "Please select a country to place units in.");
-//
+        this.controlPanel.getBtnAction().addActionListener(e -> {
+            this.listenToCountryClicked = true;
+            try {
+                switch (riskServer.getCurrentTurn().getPhase()) {
+                    case REINFORCEMENT_PHASE -> JOptionPane.showMessageDialog(null,
+                            "Please select a country to place units in.");
+
 //                case LIBERATION_PHASE -> {
 //                    this.attack.reset();
 //                    JOptionPane.showMessageDialog(null,
@@ -111,25 +112,27 @@ public class RiskInGame extends JPanel {
 //                        System.out.println("You Drew a Card");
 //                    }
 //                }
-//            }
-//        });
+            }
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
+            }
+        });
     }
 
-    private void selectCountry(int countryId) {
-//        switch (riskServer.getCurrentTurn().getPhase()) {
-//            case REINFORCEMENT_PHASE -> {
-//                try {
-//                    int amountOfUnits = Integer.parseInt(JOptionPane.showInputDialog(
-//                            null,
-//                            "How many units do you want to place?"));
-//                    riskServer.distributeArmy(countryId, amountOfUnits);
-//                    this.updateGUI();
-//                } catch (NotEnoughArmiesException | DoNotOccupyCountryException e) {
-//                    JOptionPane.showMessageDialog(null, e.getMessage());
-//                } catch (NumberFormatException e) {
-//                    JOptionPane.showMessageDialog(null, "Invalid input for amount of armies");
-//                }
-//            }
+    private void selectCountry(int countryId) throws RemoteException {
+        switch (riskServer.getCurrentTurn().getPhase()) {
+            case REINFORCEMENT_PHASE -> {
+                try {
+                    int amountOfUnits = Integer.parseInt(JOptionPane.showInputDialog(
+                            null,
+                            "How many units do you want to place?"));
+                    riskServer.distributeArmy(countryId, amountOfUnits);
+                } catch (NotEnoughArmiesException | DoNotOccupyCountryException | RemoteException e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage());
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null, "Invalid input for amount of armies");
+                }
+            }
 //            case LIBERATION_PHASE -> {
 //                if (!this.attack.hasOriginCountry()) {
 //                    this.attack.setOriginCountry(countryId);
@@ -178,7 +181,7 @@ public class RiskInGame extends JPanel {
 //                }
 //            }
 //        }
-//    }
+    }
 }
 
     private void openLiberationCycle() {
@@ -236,14 +239,14 @@ public class RiskInGame extends JPanel {
         }
     }
 
-    private void updateGUI() {
-//        this.map.updateCountryInfo(this.riskServer.getPlayerList(), this.riskServer.getCountries());
+    public void updateGUI() throws RemoteException {
+        this.map.updateCountryInfo(this.riskServer.getPlayerList(), this.riskServer.getCountries());
         this.currentTurnPanel.updateTurnDisplay(this.currentTurn);
-//        this.controlPanel.setNewPhaseContent(this.riskServer.getCurrentTurn());
+     //   this.controlPanel.setNewPhaseContent(this.riskServer.getCurrentTurn());
         this.redrawMap();
     }
 
-    public void updateTurn(Turn turn) {
+    public void updateTurn(Turn turn) throws RemoteException {
         this.currentTurn = turn;
         this.updateGUI();
 
