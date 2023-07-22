@@ -234,7 +234,11 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
                 inGame.updateTurn(((GameControlEvent) event).getTurn());
             }
         } else if (event instanceof GameLobbyEvent) {
-            System.out.println("Something happened, update model");
+            if (((GameLobbyEvent) event).getType() == GameLobbyEvent.GameLobbyEventType.PLAYER_ENTERED) {
+                riskLobby.updateLobbyLog(event.getPlayer().getUsername() +" joined the lobby\n");
+            } else {
+                riskLobby.updateLobbyLog(event.getPlayer().getUsername() +" left the lobby\n");
+            }
             riskLobby.updatePlayerList(riskServer.updatePlayerModel());
         }
     }
