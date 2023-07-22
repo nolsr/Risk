@@ -115,6 +115,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
 
         Player firstTurnPlayer = getFirstTurnPlayer();
         this.currentTurn = new Turn(firstTurnPlayer);
+        System.out.println("Star game turn: " + this.currentTurn);
         for (Continent continent : worldManager.getContinentList())
             for (Player player : getPlayerList()) {
                 checkIfPlayerOwnsContinentAndSet(continent.getName(), player.getUsername());
