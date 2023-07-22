@@ -196,8 +196,9 @@ public class RiskInGame extends JPanel {
             attackingDice = Math.min(attackingDice, 3);
             //int defendingDice = 0;
             riskServer.notifyDefending();
-
+        // Start a new thread here and wait for defending dice input to be done, afterwards it should proceed
             int defendingDice = riskServer.getDefendingDice();
+
         System.out.println("Defending dice: " + defendingDice);
 
          //   while (defendingDice < 1 || defendingDice > 2 || defendingDice > defendingCountry.getArmies()) {
