@@ -81,10 +81,10 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         if (this.currentTurn.getPhase() == Turn.Phase.GAME_ENDED) {
             throw new GameEndedException();
         }
-//        if (this.currentTurn.getPhase() == Turn.Phase.REINFORCEMENT_PHASE &&
-//                this.currentTurn.getPlayer().getArmies() > 0) {
-//            throw new UnplacedArmiesException();
-//        }
+        if (this.currentTurn.getPhase() == Turn.Phase.REINFORCEMENT_PHASE &&
+                this.currentTurn.getPlayer().getArmies() > 0) {
+            throw new UnplacedArmiesException();
+        }
         if (this.currentTurn.getPhase() == Turn.Phase.DRAWING_PHASE) {
             this.currentTurn = new Turn(getNextPlayer());
             getReinforcementUnits(this.currentTurn.getPlayer());

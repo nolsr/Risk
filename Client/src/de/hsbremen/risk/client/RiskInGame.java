@@ -65,15 +65,19 @@ public class RiskInGame extends JPanel {
                 this.selectCountry(countryId);
             }
         });
-//
-//        this.controlPanel.getBtnCardStack().addActionListener(e -> {
-//            JFrame frame = new JFrame();
-//            frame.setSize(1500, 600);
-//            this.showCardsFrame = new ShowCardsFrame(riskServer.getCurrentTurn().getPlayer(), riskServer, true);
-//            frame.add(showCardsFrame);
-//            frame.setVisible(true);
-//
-//        });
+
+        this.controlPanel.getBtnCardStack().addActionListener(e -> {
+            JFrame frame = new JFrame();
+            frame.setSize(1500, 600);
+            try {
+                this.showCardsFrame = new ShowCardsFrame(riskServer.getCurrentTurn().getPlayer(), riskServer, true);
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
+            frame.add(showCardsFrame);
+            frame.setVisible(true);
+
+        });
 //
 //        this.controlPanel.getBtnTradeCards().addActionListener(e -> {
 //            JFrame frame = new JFrame();
@@ -242,7 +246,7 @@ public class RiskInGame extends JPanel {
     public void updateGUI() throws RemoteException {
         this.map.updateCountryInfo(this.riskServer.getPlayerList(), this.riskServer.getCountries());
         this.currentTurnPanel.updateTurnDisplay(this.currentTurn);
-     //   this.controlPanel.setNewPhaseContent(this.riskServer.getCurrentTurn());
+        this.controlPanel.setNewPhaseContent(this.currentTurn);
         this.redrawMap();
     }
 
