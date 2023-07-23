@@ -216,6 +216,29 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
         return this;
     }
 
+    Thread defendingThread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                System.out.println("Defending Thread running...");
+                defending();
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    });
+
+    private void defending() throws RemoteException {
+        synchronized (inGame) {
+            System.out.println("You're under attack, defend!");
+            //JOptionPane.showMessageDialog(null, "I'm " + event.getPlayer().getUsername() + " and i'm under attack!");
+            int dice = Integer.parseInt(JOptionPane.showInputDialog("With how many dices would you like to defend?"));
+            riskServer.setDefendingDice(dice);
+            // Notify but it doesn't reach Attack
+            inGame.notify();
+        }
+    }
+
     @Override
     public void handleGameEvent(GameEvent event) throws RemoteException {
         if (event instanceof GameActionEvent) {
@@ -223,10 +246,7 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
                 System.out.println("Event player "+ event.getPlayer().getUsername());
                 System.out.println("Current player " + player.getUsername());
                 if (event.getPlayer().getUsername().equals(player.getUsername())) {
-                    System.out.println("You're under attack, defend!");
-                    JOptionPane.showMessageDialog(null, "I'm " + event.getPlayer().getUsername() + " and i'm under attack!");
-                    int dice = Integer.parseInt(JOptionPane.showInputDialog("With how many dices would you like to defend?"));
-                    riskServer.setDefendingDice(dice);
+                  defendingThread.start();
                 }
 
             } else if (((GameActionEvent) event).getType() == GameActionEvent.GameControlEventType.ATTACK) {
