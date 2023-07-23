@@ -35,11 +35,13 @@ public interface ServerRemote extends Remote {
 
     Attack getCurrentAttack() throws RemoteException;
 
-    boolean isAttackLegal(Attack attack) throws DoNotOccupyCountryException, OccupyTargetCountry, NoArmiesLeftException, RemoteException;
+    void startAttack(Attack attack) throws DoNotOccupyCountryException, OccupyTargetCountry, NoArmiesLeftException, RemoteException;
 
     void removeAttackingForcesFromOriginCountry() throws RemoteException;
 
     AttackResult attack(int attackingDiceCount, int defendingDiceCount) throws RemoteException;
+
+    void defendAttack(int defendingDice) throws RemoteException, NotEnoughArmiesException, IllegalDefendingDiceException;
 
     void distributeArmy(int countryId, int amount) throws DoNotOccupyCountryException, NotEnoughArmiesException, RemoteException;
 
@@ -52,8 +54,4 @@ public interface ServerRemote extends Remote {
     DefaultListModel<String> updatePlayerModel() throws RemoteException;
 
     Player getPlayer(String username) throws RemoteException;
-
-    ArrayList<Country> getCountries() throws RemoteException;
-
-    int getDefendingDice() throws RemoteException;
 }
