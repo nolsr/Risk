@@ -219,6 +219,19 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
     @Override
     public void handleGameEvent(GameEvent event) throws RemoteException {
         if (event instanceof GameActionEvent) {
+            if (((GameActionEvent) event).getType() == GameActionEvent.GameControlEventType.DEFEND) {
+                System.out.println("Event player "+ event.getPlayer().getUsername());
+                System.out.println("Current player " + player.getUsername());
+                if (event.getPlayer().getUsername().equals(player.getUsername())) {
+                    System.out.println("You're under attack, defend!");
+                    JOptionPane.showMessageDialog(null, "I'm " + event.getPlayer().getUsername() + " and i'm under attack!");
+                    int dice = Integer.parseInt(JOptionPane.showInputDialog("With how many dices would you like to defend?"));
+                    riskServer.setDefendingDice(dice);
+                }
+
+            } else if (((GameActionEvent) event).getType() == GameActionEvent.GameControlEventType.ATTACK) {
+                JOptionPane.showMessageDialog(null, event.getPlayer().getUsername() + " is attacking!");
+            }
             System.out.println("Something happened, update GUI");
             inGame.updateGUI();
         } else if (event instanceof GameControlEvent) {
@@ -234,7 +247,11 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
                 inGame.updateTurn(((GameControlEvent) event).getTurn());
             }
         } else if (event instanceof GameLobbyEvent) {
-            System.out.println("Something happened, update model");
+            if (((GameLobbyEvent) event).getType() == GameLobbyEvent.GameLobbyEventType.PLAYER_ENTERED) {
+                riskLobby.updateLobbyLog(event.getPlayer().getUsername() +" joined the lobby\n");
+            } else {
+                riskLobby.updateLobbyLog(event.getPlayer().getUsername() +" left the lobby\n");
+            }
             riskLobby.updatePlayerList(riskServer.updatePlayerModel());
         }
     }
