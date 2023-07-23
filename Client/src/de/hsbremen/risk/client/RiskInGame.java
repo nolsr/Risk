@@ -150,10 +150,11 @@ public class RiskInGame extends JPanel {
                                 "How many armies do you want to attack with?"));
                         this.attack.setAmount(amountOfUnits);
                         if (this.riskServer.isAttackLegal(this.attack)) {
+                            riskServer.removeAttackingForcesFromOriginCountry();
 
-                            this.riskServer.removeAttackingForcesFromOriginCountry();
-                            this.openLiberationCycle();
-                            this.attack.reset();
+                            attackThread.start();
+
+
                         }
                         this.updateGUI();
                     } catch (NumberFormatException e) {
@@ -187,33 +188,53 @@ public class RiskInGame extends JPanel {
         }
     }
 
-    private void openLiberationCycle() throws RemoteException {
-        AttackResult result;
-     //   do {
+    Thread attackThread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+
+            try {
+                openLiberationCycle();
+                attack.reset();
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    });
+
+    private void openLiberationCycle() throws RemoteException, InterruptedException {
+        synchronized (this) {
+            AttackResult result;
+            //   do {
             Country attackingCountry = this.riskServer.getCountry(this.riskServer.getCurrentAttack().getOriginCountry());
             Country defendingCountry = this.riskServer.getCountry(this.riskServer.getCurrentAttack().getTargetCountry());
             int attackingDice = this.riskServer.getCurrentAttack().getAmount();
             attackingDice = Math.min(attackingDice, 3);
             //int defendingDice = 0;
             riskServer.notifyDefending();
-        // Start a new thread here and wait for defending dice input to be done, afterwards it should proceed
+            // Start a new thread here and wait for defending dice input to be done, afterwards it should proceed
+
             int defendingDice = riskServer.getDefendingDice();
+            // Waits but doesn't get Notified!
+            this.wait();
+            System.out.println("Continuing attack thread");
+            System.out.println("Defending dice: " + defendingDice);
 
-        System.out.println("Defending dice: " + defendingDice);
 
-         //   while (defendingDice < 1 || defendingDice > 2 || defendingDice > defendingCountry.getArmies()) {
-           //     if (player.getUsername().equals(defendingCountry.getOccupiedBy())) {
-             //       try {
-               //         defendingDice = Integer.parseInt(JOptionPane.showInputDialog(
-                 //               null,
-                   //             defendingCountry.getOccupiedBy() + " is defending. " +
-                     //                   attackingCountry.getOccupiedBy() + " is attacking with " +
-                       //                 attackingDice + " dice. How many dice do you want to defend with?"));
-           //         } catch (NumberFormatException e) {
-             //           JOptionPane.showMessageDialog(null, "Invalid input for amount of armies");
-               //     }
-         //       }
-      //      }
+            //   while (defendingDice < 1 || defendingDice > 2 || defendingDice > defendingCountry.getArmies()) {
+            //     if (player.getUsername().equals(defendingCountry.getOccupiedBy())) {
+            //       try {
+            //         defendingDice = Integer.parseInt(JOptionPane.showInputDialog(
+            //               null,
+            //             defendingCountry.getOccupiedBy() + " is defending. " +
+            //                   attackingCountry.getOccupiedBy() + " is attacking with " +
+            //                 attackingDice + " dice. How many dice do you want to defend with?"));
+            //         } catch (NumberFormatException e) {
+            //           JOptionPane.showMessageDialog(null, "Invalid input for amount of armies");
+            //     }
+            //       }
+            //      }
 
             result = this.riskServer.attack(attackingDice, defendingDice);
             if (!result.hasAttackerWon()) {
@@ -238,6 +259,7 @@ public class RiskInGame extends JPanel {
         }
 
       */
+        }
     }
 
     private void onClickNextPhase() {
