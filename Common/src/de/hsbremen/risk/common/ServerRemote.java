@@ -55,11 +55,5 @@ public interface ServerRemote extends Remote {
 
     ArrayList<Country> getCountries() throws RemoteException;
 
-    void notifyDefending() throws RemoteException;
-
-    void setDefendingDice(int dice) throws RemoteException;
-
     int getDefendingDice() throws RemoteException;
-
-    //int getDefendingCountryDice() throws RemoteException;
 }

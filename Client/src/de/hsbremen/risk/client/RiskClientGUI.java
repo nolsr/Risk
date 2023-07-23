@@ -55,7 +55,7 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
         window.setBackground(new Color(18, 20, 24));
         window.setVisible(true);
 //        window.setSize(1600, 900);
-        window.setSize(600, 400);
+        window.setSize(960, 540);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setLayout(new BorderLayout());
         setView();
@@ -216,44 +216,18 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
         return this;
     }
 
-    Thread defendingThread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            try {
-                System.out.println("Defending Thread running...");
-                defending();
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    });
-
-    private void defending() throws RemoteException {
-        synchronized (inGame) {
-            System.out.println("You're under attack, defend!");
-            //JOptionPane.showMessageDialog(null, "I'm " + event.getPlayer().getUsername() + " and i'm under attack!");
-            int dice = Integer.parseInt(JOptionPane.showInputDialog("With how many dices would you like to defend?"));
-            riskServer.setDefendingDice(dice);
-            // Notify but it doesn't reach Attack
-            inGame.notify();
-        }
-    }
-
     @Override
     public void handleGameEvent(GameEvent event) throws RemoteException {
         if (event instanceof GameActionEvent) {
-            if (((GameActionEvent) event).getType() == GameActionEvent.GameControlEventType.DEFEND) {
-                System.out.println("Event player "+ event.getPlayer().getUsername());
-                System.out.println("Current player " + player.getUsername());
-                if (event.getPlayer().getUsername().equals(player.getUsername())) {
-                  defendingThread.start();
-                }
-
-            } else if (((GameActionEvent) event).getType() == GameActionEvent.GameControlEventType.ATTACK) {
-                JOptionPane.showMessageDialog(null, event.getPlayer().getUsername() + " is attacking!");
+            switch(((GameActionEvent) event).getType()) {
+                case DEFEND -> {}
+                case ATTACK -> {}
+                case DISTRIBUTE -> {}
             }
-            System.out.println("Something happened, update GUI");
-            inGame.updateGUI();
+            if (event.getPlayer().getUsername().equals(this.getPlayer().getUsername())) {
+                inGame.updatePlayer(event.getPlayer());
+            }
+            inGame.updateGUI((GameActionEvent) event);
         } else if (event instanceof GameControlEvent) {
             if (((GameControlEvent) event).getType() == GameControlEvent.GameControlEventType.GAME_STARTED) {
                 inGame = new RiskInGame(this.riskServer, this.riskServer.getPlayerList(),

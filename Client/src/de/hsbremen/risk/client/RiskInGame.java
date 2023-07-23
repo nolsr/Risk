@@ -21,7 +21,7 @@ public class RiskInGame extends JPanel {
     private final InGameControlPanel controlPanel;
     private final InGameInfoPanel infoPanel;
     private boolean listenToCountryClicked;
-    private final Player player;
+    private Player player;
     private Turn currentTurn;
     private de.hsbremen.risk.client.ShowCardsFrame showCardsFrame;
 
@@ -68,11 +68,7 @@ public class RiskInGame extends JPanel {
         this.controlPanel.getBtnCardStack().addActionListener(e -> {
             JFrame frame = new JFrame();
             frame.setSize(1500, 600);
-            try {
-                this.showCardsFrame = new ShowCardsFrame(riskServer.getCurrentTurn().getPlayer(), riskServer, true);
-            } catch (RemoteException ex) {
-                throw new RuntimeException(ex);
-            }
+            this.showCardsFrame = new ShowCardsFrame(this.currentTurn.getPlayer(), riskServer, true);
             frame.add(showCardsFrame);
             frame.setVisible(true);
 
@@ -152,11 +148,7 @@ public class RiskInGame extends JPanel {
                         if (this.riskServer.isAttackLegal(this.attack)) {
                             riskServer.removeAttackingForcesFromOriginCountry();
 
-                            attackThread.start();
-
-
                         }
-                        this.updateGUI();
                     } catch (NumberFormatException e) {
                         JOptionPane.showMessageDialog(null, "Invalid input for amount of armies");
                     } catch (Exception e) {
@@ -177,7 +169,6 @@ public class RiskInGame extends JPanel {
                                 null,
                                 "How many armies do you want to move?"));
                         riskServer.moveForces(this.movement.getOriginCountry(), this.movement.getTargetCountry(), amountOfUnits);
-                        this.updateGUI();
                     } catch (MovementException e) {
                         JOptionPane.showMessageDialog(null, e.getMessage());
                     } catch (NumberFormatException e) {
@@ -188,21 +179,6 @@ public class RiskInGame extends JPanel {
         }
     }
 
-    Thread attackThread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-
-            try {
-                openLiberationCycle();
-                attack.reset();
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    });
-
     private void openLiberationCycle() throws RemoteException, InterruptedException {
         synchronized (this) {
             AttackResult result;
@@ -212,7 +188,6 @@ public class RiskInGame extends JPanel {
             int attackingDice = this.riskServer.getCurrentAttack().getAmount();
             attackingDice = Math.min(attackingDice, 3);
             //int defendingDice = 0;
-            riskServer.notifyDefending();
             // Start a new thread here and wait for defending dice input to be done, afterwards it should proceed
 
             int defendingDice = riskServer.getDefendingDice();
@@ -273,23 +248,27 @@ public class RiskInGame extends JPanel {
         }
     }
 
-    public void updateGUI() throws RemoteException {
-        this.map.updateCountryInfo(this.riskServer.getPlayerList(), this.riskServer.getCountries());
-        this.currentTurnPanel.updateTurnDisplay(this.currentTurn);
+    public void updateGUI(GameActionEvent event) throws RemoteException {
+        this.updateTurn(this.currentTurn);
+        this.map.updateCountryInfo(event.getPlayers(), event.getCountries());
         this.controlPanel.setNewPhaseContent(this.riskServer.getCurrentTurn());
-        // this.controlPanel.setNewPhaseContent(this.currentTurn);
         this.redrawMap();
     }
 
     public void updateTurn(Turn turn) throws RemoteException {
         this.currentTurn = turn;
-        this.updateGUI();
+        this.currentTurnPanel.updateTurnDisplay(this.currentTurn);
+        this.controlPanel.setNewPhaseContent(this.currentTurn);
 
         if (turn.getPlayer().getUsername().equals(this.player.getUsername())) {
             this.controlPanel.enableControls();
         } else {
             this.controlPanel.disableControls();
         }
+    }
+
+    public void updatePlayer(Player player) {
+        this.player = player;
     }
 
     public void redrawMap() {
