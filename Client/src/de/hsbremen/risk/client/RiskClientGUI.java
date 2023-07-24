@@ -158,7 +158,6 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
                 } else {
                     JOptionPane.showMessageDialog(window, "Couldn't find the file " + file + ".json");
                 }
-
             } catch (IOException ex) {
                ex.printStackTrace();
             } catch (LoadGameWrongPlayerException ex) {
