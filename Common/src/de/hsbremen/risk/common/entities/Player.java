@@ -79,11 +79,11 @@ public class Player implements Serializable {
      * @param card the card that needs to be inserted into the players hand
      */
     public void insertCardToHand(Card card) throws NotEntitledToDrawCardException {
-      //  if (entitledToDraw) {
+        if (entitledToDraw) {
             cards.add(card);
-      //  } else {
-          //  throw new NotEntitledToDrawCardException();
-        //}
+        } else {
+            throw new NotEntitledToDrawCardException();
+        }
     }
 
 
