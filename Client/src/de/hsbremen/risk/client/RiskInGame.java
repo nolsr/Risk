@@ -21,7 +21,7 @@ public class RiskInGame extends JPanel {
     private boolean listenToCountryClicked;
     private Player player;
     private Turn currentTurn;
-    private de.hsbremen.risk.client.ShowCardsFrame showCardsFrame;
+    private ShowCardsFrame showCardsFrame;
 
     private final Attack attack;
     private Movement movement;
@@ -60,7 +60,6 @@ public class RiskInGame extends JPanel {
             if (listenToCountryClicked) {
                 this.listenToCountryClicked = false;
                 this.selectCountry(countryId);
-                System.out.println("Ich printe");
                 for (Card card : player.getCards()) {
                     System.out.println("Player cards: " + card.getId());
                 }
@@ -68,18 +67,18 @@ public class RiskInGame extends JPanel {
         });
 
         this.controlPanel.getBtnCardStack().addActionListener(e -> {
+            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             JFrame frame = new JFrame(this.player.getUsername() + "'s Card Stack");
-            frame.setSize(1500, 600);
+            frame.setBounds(topFrame.getX() + 50, topFrame.getY() + 50,1500, 600);
             this.showCardsFrame = new ShowCardsFrame(this.player, riskServer, true);
             frame.add(showCardsFrame);
             frame.setVisible(true);
-
         });
 
         this.controlPanel.getBtnTradeCards().addActionListener(e -> {
+            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             JFrame frame = new JFrame(this.player.getUsername() + "'s Card Stack");
-            frame.setSize(1500, 600);
-
+            frame.setBounds(topFrame.getX() + 50, topFrame.getY() + 50,1500, 600);
             JOptionPane.showMessageDialog(this, "Choose 3 cards you want to trade");
             this.showCardsFrame = new ShowCardsFrame(this.player, riskServer, false);
             frame.add(showCardsFrame);

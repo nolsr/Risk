@@ -15,7 +15,6 @@ public class GameActionEvent extends GameEvent {
     public enum GameActionEventType {ATTACK, ATTACK_RESULT, MOVE, DRAW, DISTRIBUTE, TRADE}
 
     private Attack attack;
-    private int cardID;
     private AttackResult result;
     private final GameActionEventType type;
     private final ArrayList<Player> players;
@@ -39,15 +38,6 @@ public class GameActionEvent extends GameEvent {
         this.players = players;
         this.countries = countries;
         this.attack = attack;
-    }
-
-    public GameActionEvent(Player player, GameActionEventType type, int cardID, ArrayList<Player> players, ArrayList<Country> countries) {
-        super(player);
-
-        this.type = type;
-        this.cardID = cardID;
-        this.players = players;
-        this.countries = countries;
     }
 
 
@@ -81,9 +71,5 @@ public class GameActionEvent extends GameEvent {
 
     public AttackResult getAttackResult() {
         return result;
-    }
-
-    public int getCardID() {
-        return cardID;
     }
 }

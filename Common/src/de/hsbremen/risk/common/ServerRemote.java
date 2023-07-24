@@ -54,7 +54,4 @@ public interface ServerRemote extends Remote {
     DefaultListModel<String> updatePlayerModel() throws RemoteException;
 
     Player getPlayer(String username) throws RemoteException;
-
-    void playerInsertCardToHand(int cardID) throws NotEntitledToDrawCardException, RemoteException;
-    void playerDrawsCardVTwo() throws RemoteException, NotEntitledToDrawCardException;
 }

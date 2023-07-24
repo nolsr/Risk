@@ -232,9 +232,7 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
                 case DRAW -> {
                     if (e.getPlayer().getUsername().equals(player.getUsername())) {
                         inGame.updatePlayer(e.getPlayer());
-                       // riskServer.playerDrawsCard();
-                    //    riskServer.playerInsertCardToHand(e.getCardID());
-                        System.out.println("CardID on client side: " + e.getCardID());
+                        System.out.println("CardID on client side: " + e.getPlayer().getCards().get(0).getId());
                         JOptionPane.showMessageDialog(window, "You drew a card");
                     }
                 }
