@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import javax.swing.*;
 import java.io.IOException;
 import java.rmi.ConnectException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -47,7 +48,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         worldManager = new WorldManager();
         cardManager = new CardManager();
         listeners = new Vector<>();
-       // allPlayers = new Vector<>();
+        // allPlayers = new Vector<>();
     }
 
 
@@ -58,21 +59,16 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
     public ArrayList<Player> getWinner() {
         int mostCountriesOccupied = 0;
         ArrayList<Player> leadingPlayer = null;
-        if(isMissionCompleted(this.currentTurn.getPlayer()))
-        {
+        if (isMissionCompleted(this.currentTurn.getPlayer())) {
             leadingPlayer.add(this.currentTurn.getPlayer());
             return leadingPlayer;
         }
-        for (Player player: getPlayerList())
-        {
-            if(worldManager.getAmountOfCountriesOwnedBy(player.getUsername()) > mostCountriesOccupied)
-            {
+        for (Player player : getPlayerList()) {
+            if (worldManager.getAmountOfCountriesOwnedBy(player.getUsername()) > mostCountriesOccupied) {
                 mostCountriesOccupied = worldManager.getAmountOfCountriesOwnedBy(player.getUsername());
                 leadingPlayer = null;
                 leadingPlayer.add(player);
-            }
-            else if(worldManager.getAmountOfCountriesOwnedBy(player.getUsername()) == mostCountriesOccupied)
-            {
+            } else if (worldManager.getAmountOfCountriesOwnedBy(player.getUsername()) == mostCountriesOccupied) {
                 leadingPlayer.add(player);
             }
         }
@@ -91,7 +87,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
             this.currentTurn = new Turn(getNextPlayer());
             getReinforcementUnits(this.currentTurn.getPlayer());
             worldManager.resetUnitsMoved();
-            notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.NEXT_PHASE));
+            notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.NEXT_PHASE, getCountries()));
             return;
         }
         this.currentTurn.nextPhase();
@@ -99,7 +95,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
             this.currentTurn.setGameEnded();
         }
 
-        notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.NEXT_PHASE));
+        notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.NEXT_PHASE, getCountries()));
     }
 
     public ArrayList<Integer> getNeighbourCountries(int countryId) {
@@ -107,8 +103,8 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
     }
 
     public void startGame() throws RemoteException, NotEnoughPlayersException {
-        if (playerManager.getPlayerList().size() < 3) {
-            throw( new NotEnoughPlayersException());
+        if (!this.isLegalPlayerCount()) {
+            throw (new NotEnoughPlayersException());
         }
         playerManager.shufflePlayerList();
         worldManager.assignCountriesToPlayers(getPlayerList());
@@ -123,7 +119,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
                 checkIfPlayerOwnsContinentAndSet(continent.getName(), player.getUsername());
             }
         getReinforcementUnits(firstTurnPlayer);
-        this.notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.GAME_STARTED));
+        this.notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.GAME_STARTED, getCountries()));
     }
 
     public boolean loadGame(String file) throws IOException {
@@ -165,8 +161,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
             } else if (player.getRandomNumber() > 0.5) {
                 if (newGame) {
                     mission = new OccupyTwoContinentsMission(worldManager.getContinentList(), newGame);
-                }
-                else {
+                } else {
                     try {
                         mission = new OccupyTwoContinentsMission(filePersistenceManager.retrieveContinentMission(loadFile(file), player, worldManager.getContinentList()), newGame);
                     } catch (IOException e) {
@@ -202,8 +197,8 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         }
         return firstTurnPlayer;
     }
-    public int getAmountOfCountriesOwnedBy(Player player)
-    {
+
+    public int getAmountOfCountriesOwnedBy(Player player) {
         return worldManager.getAmountOfCountriesOwnedBy(player.getUsername());
     }
 
@@ -216,7 +211,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         return worldManager.getCountry(countryId);
     }
 
-    public ArrayList<Country> getCountries() throws RemoteException {
+    public ArrayList<Country> getCountries() {
         return worldManager.getCountries();
     }
 
@@ -225,17 +220,13 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         notifyListeners(new GameLobbyEvent(player, PLAYER_LEFT));
     }
 
-    public void removeAllPlayers() {
-        playerManager.removeAllPlayers();
-    }
-
     public ArrayList<Player> getPlayerList() {
         return playerManager.getPlayerList();
     }
 
-     public Player getNextPlayer() {
+    public Player getNextPlayer() {
         return playerManager.getNextPlayer(currentTurn.getPlayer());
-     }
+    }
 
     public boolean isLegalPlayerCount() {
         return playerManager.getPlayerList().size() >= 2 && playerManager.getPlayerList().size() <= 6;
@@ -243,35 +234,35 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
 
     public void moveForces(int originCountryId, int targetCountryId, int amount) throws MovementException, RemoteException {
         worldManager.moveForces(originCountryId, targetCountryId, amount, currentTurn.getPlayer());
-        notifyListeners(new GameActionEvent(currentTurn.getPlayer(), GameActionEvent.GameControlEventType.MOVE));
+        notifyListeners(
+                new GameActionEvent(currentTurn.getPlayer(),
+                        GameActionEvent.GameActionEventType.MOVE,
+                        getPlayerList(),
+                        getCountries()));
     }
 
     public boolean isMissionCompleted(Player player) {
         return player.hasCompletedMission(worldManager.getCountries(), playerManager.getPlayerList());
     }
 
-    public boolean isNeighbour(int liberatingCountryId, int defendingCountryId)
-    {
-        for (int neighbourCountryId : getNeighbourCountries(liberatingCountryId))
-        {
-            if(neighbourCountryId == defendingCountryId)
-            {
+    public boolean isNeighbour(int liberatingCountryId, int defendingCountryId) {
+        for (int neighbourCountryId : getNeighbourCountries(liberatingCountryId)) {
+            if (neighbourCountryId == defendingCountryId) {
                 return true;
             }
         }
         return false;
     }
 
-    public Attack getCurrentAttack()
-    {
+    public Attack getCurrentAttack() {
         return this.attack;
     }
-    public boolean isPlayerOccupantOfGivenCountry(Player player, int countryId)
-    {
+
+    public boolean isPlayerOccupantOfGivenCountry(Player player, int countryId) {
         return worldManager.isPlayerOccupantOfGivenCountry(player, countryId);
     }
 
-    public boolean isAttackLegal(Attack attack) throws DoNotOccupyCountryException, OccupyTargetCountry, NoArmiesLeftException {
+    public void startAttack(Attack attack) throws DoNotOccupyCountryException, OccupyTargetCountry, NoArmiesLeftException, RemoteException {
         if (!getCountry(attack.getOriginCountry()).getOccupiedBy().equals(this.currentTurn.getPlayer().getUsername())) {
             throw new DoNotOccupyCountryException(getCountry(attack.getOriginCountry()));
         }
@@ -281,26 +272,43 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         if (attack.getAmount() > getCountry(attack.getOriginCountry()).getArmies() - 1) {
             throw new NoArmiesLeftException(getCountry(attack.getOriginCountry()), getCountry(attack.getTargetCountry()));
         }
+        attack.setDefendingPlayer(playerManager.getPlayer(getCountries().get(attack.getTargetCountry()).getOccupiedBy()));
         this.attack = attack;
-        return true;
+        this.removeAttackingForcesFromOriginCountry();
+        notifyListeners(new GameActionEvent(
+                this.currentTurn.getPlayer(),
+                GameActionEvent.GameActionEventType.ATTACK,
+                getPlayerList(),
+                getCountries(),
+                attack));
+    }
+
+    public void defendAttack(int defendingDice) throws RemoteException, NotEnoughArmiesException, IllegalDefendingDiceException {
+        if (defendingDice > getCountry(this.attack.getTargetCountry()).getArmies()) {
+            throw new NotEnoughArmiesException();
+        } else if (defendingDice < 1 || defendingDice > 2) {
+            throw new IllegalDefendingDiceException();
+        }
+        openLiberationCycle(defendingDice);
+    }
+
+    public void openLiberationCycle(int defendingDice) throws RemoteException {
+        AttackResult result;
+        int attackingDice = this.attack.getAmount();
+        attackingDice = Math.min(attackingDice, 3);
+        result = attack(attackingDice, defendingDice);
+        notifyListeners(new GameActionEvent(
+                this.currentTurn.getPlayer(),
+                GameActionEvent.GameActionEventType.ATTACK_RESULT,
+                getPlayerList(),
+                getCountries(),
+                this.attack,
+                result
+        ));
     }
 
     public void removeAttackingForcesFromOriginCountry() throws RemoteException {
         this.getCountry(this.attack.getOriginCountry()).decreaseArmy(this.attack.getAmount());
-        this.notifyListeners(new GameActionEvent(getPlayer(getCountry(this.attack.getOriginCountry()).getOccupiedBy()), GameActionEvent.GameControlEventType.ATTACK));
-    }
-
-    public void notifyDefending() throws RemoteException {
-        this.notifyListeners(new GameActionEvent(getPlayer(getCountry(this.attack.getTargetCountry()).getOccupiedBy()), GameActionEvent.GameControlEventType.DEFEND));
-        System.out.println(getPlayer(getCountry(this.attack.getTargetCountry()).getOccupiedBy()).getUsername() + " is defending");
-    }
-
-    public void setDefendingDice(int diceAmount) throws RemoteException{
-        this.defendingDice = diceAmount;
-    }
-
-    public int getDefendingDice() throws RemoteException{
-        return this.defendingDice;
     }
 
     public AttackResult attack(int attackingDiceCount, int defendingDiceCount) {
@@ -308,7 +316,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
 
         // Setting lost armies
         if (result.getWinningDefendingDice() == defendingDiceCount) {
-            this.attack.setAmount(0);
+            this.attack.setAmount(this.attack.getAmount() - attackingDiceCount);
         } else {
             this.getCountry(this.attack.getTargetCountry()).decreaseArmy(result.getWinningAttackingDice());
             this.attack.setAmount(this.attack.getAmount() - result.getWinningDefendingDice());
@@ -347,34 +355,32 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
             throw new NotEnoughArmiesException();
         }
         worldManager.distributeArmy(this.currentTurn.getPlayer(), countryId, amount);
-        System.out.println("Country: " + getCountry(countryId).getName() + " amount: " + getCountry(countryId).getArmies());
-        this.notifyListeners(new GameActionEvent(this.currentTurn.getPlayer(), GameActionEvent.GameControlEventType.DISTRIBUTE));
+        this.notifyListeners(new GameActionEvent(this.currentTurn.getPlayer(),
+                GameActionEvent.GameActionEventType.DISTRIBUTE,
+                getPlayerList(),
+                getCountries()));
     }
 
     public void saveGame(String file) throws IOException {
         filePersistenceManager.writeGameIntoFile(getPlayerList(), worldManager.getContinentList(), getCurrentTurn(), cardManager.getCardList(), cardManager, file);
     }
 
-    public boolean playerHasPeaceCard(Player player)
-    {
-        for (Card card: player.getCards()) {
-            if(card.getKind().equals("Peace-Card"))
-            {
+    public boolean playerHasPeaceCard(Player player) {
+        for (Card card : player.getCards()) {
+            if (card.getKind().equals("Peace-Card")) {
                 return true;
             }
         }
         return false;
     }
 
-    public void playerDrawsCard(Player drawingPlayer)
-    {
+    public void playerDrawsCard(Player drawingPlayer) {
         drawingPlayer.insertCardToHand(cardManager.drawCard());
     }
 
     public void tradeCards(int[] cardIds) throws InvalidCardCombinationException {
         int extraUnits = cardManager.tradeCards(cardIds);
-        if(extraUnits == 0)
-        {
+        if (extraUnits == 0) {
             throw new InvalidCardCombinationException(this.currentTurn.getPlayer());
         }
         Card card1 = cardManager.getCardById(cardIds[0]);
@@ -392,22 +398,12 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         return playerManager.updatePlayerModel();
     }
 
-    public DefaultListModel<String> removePlayerFromModel(String name) {
-        return playerManager.removePlayerFromModel(name);
-    }
-
-    public DefaultListModel<String> getModel() {
-        return playerManager.getModel();
-    }
-
     public Player getPlayer(String username) {
-       return playerManager.getPlayer(username);
+        return playerManager.getPlayer(username);
     }
 
     private void notifyListeners(GameEvent event) throws RemoteException {
         for (GameEventListener listener : listeners) {
-            // notify every listener in a dedicated thread
-            // (a notification should not block another one).
             Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {

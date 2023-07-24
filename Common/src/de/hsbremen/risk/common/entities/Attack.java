@@ -7,12 +7,15 @@ public class Attack implements Serializable {
     @Serial
     private static final long serialVersionUID = 8659647285194270403L;
 
+    private Player attackingPlayer;
+    private Player defendingPlayer;
     private int originCountry;
     private int targetCountry;
     private int amount;
     private boolean isRematch;
 
-    public Attack() {
+    public Attack(Player attackingPlayer) {
+        this.attackingPlayer = attackingPlayer;
         this.originCountry = -1;
         this.targetCountry = -1;
         this.amount = -1;
@@ -52,5 +55,17 @@ public class Attack implements Serializable {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public Player getDefendingPlayer() {
+        return defendingPlayer;
+    }
+
+    public void setDefendingPlayer(Player defendingPlayer) {
+        this.defendingPlayer = defendingPlayer;
+    }
+
+    public Player getAttackingPlayer() {
+        return attackingPlayer;
     }
 }

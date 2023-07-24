@@ -43,7 +43,7 @@ public class AttackResult implements Serializable {
         for (int i = 0; i < minSize; i++) {
             if (attackingRolls.get(i) > defendingRolls.get(i)) {
                 winningAttackingDice++;
-            } else if (attackingRolls.get(i) < defendingRolls.get(i)) {
+            } else if (attackingRolls.get(i) <= defendingRolls.get(i)) {
                 winningDefendingDice++;
             }
         }

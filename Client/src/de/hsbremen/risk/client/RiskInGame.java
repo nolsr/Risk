@@ -21,14 +21,14 @@ public class RiskInGame extends JPanel {
     private final InGameControlPanel controlPanel;
     private final InGameInfoPanel infoPanel;
     private boolean listenToCountryClicked;
-    private final Player player;
+    private Player player;
     private Turn currentTurn;
     private de.hsbremen.risk.client.ShowCardsFrame showCardsFrame;
 
-    private Attack attack;
+    private final Attack attack;
     private Movement movement;
 
-    public RiskInGame(ServerRemote riskServer, ArrayList<Player> players, ArrayList<Country> countries, Player player, Turn turn) throws RemoteException {
+    public RiskInGame(ServerRemote riskServer, ArrayList<Player> players, ArrayList<Country> countries, Player player, Turn turn) {
         this.riskServer = riskServer;
         this.player = player;
         this.map = new RiskMap(players, countries);
@@ -38,7 +38,7 @@ public class RiskInGame extends JPanel {
         updateTurn(turn);
         this.listenToCountryClicked = false;
         this.movement = new Movement();
-        this.attack = new Attack();
+        this.attack = new Attack(player);
         JPanel centerPanel = new JPanel();
         centerPanel.setOpaque(false);
         centerPanel.setLayout(new BorderLayout());
@@ -68,11 +68,7 @@ public class RiskInGame extends JPanel {
         this.controlPanel.getBtnCardStack().addActionListener(e -> {
             JFrame frame = new JFrame();
             frame.setSize(1500, 600);
-            try {
-                this.showCardsFrame = new ShowCardsFrame(riskServer.getCurrentTurn().getPlayer(), riskServer, true);
-            } catch (RemoteException ex) {
-                throw new RuntimeException(ex);
-            }
+            this.showCardsFrame = new ShowCardsFrame(this.currentTurn.getPlayer(), riskServer, true);
             frame.add(showCardsFrame);
             frame.setVisible(true);
 
@@ -93,17 +89,17 @@ public class RiskInGame extends JPanel {
             this.listenToCountryClicked = true;
             try {
                 switch (riskServer.getCurrentTurn().getPhase()) {
-                    case REINFORCEMENT_PHASE -> JOptionPane.showMessageDialog(null,
+                    case REINFORCEMENT_PHASE -> JOptionPane.showMessageDialog(this,
                             "Please select a country to place units in.");
 
-                case LIBERATION_PHASE -> {
-                    this.attack.reset();
-                    JOptionPane.showMessageDialog(null,
-                            "Please select an origin country for your attack.");
-                }
+                    case LIBERATION_PHASE -> {
+                        this.attack.reset();
+                        JOptionPane.showMessageDialog(this,
+                                "Please select an origin country for your attack.");
+                    }
                     case MOVEMENT_PHASE -> {
                         this.movement.reset();
-                        JOptionPane.showMessageDialog(null,
+                        JOptionPane.showMessageDialog(this,
                                 "Please select an origin country for your movement.");
                     }
 //                case DRAWING_PHASE -> {
@@ -122,143 +118,136 @@ public class RiskInGame extends JPanel {
         });
     }
 
+    public void handleAttackResultEvent(GameActionEvent e) {
+        AttackResult result = e.getAttackResult();
+        Attack attack = e.getAttack();
+
+        if (attack.getAttackingPlayer().getUsername().equals(this.player.getUsername())) {
+            if (result.hasBeenResolved()) {
+                if (result.hasAttackerWon()) {
+                    JOptionPane.showMessageDialog(this, "You successfully liberated "
+                            + e.getCountries().get(attack.getTargetCountry()).getName() + "!\n"
+                            + "You rolled: " + result.getAttackingRolls().toString() + "\n"
+                            + attack.getDefendingPlayer().getUsername() + " rolled: "
+                            + result.getDefendingRolls().toString());
+                } else {
+                    JOptionPane.showMessageDialog(this, attack.getDefendingPlayer().getUsername() +
+                            " successfully defended " + e.getCountries().get(attack.getTargetCountry()).getName() + "!\n"
+                            + "You rolled: " + result.getAttackingRolls().toString() + "\n"
+                            + attack.getDefendingPlayer().getUsername() + " rolled: "
+                            + result.getDefendingRolls().toString());
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "The battle over "
+                        + e.getCountries().get(attack.getTargetCountry()).getName() + " continues!\n"
+                        + "You rolled: " + result.getAttackingRolls().toString() + "\n"
+                        + attack.getDefendingPlayer().getUsername() + " rolled: "
+                        + result.getDefendingRolls().toString() + "\n"
+                        + "The attack continues...");
+            }
+        } else if (attack.getDefendingPlayer().getUsername().equals(this.player.getUsername())) {
+            if (result.hasBeenResolved()) {
+                if (result.hasAttackerWon()) {
+                    JOptionPane.showMessageDialog(this, "Your country "
+                            + e.getCountries().get(attack.getTargetCountry()).getName()
+                            + " has been liberated!\n"
+                            + "You rolled: " + result.getDefendingRolls().toString() + "\n"
+                            + attack.getAttackingPlayer().getUsername() + " rolled: "
+                            + result.getAttackingRolls().toString());
+                } else {
+                    JOptionPane.showMessageDialog(this, "You successfully defended "
+                            + e.getCountries().get(attack.getTargetCountry()).getName() + "!\n"
+                            + "You rolled: " + result.getDefendingRolls().toString() + "\n"
+                            + attack.getAttackingPlayer().getUsername() + " rolled: "
+                            + result.getAttackingRolls().toString());
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "The battle over "
+                        + e.getCountries().get(attack.getTargetCountry()).getName() + " continues!\n"
+                        + "You rolled: " + result.getDefendingRolls().toString() + "\n"
+                        + attack.getAttackingPlayer().getUsername() + " rolled: "
+                        + result.getAttackingRolls().toString());
+                getDefendingDice(e);
+            }
+        }
+    }
+
     private void selectCountry(int countryId) throws RemoteException {
         switch (riskServer.getCurrentTurn().getPhase()) {
             case REINFORCEMENT_PHASE -> {
                 try {
                     int amountOfUnits = Integer.parseInt(JOptionPane.showInputDialog(
-                            null,
+                            this,
                             "How many units do you want to place?"));
                     riskServer.distributeArmy(countryId, amountOfUnits);
                 } catch (NotEnoughArmiesException | DoNotOccupyCountryException | RemoteException e) {
-                    JOptionPane.showMessageDialog(null, e.getMessage());
+                    JOptionPane.showMessageDialog(this, e.getMessage());
                 } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(null, "Invalid input for amount of armies");
+                    JOptionPane.showMessageDialog(this, "Invalid input for amount of armies");
                 }
             }
             case LIBERATION_PHASE -> {
-                if (!this.attack.hasOriginCountry()) {
+                if (!this.attack.hasOriginCountry()) {          // Wenn noch kein Urpsrungsland dann setze Urpsrungsland
                     this.attack.setOriginCountry(countryId);
-                    JOptionPane.showMessageDialog(null,
+                    JOptionPane.showMessageDialog(this,
                             "Please select a target country for your attack.");
                     this.listenToCountryClicked = true;
-                } else {
+                } else {                                        // Wenn Urpsrungsland dann setze Zielland
                     this.attack.setTargetCountry(countryId);
                     try {
                         int amountOfUnits = Integer.parseInt(JOptionPane.showInputDialog(
-                                null,
+                                this,
                                 "How many armies do you want to attack with?"));
                         this.attack.setAmount(amountOfUnits);
-                        if (this.riskServer.isAttackLegal(this.attack)) {
-                            riskServer.removeAttackingForcesFromOriginCountry();
-
-                            attackThread.start();
-
-
-                        }
-                        this.updateGUI();
+                        this.riskServer.startAttack(this.attack); // Angriff starten und Verteidiger benachrichtigen
                     } catch (NumberFormatException e) {
-                        JOptionPane.showMessageDialog(null, "Invalid input for amount of armies");
+                        JOptionPane.showMessageDialog(this, "Invalid input for amount of armies");
                     } catch (Exception e) {
-                        JOptionPane.showMessageDialog(null, e.getMessage());
+                        JOptionPane.showMessageDialog(this, e.getMessage());
                     }
                 }
             }
             case MOVEMENT_PHASE -> {
                 if (!this.movement.hasOriginCountry()) {
                     this.movement.setOriginCountry(countryId);
-                    JOptionPane.showMessageDialog(null,
+                    JOptionPane.showMessageDialog(this,
                             "Please select a target country for your movement.");
                     this.listenToCountryClicked = true;
                 } else {
                     this.movement.setTargetCountry(countryId);
                     try {
                         int amountOfUnits = Integer.parseInt(JOptionPane.showInputDialog(
-                                null,
+                                this,
                                 "How many armies do you want to move?"));
                         riskServer.moveForces(this.movement.getOriginCountry(), this.movement.getTargetCountry(), amountOfUnits);
-                        this.updateGUI();
                     } catch (MovementException e) {
-                        JOptionPane.showMessageDialog(null, e.getMessage());
+                        JOptionPane.showMessageDialog(this, e.getMessage());
                     } catch (NumberFormatException e) {
-                        JOptionPane.showMessageDialog(null, "Invalid input for amount of armies");
+                        JOptionPane.showMessageDialog(this, "Invalid input for amount of armies");
                     }
                 }
             }
         }
     }
 
-    Thread attackThread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-
+    public void getDefendingDice(GameActionEvent event) {
+        int amountOfUnits = -1;
+        while (amountOfUnits == -1) {
             try {
-                openLiberationCycle();
-                attack.reset();
+                amountOfUnits = Integer.parseInt(JOptionPane.showInputDialog(
+                        this,
+                        "You country " + event.getCountries().get(event.getAttack().getTargetCountry()).getName() +
+                                " is being attacked with " + Math.max(event.getAttack().getAmount(), 3)
+                                + " dice! How many armies do you want to defend with?"));
+                this.riskServer.defendAttack(amountOfUnits);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Invalid input for amount of armies");
             } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+            } catch (NotEnoughArmiesException | IllegalDefendingDiceException e) {
+                amountOfUnits = -1;
+                JOptionPane.showMessageDialog(this, e.getMessage());
             }
-        }
-    });
-
-    private void openLiberationCycle() throws RemoteException, InterruptedException {
-        synchronized (this) {
-            AttackResult result;
-            //   do {
-            Country attackingCountry = this.riskServer.getCountry(this.riskServer.getCurrentAttack().getOriginCountry());
-            Country defendingCountry = this.riskServer.getCountry(this.riskServer.getCurrentAttack().getTargetCountry());
-            int attackingDice = this.riskServer.getCurrentAttack().getAmount();
-            attackingDice = Math.min(attackingDice, 3);
-            //int defendingDice = 0;
-            riskServer.notifyDefending();
-            // Start a new thread here and wait for defending dice input to be done, afterwards it should proceed
-
-            int defendingDice = riskServer.getDefendingDice();
-            // Waits but doesn't get Notified!
-            this.wait();
-            System.out.println("Continuing attack thread");
-            System.out.println("Defending dice: " + defendingDice);
-
-
-            //   while (defendingDice < 1 || defendingDice > 2 || defendingDice > defendingCountry.getArmies()) {
-            //     if (player.getUsername().equals(defendingCountry.getOccupiedBy())) {
-            //       try {
-            //         defendingDice = Integer.parseInt(JOptionPane.showInputDialog(
-            //               null,
-            //             defendingCountry.getOccupiedBy() + " is defending. " +
-            //                   attackingCountry.getOccupiedBy() + " is attacking with " +
-            //                 attackingDice + " dice. How many dice do you want to defend with?"));
-            //         } catch (NumberFormatException e) {
-            //           JOptionPane.showMessageDialog(null, "Invalid input for amount of armies");
-            //     }
-            //       }
-            //      }
-
-            result = this.riskServer.attack(attackingDice, defendingDice);
-            if (!result.hasAttackerWon()) {
-                JOptionPane.showMessageDialog(null,
-                        "Attacker rolled: " + result.getAttackingRolls().toString() + "\n" +
-                                "Defender rolled: " + result.getDefendingRolls().toString() + "\n\n" +
-                                "Defender won");
-            } else {
-                JOptionPane.showMessageDialog(null,
-                        "Attacker rolled: " + result.getAttackingRolls().toString() + "\n" +
-                                "Defender rolled: " + result.getDefendingRolls().toString() + "\n\n" +
-                                "Attacker won with " + result.getWinningAttackingDice() + " dice\n" +
-                                "Defender won with " + result.getWinningDefendingDice() + " dice\n" +
-                                (!result.hasBeenResolved() ? "The attack continues" : ""));
-            }
-     /*   } while (!result.hasBeenResolved());
-
-        if (result.hasAttackerWon()) {
-            JOptionPane.showMessageDialog(null, "The attack was successful");
-        } else {
-            JOptionPane.showMessageDialog(null, "The country was defended");
-        }
-
-      */
         }
     }
 
@@ -267,23 +256,23 @@ public class RiskInGame extends JPanel {
         try {
             this.riskServer.nextTurn();
         } catch (GameEndedException | UnplacedArmiesException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            JOptionPane.showMessageDialog(this, e.getMessage());
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
 
-    public void updateGUI() throws RemoteException {
-        this.map.updateCountryInfo(this.riskServer.getPlayerList(), this.riskServer.getCountries());
-        this.currentTurnPanel.updateTurnDisplay(this.currentTurn);
+    public void updateGUI(GameActionEvent event) throws RemoteException {
+        this.updateTurn(this.currentTurn);
+        this.map.updateCountryInfo(event.getPlayers(), event.getCountries());
         this.controlPanel.setNewPhaseContent(this.riskServer.getCurrentTurn());
-        // this.controlPanel.setNewPhaseContent(this.currentTurn);
         this.redrawMap();
     }
 
-    public void updateTurn(Turn turn) throws RemoteException {
+    public void updateTurn(Turn turn) {
         this.currentTurn = turn;
-        this.updateGUI();
+        this.currentTurnPanel.updateTurnDisplay(this.currentTurn);
+        this.controlPanel.setNewPhaseContent(this.currentTurn);
 
         if (turn.getPlayer().getUsername().equals(this.player.getUsername())) {
             this.controlPanel.enableControls();
@@ -292,24 +281,15 @@ public class RiskInGame extends JPanel {
         }
     }
 
+    public void updatePlayer(Player player) {
+        this.player = player;
+    }
+
     public void redrawMap() {
         this.map.repaint();
     }
 
     public DarkButton getSaveGameButton() {
         return this.controlPanel.getBtnSave();
-    }
-
-    public void handleGameEvent(GameEvent event) {
-        // Return if event is meant for different game state
-        if (event instanceof GameLobbyEvent) {
-            return;
-        }
-
-        if (event instanceof GameControlEvent) {
-            System.out.println(((GameControlEvent) event).getType());
-        } else if (event instanceof GameActionEvent) {
-            System.out.println(((GameActionEvent) event).getType());
-        }
     }
 }

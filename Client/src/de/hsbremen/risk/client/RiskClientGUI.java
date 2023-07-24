@@ -54,8 +54,7 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
         window.setTitle("Risk");
         window.setBackground(new Color(18, 20, 24));
         window.setVisible(true);
-//        window.setSize(1600, 900);
-        window.setSize(600, 400);
+        window.setSize(1600, 900);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setLayout(new BorderLayout());
         setView();
@@ -77,8 +76,7 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
 
     private void addStartScreenButtonListeners() {
         startScreen.getNewGameButton().addActionListener(listener -> {
-            String name = JOptionPane.showInputDialog("Please enter your username");
-
+            String name = JOptionPane.showInputDialog(window, "Please enter your username");
 
             if (name == null) {
                 return;
@@ -96,7 +94,7 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
                 // Enter lobby
                 if (riskServer.getPlayer(name) == null) {
                     if (name.length() < 3) {
-                        JOptionPane.showMessageDialog(new JFrame(), "Your username cannot have less than 3 letters");
+                        JOptionPane.showMessageDialog(window, "Your username cannot have less than 3 letters");
                     } else {
                         this.player = new Player(name);
                         window.addWindowListener(new WindowAdapter() {
@@ -121,7 +119,7 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
                         setView();
                     }
                 } else {
-                    JOptionPane.showMessageDialog(new JFrame(), name + " is already taken");
+                    JOptionPane.showMessageDialog(window, name + " is already taken");
                 }
             } catch (RemoteException | NotBoundException e) {
                 e.printStackTrace();
@@ -137,7 +135,7 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
             try {
                 riskServer.startGame();
             } catch (NotEnoughPlayersException notEnoughPlayersException) {
-                JOptionPane.showMessageDialog(null, notEnoughPlayersException.getMessage());
+                JOptionPane.showMessageDialog(window, notEnoughPlayersException.getMessage());
             } catch (RemoteException remoteException) {
                 remoteException.printStackTrace();
             }
@@ -154,12 +152,12 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
         });
 
         riskLobby.getLoadGameButton().addActionListener(e -> {
-            String name = JOptionPane.showInputDialog("Please type in the file you want to load.");
+            String name = JOptionPane.showInputDialog(window, "Please type in the file you want to load.");
             try {
                 if (riskServer.loadGame(name)) {
                     gamestateManager.enterGame();
                 } else if (name != null) {
-                    JOptionPane.showMessageDialog(new JFrame(), "Couldn't find the file " + name + ".json");
+                    JOptionPane.showMessageDialog(window, "Couldn't find the file " + name + ".json");
                 }
                 setView();
             } catch (IOException ex) {
@@ -170,10 +168,10 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
 
     private void addInGameButtonListeners() {
         inGame.getSaveGameButton().addActionListener(e -> {
-            String name = JOptionPane.showInputDialog("Please assign a file name for your saved game.");
+            String name = JOptionPane.showInputDialog(window, "Please assign a file name for your saved game.");
             try {
                 if (name.isEmpty()) {
-                    JOptionPane.showMessageDialog(new JFrame(), "Please use at least one character as your file name");
+                    JOptionPane.showMessageDialog(window, "Please use at least one character as your file name");
                 } else {
                     riskServer.saveGame(name);
                 }
@@ -216,48 +214,27 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
         return this;
     }
 
-    Thread defendingThread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            try {
-                System.out.println("Defending Thread running...");
-                defending();
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    });
-
-    private void defending() throws RemoteException {
-        synchronized (inGame) {
-            System.out.println("You're under attack, defend!");
-            //JOptionPane.showMessageDialog(null, "I'm " + event.getPlayer().getUsername() + " and i'm under attack!");
-            int dice = Integer.parseInt(JOptionPane.showInputDialog("With how many dices would you like to defend?"));
-            riskServer.setDefendingDice(dice);
-            // Notify but it doesn't reach Attack
-            inGame.notify();
-        }
-    }
-
     @Override
     public void handleGameEvent(GameEvent event) throws RemoteException {
         if (event instanceof GameActionEvent) {
-            if (((GameActionEvent) event).getType() == GameActionEvent.GameControlEventType.DEFEND) {
-                System.out.println("Event player "+ event.getPlayer().getUsername());
-                System.out.println("Current player " + player.getUsername());
-                if (event.getPlayer().getUsername().equals(player.getUsername())) {
-                  defendingThread.start();
-                }
-
-            } else if (((GameActionEvent) event).getType() == GameActionEvent.GameControlEventType.ATTACK) {
-                JOptionPane.showMessageDialog(null, event.getPlayer().getUsername() + " is attacking!");
+            GameActionEvent e = (GameActionEvent) event;
+            if (e.getPlayer().getUsername().equals(this.getPlayer().getUsername())) {
+                inGame.updatePlayer(e.getPlayer());
             }
-            System.out.println("Something happened, update GUI");
-            inGame.updateGUI();
+            inGame.updateGUI(e);
+            switch(e.getType()) {
+                case ATTACK -> {
+                    if (e.getAttack().getDefendingPlayer().getUsername().equals(this.getPlayer().getUsername())) {
+                        inGame.getDefendingDice(e);
+                    }
+                }
+                case ATTACK_RESULT -> inGame.handleAttackResultEvent(e);
+            }
         } else if (event instanceof GameControlEvent) {
-            if (((GameControlEvent) event).getType() == GameControlEvent.GameControlEventType.GAME_STARTED) {
+            GameControlEvent e = (GameControlEvent) event;
+            if (e.getType() == GameControlEvent.GameControlEventType.GAME_STARTED) {
                 inGame = new RiskInGame(this.riskServer, this.riskServer.getPlayerList(),
-                        this.riskServer.getCountries(), this.player, ((GameControlEvent) event).getTurn());
+                        e.getCountries(), this.player, ((GameControlEvent) event).getTurn());
                 addInGameButtonListeners();
                 gamestateManager.enterGame();
                 setView();
