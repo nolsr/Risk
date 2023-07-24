@@ -3,6 +3,7 @@ package de.hsbremen.risk.client;
 import de.hsbremen.risk.common.GameEventListener;
 import de.hsbremen.risk.common.ServerRemote;
 import de.hsbremen.risk.common.entities.Player;
+import de.hsbremen.risk.common.entities.cards.Card;
 import de.hsbremen.risk.common.events.GameActionEvent;
 import de.hsbremen.risk.common.events.GameControlEvent;
 import de.hsbremen.risk.common.events.GameEvent;
@@ -229,6 +230,14 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
                     }
                 }
                 case ATTACK_RESULT -> inGame.handleAttackResultEvent(e);
+                case DRAW -> {
+                    if (e.getPlayer().getUsername().equals(player.getUsername())) {
+                        inGame.updatePlayer(e.getPlayer());
+                        JOptionPane.showMessageDialog(window, "You drew a card");
+                    }
+                }
+
+
             }
         } else if (event instanceof GameControlEvent) {
             GameControlEvent e = (GameControlEvent) event;

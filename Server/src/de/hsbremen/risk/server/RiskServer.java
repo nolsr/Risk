@@ -374,8 +374,11 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         return false;
     }
 
-    public void playerDrawsCard(Player drawingPlayer) {
+    public void playerDrawsCard(Player drawingPlayer) throws RemoteException {
         drawingPlayer.insertCardToHand(cardManager.drawCard());
+        drawingPlayer.setEntitledToDraw(false);
+        System.out.println("Card id" + drawingPlayer.getCards().get(0).getId());
+        this.notifyListeners(new GameActionEvent(drawingPlayer, GameActionEvent.GameActionEventType.DRAW, getPlayerList(), getCountries()));
     }
 
     public void tradeCards(int[] cardIds) throws InvalidCardCombinationException {

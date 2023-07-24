@@ -1,13 +1,10 @@
 package de.hsbremen.risk.client;
 
-import de.hsbremen.risk.common.ServerRemote;
-import de.hsbremen.risk.common.events.GameActionEvent;
-import de.hsbremen.risk.common.events.GameControlEvent;
-import de.hsbremen.risk.common.events.GameEvent;
-import de.hsbremen.risk.common.events.GameLobbyEvent;
-import de.hsbremen.risk.common.exceptions.*;
-import de.hsbremen.risk.common.entities.*;
 import de.hsbremen.risk.client.components.*;
+import de.hsbremen.risk.common.ServerRemote;
+import de.hsbremen.risk.common.entities.*;
+import de.hsbremen.risk.common.events.GameActionEvent;
+import de.hsbremen.risk.common.exceptions.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -66,8 +63,9 @@ public class RiskInGame extends JPanel {
         });
 
         this.controlPanel.getBtnCardStack().addActionListener(e -> {
-            JFrame frame = new JFrame();
+            JFrame frame = new JFrame("Card Stack");
             frame.setSize(1500, 600);
+        //    this.showCardsFrame = new ShowCardsFrame(this.player, riskServer, true); Works
             this.showCardsFrame = new ShowCardsFrame(this.currentTurn.getPlayer(), riskServer, true);
             frame.add(showCardsFrame);
             frame.setVisible(true);
@@ -102,15 +100,12 @@ public class RiskInGame extends JPanel {
                         JOptionPane.showMessageDialog(this,
                                 "Please select an origin country for your movement.");
                     }
-//                case DRAWING_PHASE -> {
-//                    if (riskServer.getCurrentTurn().getPlayer().getEntitledToDraw()) {
-//                        riskServer.playerDrawsCard(riskServer.getCurrentTurn().getPlayer());
-//                        riskServer.getCurrentTurn().getPlayer().setEntitledToDraw(false);
-//                        JOptionPane.showMessageDialog(null,
-//                                "You drew a card.");
-//                        System.out.println("You Drew a Card");
-//                    }
-//                }
+                case DRAWING_PHASE -> {
+                    if (riskServer.getCurrentTurn().getPlayer().getEntitledToDraw()) {
+                        riskServer.playerDrawsCard(this.currentTurn.getPlayer());
+                 //       riskServer.getCurrentTurn().getPlayer().setEntitledToDraw(false);
+                    }
+                }
                 }
             } catch (RemoteException ex) {
                 ex.printStackTrace();
@@ -283,6 +278,7 @@ public class RiskInGame extends JPanel {
 
     public void updatePlayer(Player player) {
         this.player = player;
+        this.currentTurn.setPlayer(player);
     }
 
     public void redrawMap() {
