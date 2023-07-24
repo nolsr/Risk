@@ -14,7 +14,7 @@ public class Player implements Serializable {
 
     private final String username;
     private int armies;
-    private ArrayList<Card> cards = new ArrayList<>();
+    private final ArrayList<Card> cards = new ArrayList<>();
     private Mission mission;
     private boolean entitledToDraw = false;
 
