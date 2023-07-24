@@ -122,9 +122,7 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
                 e.printStackTrace();
             }
         });
-        startScreen.getQuitGameButton().addActionListener(e -> {
-            System.exit(0);
-        });
+        startScreen.getQuitGameButton().addActionListener(e -> System.exit(0));
     }
 
     private void addLobbyButtonListeners() {
