@@ -47,7 +47,7 @@ public interface ServerRemote extends Remote {
 
     void saveGame(String file) throws IOException, RemoteException;
 
-    void playerDrawsCard(Player drawingPlayer) throws RemoteException;
+    void playerDrawsCard() throws RemoteException, NotEntitledToDrawCardException;
 
     void tradeCards(int[] cardIds) throws InvalidCardCombinationException, RemoteException;
 

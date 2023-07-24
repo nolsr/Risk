@@ -2,21 +2,20 @@ package de.hsbremen.risk.server;
 
 import de.hsbremen.risk.common.GameEventListener;
 import de.hsbremen.risk.common.ServerRemote;
+import de.hsbremen.risk.common.entities.*;
 import de.hsbremen.risk.common.entities.cards.Card;
+import de.hsbremen.risk.common.entities.missions.*;
 import de.hsbremen.risk.common.events.GameActionEvent;
 import de.hsbremen.risk.common.events.GameControlEvent;
 import de.hsbremen.risk.common.events.GameEvent;
 import de.hsbremen.risk.common.events.GameLobbyEvent;
 import de.hsbremen.risk.common.exceptions.*;
-import de.hsbremen.risk.common.entities.*;
-import de.hsbremen.risk.common.entities.missions.*;
 import de.hsbremen.risk.server.persistence.FilePersistenceManager;
 import org.json.JSONObject;
 
 import javax.swing.*;
 import java.io.IOException;
 import java.rmi.ConnectException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -122,7 +121,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         this.notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.GAME_STARTED, getCountries()));
     }
 
-    public boolean loadGame(String file) throws IOException {
+    public boolean loadGame(String file) throws IOException, RemoteException{
         try {
             filePersistenceManager.retrieveContinentData(loadFile(file), 0, worldManager.getContinentList());
             filePersistenceManager.retrieveContinentData(loadFile(file), 1, worldManager.getContinentList());
@@ -138,9 +137,12 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
             cardManager.updateCardManager(filePersistenceManager.retrieveCardsData(loadFile(file)));
 
             assignMissions(false, file); // Wildcards noch nicht
+            this.notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.GAME_STARTED, getCountries()));
             return true;
         } catch (NullPointerException ignored) {
 
+        } catch (NotEntitledToDrawCardException e) {
+            e.printStackTrace();
         }
         return false;
     }
@@ -365,6 +367,12 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         filePersistenceManager.writeGameIntoFile(getPlayerList(), worldManager.getContinentList(), getCurrentTurn(), cardManager.getCardList(), cardManager, file);
     }
 
+    public void playerDrawsCard() throws RemoteException, NotEntitledToDrawCardException {
+        this.currentTurn.getPlayer().insertCardToHand(cardManager.drawCard());
+        this.currentTurn.getPlayer().setEntitledToDraw(false);
+        this.notifyListeners(new GameActionEvent(this.currentTurn.getPlayer(), GameActionEvent.GameActionEventType.DRAW, getPlayerList(), getCountries()));
+    }
+
     public boolean playerHasPeaceCard(Player player) {
         for (Card card : player.getCards()) {
             if (card.getKind().equals("Peace-Card")) {
@@ -374,14 +382,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         return false;
     }
 
-    public void playerDrawsCard(Player drawingPlayer) throws RemoteException {
-        drawingPlayer.insertCardToHand(cardManager.drawCard());
-        drawingPlayer.setEntitledToDraw(false);
-        System.out.println("Card id" + drawingPlayer.getCards().get(0).getId());
-        this.notifyListeners(new GameActionEvent(drawingPlayer, GameActionEvent.GameActionEventType.DRAW, getPlayerList(), getCountries()));
-    }
-
-    public void tradeCards(int[] cardIds) throws InvalidCardCombinationException {
+    public void tradeCards(int[] cardIds) throws InvalidCardCombinationException, RemoteException {
         int extraUnits = cardManager.tradeCards(cardIds);
         if (extraUnits == 0) {
             throw new InvalidCardCombinationException(this.currentTurn.getPlayer());
@@ -391,6 +392,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         Card card3 = cardManager.getCardById(cardIds[2]);
         this.currentTurn.getPlayer().removeCards(card1, card2, card3);
         this.currentTurn.getPlayer().increaseArmies(extraUnits);
+        this.notifyListeners(new GameActionEvent(this.currentTurn.getPlayer(), GameActionEvent.GameActionEventType.TRADE, getPlayerList(), getCountries()));
     }
 
     private JSONObject loadFile(String datei) throws IOException {

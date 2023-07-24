@@ -52,6 +52,7 @@ public class ShowCardsFrame extends JPanel {
             darkButton.addActionListener(e -> {
                 chosenCard[clickCounter] = card.getId();
 
+                System.out.println("Clicked Card: " + chosenCard[clickCounter]);
                 darkButton.setEnabled(false);
                 clickCounter++;
                 if (clickCounter == 3) {
@@ -61,7 +62,7 @@ public class ShowCardsFrame extends JPanel {
                         riskServer.tradeCards(chosenCard);
                         JOptionPane.showMessageDialog(null, "You have successfully traded your cards!");
                     } catch (InvalidCardCombinationException | RemoteException ex) {
-
+                        JOptionPane.showMessageDialog(this, ex.getMessage());
                     }
                 }
             });

@@ -157,12 +157,13 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
             try {
                 if (riskServer.loadGame(name)) {
                     gamestateManager.enterGame();
+                    setView();
                 } else if (name != null) {
                     JOptionPane.showMessageDialog(window, "Couldn't find the file " + name + ".json");
                 }
-                setView();
+
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -234,6 +235,12 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
                     if (e.getPlayer().getUsername().equals(player.getUsername())) {
                         inGame.updatePlayer(e.getPlayer());
                         JOptionPane.showMessageDialog(window, "You drew a card");
+                    }
+                }
+                case TRADE -> {
+                    if (e.getPlayer().getUsername().equals(player.getUsername())) {
+                        inGame.updatePlayer(e.getPlayer());
+                        JOptionPane.showMessageDialog(window, "Trade successfull");
                     }
                 }
 

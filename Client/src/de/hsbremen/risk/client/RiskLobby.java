@@ -29,12 +29,15 @@ public class RiskLobby extends JPanel implements GameEventListener {
         controlPanel.setOpaque(false);
         controlPanel.setLayout(new FlowLayout());
         controlPanel.add(startGameButton, BorderLayout.CENTER);
+        controlPanel.add(loadGameButton, BorderLayout.CENTER);
         lobbylog.setColumns(1);
         scrollPane.add(lobbylog);
+
         this.add(controlPanel, BorderLayout.NORTH);
         this.add(playerJList, BorderLayout.CENTER);
         this.add(exitButton, BorderLayout.SOUTH);
         //this.add(scrollPane, BorderLayout.EAST);
+
         this.add(lobbylog, BorderLayout.EAST);
     }
 

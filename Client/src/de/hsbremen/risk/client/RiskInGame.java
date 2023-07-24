@@ -63,25 +63,24 @@ public class RiskInGame extends JPanel {
         });
 
         this.controlPanel.getBtnCardStack().addActionListener(e -> {
-            JFrame frame = new JFrame("Card Stack");
+            JFrame frame = new JFrame(this.player.getUsername() + "'s Card Stack");
             frame.setSize(1500, 600);
-        //    this.showCardsFrame = new ShowCardsFrame(this.player, riskServer, true); Works
-            this.showCardsFrame = new ShowCardsFrame(this.currentTurn.getPlayer(), riskServer, true);
+            this.showCardsFrame = new ShowCardsFrame(this.player, riskServer, true);
             frame.add(showCardsFrame);
             frame.setVisible(true);
 
         });
-//
-//        this.controlPanel.getBtnTradeCards().addActionListener(e -> {
-//            JFrame frame = new JFrame();
-//            frame.setSize(1500, 600);
-//
-//            JOptionPane.showMessageDialog(new JFrame(), "Choose 3 cards you want to trade");
-//            this.showCardsFrame = new ShowCardsFrame(riskServer.getCurrentTurn().getPlayer(), riskServer, false);
-//            frame.add(showCardsFrame);
-//            frame.setVisible(true);
-//        });
-//
+
+        this.controlPanel.getBtnTradeCards().addActionListener(e -> {
+            JFrame frame = new JFrame(this.player.getUsername() + "'s Card Stack");
+            frame.setSize(1500, 600);
+
+            JOptionPane.showMessageDialog(this, "Choose 3 cards you want to trade");
+            this.showCardsFrame = new ShowCardsFrame(this.player, riskServer, false);
+            frame.add(showCardsFrame);
+            frame.setVisible(true);
+        });
+
         this.controlPanel.getBtnNextPhase().addActionListener(e -> onClickNextPhase());
         this.controlPanel.getBtnAction().addActionListener(e -> {
             this.listenToCountryClicked = true;
@@ -101,14 +100,14 @@ public class RiskInGame extends JPanel {
                                 "Please select an origin country for your movement.");
                     }
                 case DRAWING_PHASE -> {
-                    if (riskServer.getCurrentTurn().getPlayer().getEntitledToDraw()) {
-                        riskServer.playerDrawsCard(this.currentTurn.getPlayer());
+                        riskServer.playerDrawsCard();
                  //       riskServer.getCurrentTurn().getPlayer().setEntitledToDraw(false);
-                    }
                 }
                 }
             } catch (RemoteException ex) {
                 ex.printStackTrace();
+            } catch (NotEntitledToDrawCardException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
             }
         });
     }
