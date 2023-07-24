@@ -121,8 +121,11 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         this.notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.GAME_STARTED, getCountries()));
     }
 
-    public boolean loadGame(String file) throws IOException, RemoteException{
+    public boolean loadGame(String file) throws IOException, RemoteException, LoadGameWrongPlayerException{
         try {
+            if (!checkLoadGamePossible(file)) {
+                throw new LoadGameWrongPlayerException(file);
+            }
             filePersistenceManager.retrieveContinentData(loadFile(file), 0, worldManager.getContinentList());
             filePersistenceManager.retrieveContinentData(loadFile(file), 1, worldManager.getContinentList());
             filePersistenceManager.retrieveContinentData(loadFile(file), 2, worldManager.getContinentList());
@@ -146,6 +149,25 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         }
         return false;
     }
+
+
+    public boolean checkLoadGamePossible(String file) throws IOException, NotEntitledToDrawCardException {
+        ArrayList<Player> temp = filePersistenceManager.retrievePlayerData(loadFile(file));
+        int counter = 0;
+        if (getPlayerList().size() == temp.size()) {
+            for (Player playerListplayer : getPlayerList()) {
+                for (Player jsonFilePlayer : temp) {
+                    if (playerListplayer.getUsername().equals(jsonFilePlayer.getUsername())) {
+                        counter++;
+                        System.out.println("Counter: " + counter);
+                    }
+                }
+            }
+            return counter == temp.size();
+        }
+      return false;
+    }
+
 
     public void checkIfPlayerOwnsContinentAndSet(String continentName, String occupant) {
         worldManager.checkIfPlayerOwnsContinentAndSet(continentName, occupant);

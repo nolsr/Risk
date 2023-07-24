@@ -3,11 +3,11 @@ package de.hsbremen.risk.client;
 import de.hsbremen.risk.common.GameEventListener;
 import de.hsbremen.risk.common.ServerRemote;
 import de.hsbremen.risk.common.entities.Player;
-import de.hsbremen.risk.common.entities.cards.Card;
 import de.hsbremen.risk.common.events.GameActionEvent;
 import de.hsbremen.risk.common.events.GameControlEvent;
 import de.hsbremen.risk.common.events.GameEvent;
 import de.hsbremen.risk.common.events.GameLobbyEvent;
+import de.hsbremen.risk.common.exceptions.LoadGameWrongPlayerException;
 import de.hsbremen.risk.common.exceptions.NotEnoughPlayersException;
 import de.hsbremen.risk.server.RiskServer;
 
@@ -164,6 +164,8 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
 
             } catch (IOException ex) {
                 ex.printStackTrace();
+            } catch (LoadGameWrongPlayerException ex) {
+                JOptionPane.showMessageDialog(window, ex.getMessage());
             }
         });
     }
