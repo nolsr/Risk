@@ -1,0 +1,598 @@
+{
+    "cardList": [
+        {
+            "country": "Northwest Territory",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 1
+        },
+        {
+            "country": "Alberta",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 3
+        },
+        {
+            "country": "Greenland",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 2
+        },
+        {
+            "country": "India",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 36
+        },
+        {
+            "country": "Ural",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 27
+        },
+        {
+            "country": "Siberia",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 28
+        },
+        {
+            "country": "East Africa",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 23
+        },
+        {
+            "country": "Egypt",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 21
+        },
+        {
+            "kind": "Wild-Card",
+            "units": "Wild",
+            "id": 42
+        },
+        {
+            "country": "Madagascar",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 25
+        },
+        {
+            "country": "Western US",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 6
+        },
+        {
+            "country": "Irkutsk",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 29
+        },
+        {
+            "country": "China",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 32
+        },
+        {
+            "country": "New Guinea",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 39
+        },
+        {
+            "country": "Peru",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 11
+        },
+        {
+            "country": "Central America",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 8
+        },
+        {
+            "country": "Iceland",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 13
+        },
+        {
+            "country": "Northern Europe",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 16
+        },
+        {
+            "country": "Ontario",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 4
+        },
+        {
+            "country": "Yakutsk",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 26
+        },
+        {
+            "country": "Eastern Australia",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 41
+        },
+        {
+            "kind": "Peace-Card",
+            "units": "Peace",
+            "id": 44
+        },
+        {
+            "country": "Siam",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 37
+        },
+        {
+            "country": "Eastern US",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 7
+        },
+        {
+            "country": "Mongolia",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 33
+        },
+        {
+            "country": "Brazil",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 10
+        },
+        {
+            "country": "Argentina",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 12
+        },
+        {
+            "country": "Afghanistan",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 31
+        },
+        {
+            "country": "Southern Europe",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 19
+        },
+        {
+            "country": "Western Australia",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 40
+        },
+        {
+            "country": "Venezuela",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 9
+        },
+        {
+            "country": "Japan",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 34
+        },
+        {
+            "country": "South Africa",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 24
+        },
+        {
+            "country": "Quebec",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 5
+        },
+        {
+            "country": "Ukraine",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 17
+        },
+        {
+            "country": "Great Britain",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 15
+        },
+        {
+            "country": "Middle East",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 35
+        },
+        {
+            "country": "Kamchatka",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 30
+        },
+        {
+            "country": "Western Europe",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 18
+        },
+        {
+            "country": "Alaska",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 0
+        },
+        {
+            "country": "North Africa",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 20
+        },
+        {
+            "country": "Scandinavia",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 14
+        },
+        {
+            "country": "Indonesia",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 38
+        },
+        {
+            "country": "Congo",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 22
+        },
+        {
+            "kind": "Wild-Card",
+            "units": "Wild",
+            "id": 43
+        }
+    ],
+    "players": [
+        {
+            "mission": "Occupy 24 countries",
+            "cards": [{
+                "country": "Madagascar",
+                "kind": "Unit-Card",
+                "units": "Cavalry",
+                "id": 25
+            }],
+            "armies": 0,
+            "rndomNmbr": 0.7842015776217951,
+            "username": "bbb"
+        },
+        {
+            "mission": "Occupy the continents: South America and Asia",
+            "cards": [
+                {
+                    "country": "Siberia",
+                    "kind": "Unit-Card",
+                    "units": "Cavalry",
+                    "id": 28
+                },
+                {
+                    "country": "East Africa",
+                    "kind": "Unit-Card",
+                    "units": "Infantry",
+                    "id": 23
+                },
+                {
+                    "country": "Egypt",
+                    "kind": "Unit-Card",
+                    "units": "Infantry",
+                    "id": 21
+                },
+                {
+                    "country": "Western US",
+                    "kind": "Unit-Card",
+                    "units": "Artillery",
+                    "id": 6
+                }
+            ],
+            "armies": 0,
+            "rndomNmbr": 0.6831885854126157,
+            "username": "ccc"
+        },
+        {
+            "mission": "Defeat: bbb",
+            "cards": [
+                {
+                    "country": "Northwest Territory",
+                    "kind": "Unit-Card",
+                    "units": "Artillery",
+                    "id": 1
+                },
+                {
+                    "country": "Alberta",
+                    "kind": "Unit-Card",
+                    "units": "Cavalry",
+                    "id": 3
+                },
+                {
+                    "kind": "Wild-Card",
+                    "units": "Wild",
+                    "id": 42
+                }
+            ],
+            "armies": 0,
+            "rndomNmbr": 0.11800919475593863,
+            "username": "aaa"
+        }
+    ],
+    "cardManager": {
+        "nthTrade": 1,
+        "deckPosition": 11
+    },
+    "turn": {
+        "phase": "Drawing Phase",
+        "player": "ccc"
+    },
+    "continents": [
+        {
+            "name": "North America",
+            "countries": [
+                {
+                    "armies": 1,
+                    "occupiedBy": "ccc",
+                    "countryId": 0
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "bbb",
+                    "countryId": 1
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "bbb",
+                    "countryId": 2
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "aaa",
+                    "countryId": 3
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "aaa",
+                    "countryId": 4
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "aaa",
+                    "countryId": 5
+                },
+                {
+                    "armies": 4,
+                    "occupiedBy": "ccc",
+                    "countryId": 6
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "ccc",
+                    "countryId": 7
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "aaa",
+                    "countryId": 8
+                }
+            ],
+            "ownedBy": ""
+        },
+        {
+            "name": "South America",
+            "countries": [
+                {
+                    "armies": 1,
+                    "occupiedBy": "aaa",
+                    "countryId": 9
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "bbb",
+                    "countryId": 10
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "aaa",
+                    "countryId": 11
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "ccc",
+                    "countryId": 12
+                }
+            ],
+            "ownedBy": ""
+        },
+        {
+            "name": "Europe",
+            "countries": [
+                {
+                    "armies": 1,
+                    "occupiedBy": "aaa",
+                    "countryId": 13
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "bbb",
+                    "countryId": 14
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "ccc",
+                    "countryId": 15
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "aaa",
+                    "countryId": 16
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "aaa",
+                    "countryId": 17
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "ccc",
+                    "countryId": 18
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "ccc",
+                    "countryId": 19
+                }
+            ],
+            "ownedBy": ""
+        },
+        {
+            "name": "Africa",
+            "countries": [
+                {
+                    "armies": 1,
+                    "occupiedBy": "ccc",
+                    "countryId": 20
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "ccc",
+                    "countryId": 21
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "ccc",
+                    "countryId": 22
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "ccc",
+                    "countryId": 23
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "bbb",
+                    "countryId": 24
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "bbb",
+                    "countryId": 25
+                }
+            ],
+            "ownedBy": ""
+        },
+        {
+            "name": "Asia",
+            "countries": [
+                {
+                    "armies": 1,
+                    "occupiedBy": "ccc",
+                    "countryId": 26
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "ccc",
+                    "countryId": 27
+                },
+                {
+                    "armies": 9,
+                    "occupiedBy": "bbb",
+                    "countryId": 28
+                },
+                {
+                    "armies": 5,
+                    "occupiedBy": "ccc",
+                    "countryId": 29
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "bbb",
+                    "countryId": 30
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "bbb",
+                    "countryId": 31
+                },
+                {
+                    "armies": 8,
+                    "occupiedBy": "aaa",
+                    "countryId": 32
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "aaa",
+                    "countryId": 33
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "bbb",
+                    "countryId": 34
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "aaa",
+                    "countryId": 35
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "aaa",
+                    "countryId": 36
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "bbb",
+                    "countryId": 37
+                }
+            ],
+            "ownedBy": ""
+        },
+        {
+            "name": "Australia",
+            "countries": [
+                {
+                    "armies": 1,
+                    "occupiedBy": "aaa",
+                    "countryId": 38
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "bbb",
+                    "countryId": 39
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "aaa",
+                    "countryId": 40
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "bbb",
+                    "countryId": 41
+                }
+            ],
+            "ownedBy": ""
+        }
+    ]
+}

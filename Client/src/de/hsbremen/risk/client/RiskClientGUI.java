@@ -7,7 +7,9 @@ import de.hsbremen.risk.common.events.GameActionEvent;
 import de.hsbremen.risk.common.events.GameControlEvent;
 import de.hsbremen.risk.common.events.GameEvent;
 import de.hsbremen.risk.common.events.GameLobbyEvent;
+import de.hsbremen.risk.common.exceptions.LoadGameWrongPlayerException;
 import de.hsbremen.risk.common.exceptions.NotEnoughPlayersException;
+import de.hsbremen.risk.common.exceptions.NotEntitledToDrawCardException;
 import de.hsbremen.risk.server.RiskServer;
 
 import javax.swing.*;
@@ -16,6 +18,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
 import java.io.Serial;
 import java.rmi.NotBoundException;
@@ -62,15 +65,9 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
 
     public void setView() {
         switch (gamestateManager.getGameState()) {
-            case MAIN_MENU -> {
-                changePanel(window, startScreen);
-            }
-            case LOBBY -> {
-                changePanel(window, riskLobby);
-            }
-            case IN_GAME -> {
-                changePanel(window, inGame);
-            }
+            case MAIN_MENU -> changePanel(window, startScreen);
+            case LOBBY -> changePanel(window, riskLobby);
+            case IN_GAME -> changePanel(window, inGame);
         }
     }
 
@@ -152,16 +149,19 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
         });
 
         riskLobby.getLoadGameButton().addActionListener(e -> {
-            String name = JOptionPane.showInputDialog(window, "Please type in the file you want to load.");
+            String file = JOptionPane.showInputDialog(window, "Please type in the file you want to load.");
+            File f = new File(file + ".json");
             try {
-                if (riskServer.loadGame(name)) {
-                    gamestateManager.enterGame();
-                } else if (name != null) {
-                    JOptionPane.showMessageDialog(window, "Couldn't find the file " + name + ".json");
+                System.out.println("File: " + f);
+                if (f.isFile()) {
+                    riskServer.loadGame(file);
+                } else {
+                    JOptionPane.showMessageDialog(window, "Couldn't find the file " + file + ".json");
                 }
-                setView();
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
+               ex.printStackTrace();
+            } catch (LoadGameWrongPlayerException ex) {
+                JOptionPane.showMessageDialog(window, ex.getMessage());
             }
         });
     }
@@ -215,7 +215,7 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
     }
 
     @Override
-    public void handleGameEvent(GameEvent event) throws RemoteException {
+    public void handleGameEvent(GameEvent event) throws RemoteException, NotEntitledToDrawCardException {
         if (event instanceof GameActionEvent) {
             GameActionEvent e = (GameActionEvent) event;
             if (e.getPlayer().getUsername().equals(this.getPlayer().getUsername())) {
@@ -229,6 +229,17 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
                     }
                 }
                 case ATTACK_RESULT -> inGame.handleAttackResultEvent(e);
+                case DRAW -> {
+                    if (e.getPlayer().getUsername().equals(player.getUsername())) {
+                        inGame.updatePlayer(e.getPlayer());
+                        JOptionPane.showMessageDialog(window, "You drew a card");
+                    }
+                }
+                case TRADE -> {
+                    if (e.getPlayer().getUsername().equals(player.getUsername())) {
+                        inGame.updatePlayer(e.getPlayer());
+                    }
+                }
             }
         } else if (event instanceof GameControlEvent) {
             GameControlEvent e = (GameControlEvent) event;

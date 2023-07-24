@@ -2,21 +2,20 @@ package de.hsbremen.risk.server;
 
 import de.hsbremen.risk.common.GameEventListener;
 import de.hsbremen.risk.common.ServerRemote;
+import de.hsbremen.risk.common.entities.*;
 import de.hsbremen.risk.common.entities.cards.Card;
+import de.hsbremen.risk.common.entities.missions.*;
 import de.hsbremen.risk.common.events.GameActionEvent;
 import de.hsbremen.risk.common.events.GameControlEvent;
 import de.hsbremen.risk.common.events.GameEvent;
 import de.hsbremen.risk.common.events.GameLobbyEvent;
 import de.hsbremen.risk.common.exceptions.*;
-import de.hsbremen.risk.common.entities.*;
-import de.hsbremen.risk.common.entities.missions.*;
 import de.hsbremen.risk.server.persistence.FilePersistenceManager;
 import org.json.JSONObject;
 
 import javax.swing.*;
 import java.io.IOException;
 import java.rmi.ConnectException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -122,8 +121,11 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         this.notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.GAME_STARTED, getCountries()));
     }
 
-    public boolean loadGame(String file) throws IOException {
+    public void loadGame(String file) throws IOException, LoadGameWrongPlayerException{
         try {
+            if (!checkLoadGamePossible(file)) {
+                throw new LoadGameWrongPlayerException(file);
+            }
             filePersistenceManager.retrieveContinentData(loadFile(file), 0, worldManager.getContinentList());
             filePersistenceManager.retrieveContinentData(loadFile(file), 1, worldManager.getContinentList());
             filePersistenceManager.retrieveContinentData(loadFile(file), 2, worldManager.getContinentList());
@@ -138,12 +140,32 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
             cardManager.updateCardManager(filePersistenceManager.retrieveCardsData(loadFile(file)));
 
             assignMissions(false, file); // Wildcards noch nicht
-            return true;
+            this.notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.GAME_STARTED, getCountries()));
         } catch (NullPointerException ignored) {
 
+        } catch (NotEntitledToDrawCardException e) {
+            e.printStackTrace();
         }
-        return false;
     }
+
+
+    public boolean checkLoadGamePossible(String file) throws IOException, NotEntitledToDrawCardException {
+        ArrayList<Player> temp = filePersistenceManager.retrievePlayerData(loadFile(file));
+        int counter = 0;
+        if (getPlayerList().size() == temp.size()) {
+            for (Player playerListplayer : getPlayerList()) {
+                for (Player jsonFilePlayer : temp) {
+                    if (playerListplayer.getUsername().equals(jsonFilePlayer.getUsername())) {
+                        counter++;
+                        System.out.println("Counter: " + counter);
+                    }
+                }
+            }
+            return counter == temp.size();
+        }
+      return false;
+    }
+
 
     public void checkIfPlayerOwnsContinentAndSet(String continentName, String occupant) {
         worldManager.checkIfPlayerOwnsContinentAndSet(continentName, occupant);
@@ -365,6 +387,21 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         filePersistenceManager.writeGameIntoFile(getPlayerList(), worldManager.getContinentList(), getCurrentTurn(), cardManager.getCardList(), cardManager, file);
     }
 
+    public void playerDrawsCard() throws RemoteException, NotEntitledToDrawCardException {
+        Card c = cardManager.drawCard();
+        System.out.print("PULLED CARD: ");
+        System.out.println(c.getId());
+        this.currentTurn.getPlayer().insertCardToHand(c);
+        this.currentTurn.getPlayer().setEntitledToDraw(false);
+        this.notifyListeners(new GameActionEvent(this.currentTurn.getPlayer(), GameActionEvent.GameActionEventType.DRAW, getPlayerList(), getCountries()));
+    }
+
+
+    public void playerInsertCardToHand(int cardID) throws NotEntitledToDrawCardException, RemoteException {
+        this.currentTurn.getPlayer().insertCardToHand(cardManager.getCardById(cardID));
+        System.out.println("Server Side Card ID " + cardID);
+    }
+
     public boolean playerHasPeaceCard(Player player) {
         for (Card card : player.getCards()) {
             if (card.getKind().equals("Peace-Card")) {
@@ -374,11 +411,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         return false;
     }
 
-    public void playerDrawsCard(Player drawingPlayer) {
-        drawingPlayer.insertCardToHand(cardManager.drawCard());
-    }
-
-    public void tradeCards(int[] cardIds) throws InvalidCardCombinationException {
+    public void tradeCards(int[] cardIds) throws InvalidCardCombinationException, RemoteException {
         int extraUnits = cardManager.tradeCards(cardIds);
         if (extraUnits == 0) {
             throw new InvalidCardCombinationException(this.currentTurn.getPlayer());
@@ -388,6 +421,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         Card card3 = cardManager.getCardById(cardIds[2]);
         this.currentTurn.getPlayer().removeCards(card1, card2, card3);
         this.currentTurn.getPlayer().increaseArmies(extraUnits);
+        this.notifyListeners(new GameActionEvent(this.currentTurn.getPlayer(), GameActionEvent.GameActionEventType.TRADE, getPlayerList(), getCountries()));
     }
 
     private JSONObject loadFile(String datei) throws IOException {
@@ -409,7 +443,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
                 public void run() {
                     try {
                         listener.handleGameEvent(event);
-                    } catch (RemoteException e) {
+                    } catch (RemoteException | NotEntitledToDrawCardException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }

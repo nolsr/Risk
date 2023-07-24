@@ -12,7 +12,7 @@ public class GameActionEvent extends GameEvent {
     @Serial
     private static final long serialVersionUID = 1177860608466305601L;
 
-    public enum GameActionEventType {ATTACK, ATTACK_RESULT, MOVE, DRAW, DISTRIBUTE}
+    public enum GameActionEventType {ATTACK, ATTACK_RESULT, MOVE, DRAW, DISTRIBUTE, TRADE}
 
     private Attack attack;
     private AttackResult result;
