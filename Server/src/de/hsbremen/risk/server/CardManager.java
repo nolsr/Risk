@@ -142,6 +142,13 @@ public class CardManager {
         return tempCard;
     }
 
+    public int drawCardID() {
+        Card tempCard = cardList.get(deckPosition);
+        deckPosition++;
+        //cardList.remove(0);
+        return tempCard.getId();
+    }
+
     public int tradeCards(int[] cardIds) {
 
         Card card1 = getCardById(cardIds[0]);

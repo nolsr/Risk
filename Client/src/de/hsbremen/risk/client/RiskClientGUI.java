@@ -9,6 +9,7 @@ import de.hsbremen.risk.common.events.GameEvent;
 import de.hsbremen.risk.common.events.GameLobbyEvent;
 import de.hsbremen.risk.common.exceptions.LoadGameWrongPlayerException;
 import de.hsbremen.risk.common.exceptions.NotEnoughPlayersException;
+import de.hsbremen.risk.common.exceptions.NotEntitledToDrawCardException;
 import de.hsbremen.risk.server.RiskServer;
 
 import javax.swing.*;
@@ -64,15 +65,9 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
 
     public void setView() {
         switch (gamestateManager.getGameState()) {
-            case MAIN_MENU -> {
-                changePanel(window, startScreen);
-            }
-            case LOBBY -> {
-                changePanel(window, riskLobby);
-            }
-            case IN_GAME -> {
-                changePanel(window, inGame);
-            }
+            case MAIN_MENU -> changePanel(window, startScreen);
+            case LOBBY -> changePanel(window, riskLobby);
+            case IN_GAME -> changePanel(window, inGame);
         }
     }
 
@@ -221,7 +216,7 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
     }
 
     @Override
-    public void handleGameEvent(GameEvent event) throws RemoteException {
+    public void handleGameEvent(GameEvent event) throws RemoteException, NotEntitledToDrawCardException {
         if (event instanceof GameActionEvent) {
             GameActionEvent e = (GameActionEvent) event;
             if (e.getPlayer().getUsername().equals(this.getPlayer().getUsername())) {
@@ -238,6 +233,9 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
                 case DRAW -> {
                     if (e.getPlayer().getUsername().equals(player.getUsername())) {
                         inGame.updatePlayer(e.getPlayer());
+                        riskServer.playerDrawsCard();
+                    //    riskServer.playerInsertCardToHand(e.getCardID());
+                        System.out.println("CardID on client side: " + e.getCardID());
                         JOptionPane.showMessageDialog(window, "You drew a card");
                     }
                 }

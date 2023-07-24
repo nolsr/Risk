@@ -3,6 +3,7 @@ package de.hsbremen.risk.client;
 import de.hsbremen.risk.client.components.*;
 import de.hsbremen.risk.common.ServerRemote;
 import de.hsbremen.risk.common.entities.*;
+import de.hsbremen.risk.common.entities.cards.Card;
 import de.hsbremen.risk.common.events.GameActionEvent;
 import de.hsbremen.risk.common.exceptions.*;
 
@@ -59,6 +60,10 @@ public class RiskInGame extends JPanel {
             if (listenToCountryClicked) {
                 this.listenToCountryClicked = false;
                 this.selectCountry(countryId);
+                System.out.println("Ich printe");
+                for (Card card : player.getCards()) {
+                    System.out.println("Player cards: " + card.getId());
+                }
             }
         });
 

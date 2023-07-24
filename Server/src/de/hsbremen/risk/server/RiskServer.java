@@ -393,6 +393,19 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         this.notifyListeners(new GameActionEvent(this.currentTurn.getPlayer(), GameActionEvent.GameActionEventType.DRAW, getPlayerList(), getCountries()));
     }
 
+
+    public void playerDrawsCardVTwo() throws RemoteException, NotEntitledToDrawCardException {
+        int cardID = cardManager.drawCardID();
+       // this.currentTurn.getPlayer().insertCardToHand(cardManager.getCardById(cardID));
+        this.currentTurn.getPlayer().setEntitledToDraw(false);
+        this.notifyListeners(new GameActionEvent(this.currentTurn.getPlayer(), GameActionEvent.GameActionEventType.DRAW, cardID, getPlayerList(), getCountries()));
+    }
+
+    public void playerInsertCardToHand(int cardID) throws NotEntitledToDrawCardException, RemoteException {
+        this.currentTurn.getPlayer().insertCardToHand(cardManager.getCardById(cardID));
+        System.out.println("Server Side Card ID " + cardID);
+    }
+
     public boolean playerHasPeaceCard(Player player) {
         for (Card card : player.getCards()) {
             if (card.getKind().equals("Peace-Card")) {
@@ -434,7 +447,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
                 public void run() {
                     try {
                         listener.handleGameEvent(event);
-                    } catch (RemoteException e) {
+                    } catch (RemoteException | NotEntitledToDrawCardException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
