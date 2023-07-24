@@ -23,7 +23,7 @@ public interface ServerRemote extends Remote {
 
     void startGame() throws RemoteException, NotEnoughPlayersException;
 
-    boolean loadGame(String file) throws IOException, RemoteException, LoadGameWrongPlayerException;
+    void loadGame(String file) throws IOException, LoadGameWrongPlayerException;
 
     Country getCountry(int countryId) throws RemoteException;
 

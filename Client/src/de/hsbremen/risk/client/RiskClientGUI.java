@@ -17,6 +17,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
 import java.io.Serial;
 import java.rmi.NotBoundException;
@@ -153,17 +154,18 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
         });
 
         riskLobby.getLoadGameButton().addActionListener(e -> {
-            String name = JOptionPane.showInputDialog(window, "Please type in the file you want to load.");
+            String file = JOptionPane.showInputDialog(window, "Please type in the file you want to load.");
+            File f = new File(file + ".json");
             try {
-                if (riskServer.loadGame(name)) {
-                    gamestateManager.enterGame();
-                    setView();
-                } else if (name != null) {
-                    JOptionPane.showMessageDialog(window, "Couldn't find the file " + name + ".json");
+                System.out.println("File: " + f);
+                if (f.isFile()) {
+                    riskServer.loadGame(file);
+                } else {
+                    JOptionPane.showMessageDialog(window, "Couldn't find the file " + file + ".json");
                 }
 
             } catch (IOException ex) {
-                ex.printStackTrace();
+               ex.printStackTrace();
             } catch (LoadGameWrongPlayerException ex) {
                 JOptionPane.showMessageDialog(window, ex.getMessage());
             }
@@ -245,8 +247,6 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
                         JOptionPane.showMessageDialog(window, "Trade successfull");
                     }
                 }
-
-
             }
         } else if (event instanceof GameControlEvent) {
             GameControlEvent e = (GameControlEvent) event;

@@ -121,7 +121,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         this.notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.GAME_STARTED, getCountries()));
     }
 
-    public boolean loadGame(String file) throws IOException, RemoteException, LoadGameWrongPlayerException{
+    public void loadGame(String file) throws IOException, LoadGameWrongPlayerException{
         try {
             if (!checkLoadGamePossible(file)) {
                 throw new LoadGameWrongPlayerException(file);
@@ -141,13 +141,11 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
 
             assignMissions(false, file); // Wildcards noch nicht
             this.notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.GAME_STARTED, getCountries()));
-            return true;
         } catch (NullPointerException ignored) {
 
         } catch (NotEntitledToDrawCardException e) {
             e.printStackTrace();
         }
-        return false;
     }
 
 
