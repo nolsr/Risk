@@ -171,6 +171,7 @@ public class FilePersistenceManager implements PersistenceManager{
                     {
                         player.insertCardToHand(new PeaceCard(cardjsonArray.getJSONObject(j).getInt("id")));
                     }
+                  //  System.out.println(player.getUsername() + ": " + player.getCards().get(j));
                 }
 
                 playerList.add(player);
