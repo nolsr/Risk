@@ -104,8 +104,9 @@ public class RiskInGame extends JPanel {
                                 "Please select an origin country for your movement.");
                     }
                 case DRAWING_PHASE -> {
+
                         riskServer.playerDrawsCard();
-                 //       riskServer.getCurrentTurn().getPlayer().setEntitledToDraw(false);
+                        riskServer.getCurrentTurn().getPlayer().setEntitledToDraw(false);
                 }
                 }
             } catch (RemoteException ex) {

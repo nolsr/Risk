@@ -271,13 +271,18 @@
     "players": [
         {
             "mission": "Occupy 24 countries",
-            "cards": [],
+            "cards": [{
+                "country": "Madagascar",
+                "kind": "Unit-Card",
+                "units": "Cavalry",
+                "id": 25
+            }],
             "armies": 0,
             "rndomNmbr": 0.7842015776217951,
             "username": "bbb"
         },
         {
-            "mission": "Occupy the continents: Asia and South America",
+            "mission": "Occupy the continents: South America and Asia",
             "cards": [
                 {
                     "country": "Siberia",
@@ -296,6 +301,12 @@
                     "kind": "Unit-Card",
                     "units": "Infantry",
                     "id": 21
+                },
+                {
+                    "country": "Western US",
+                    "kind": "Unit-Card",
+                    "units": "Artillery",
+                    "id": 6
                 }
             ],
             "armies": 0,
@@ -334,16 +345,21 @@
                     "kind": "Unit-Card",
                     "units": "Cavalry",
                     "id": 27
+                },
+                {
+                    "kind": "Wild-Card",
+                    "units": "Wild",
+                    "id": 42
                 }
             ],
-            "armies": 5,
+            "armies": 4,
             "rndomNmbr": 0.11800919475593863,
             "username": "aaa"
         }
     ],
     "cardManager": {
         "nthTrade": 0,
-        "deckPosition": 8
+        "deckPosition": 11
     },
     "turn": {
         "phase": "Reinforcement Phase",
@@ -384,7 +400,7 @@
                     "countryId": 5
                 },
                 {
-                    "armies": 4,
+                    "armies": 3,
                     "occupiedBy": "ccc",
                     "countryId": 6
                 },
@@ -394,8 +410,8 @@
                     "countryId": 7
                 },
                 {
-                    "armies": 1,
-                    "occupiedBy": "aaa",
+                    "armies": 5,
+                    "occupiedBy": "ccc",
                     "countryId": 8
                 }
             ],
@@ -513,8 +529,8 @@
                     "countryId": 26
                 },
                 {
-                    "armies": 1,
-                    "occupiedBy": "ccc",
+                    "armies": 3,
+                    "occupiedBy": "bbb",
                     "countryId": 27
                 },
                 {
@@ -533,12 +549,12 @@
                     "countryId": 30
                 },
                 {
-                    "armies": 1,
+                    "armies": 2,
                     "occupiedBy": "bbb",
                     "countryId": 31
                 },
                 {
-                    "armies": 4,
+                    "armies": 2,
                     "occupiedBy": "aaa",
                     "countryId": 32
                 },

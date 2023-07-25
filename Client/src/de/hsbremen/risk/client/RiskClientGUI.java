@@ -122,9 +122,7 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
                 e.printStackTrace();
             }
         });
-        startScreen.getQuitGameButton().addActionListener(e -> {
-            System.exit(0);
-        });
+        startScreen.getQuitGameButton().addActionListener(e -> System.exit(0));
     }
 
     private void addLobbyButtonListeners() {
@@ -215,7 +213,7 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
     }
 
     @Override
-    public void handleGameEvent(GameEvent event) throws RemoteException, NotEntitledToDrawCardException {
+    public void handleGameEvent(GameEvent event) throws RemoteException {
         if (event instanceof GameActionEvent) {
             GameActionEvent e = (GameActionEvent) event;
             if (e.getPlayer().getUsername().equals(this.getPlayer().getUsername())) {
@@ -243,7 +241,8 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
             }
         } else if (event instanceof GameControlEvent) {
             GameControlEvent e = (GameControlEvent) event;
-            if (e.getType() == GameControlEvent.GameControlEventType.GAME_STARTED) {
+                if (e.getType() == GameControlEvent.GameControlEventType.GAME_STARTED) {
+                this.player = riskServer.getPlayer(this.player.getUsername());
                 inGame = new RiskInGame(this.riskServer, this.riskServer.getPlayerList(),
                         e.getCountries(), this.player, ((GameControlEvent) event).getTurn());
                 addInGameButtonListeners();
