@@ -329,6 +329,7 @@ public class WorldManager {
 
     /**
      * Retrieves the countries owned by a specified player.
+     *
      * @param player The player object of the player you want to get the list of countries owned from.
      * @return An ArrayList containing the countries owned by the player.
      */
@@ -344,9 +345,10 @@ public class WorldManager {
 
     /**
      * Checks if there is a connection from one country to another, that only consists of countries occupied by the specified player
+     *
      * @param originCountryId ID of the country the movement starts in.
      * @param targetCountryId ID of the country the movement should end in.
-     * @param player Player object of the player making the move.
+     * @param player          Player object of the player making the move.
      * @return A Boolean representing whether there is valid a connection or not.
      */
     private boolean hasConnection(int originCountryId, int targetCountryId, Player player) {
@@ -358,10 +360,11 @@ public class WorldManager {
     /**
      * Recursive function that is used to determine if there is a connection between two countries only through
      * countries owned by the same player, by recursively checking the neighbours of every country owned by that player.
+     *
      * @param currentCountryId Pointer to the country currently being checked.
-     * @param targetCountryId Pointer to the country that is the desired destination.
+     * @param targetCountryId  Pointer to the country that is the desired destination.
      * @param playersCountries An ArrayList containing all of the countries owned by the player.
-     * @param checked An Array containing the information what countries already have been checked to avoid endless loops.
+     * @param checked          An Array containing the information what countries already have been checked to avoid endless loops.
      * @return A Boolean representing whether a valid connection has been found this iteration or not.
      */
     private boolean recurseFindConnection(int currentCountryId, int targetCountryId, ArrayList<Country> playersCountries, boolean[] checked) {
@@ -382,6 +385,7 @@ public class WorldManager {
 
     /**
      * Initially distributes countries to the players at the start of the game.
+     *
      * @param playerList List of players playing the game.
      */
     public void assignCountriesToPlayers(ArrayList<Player> playerList) {
@@ -418,8 +422,9 @@ public class WorldManager {
 
     /**
      * Checks if every country of a continent is owned by a specific player.
+     *
      * @param continentName Name of the continent that should be checked.
-     * @param username Name of the player ownership is checked for.
+     * @param username      Name of the player ownership is checked for.
      */
     public void checkIfPlayerOwnsContinentAndSet(String continentName, String username) {
         for (Continent continent1 : continentList) {
@@ -437,7 +442,8 @@ public class WorldManager {
 
     /**
      * Checks if a country is occupied by a player.
-     * @param player Player that ownership is checked for.
+     *
+     * @param player    Player that ownership is checked for.
      * @param countryId ID of the country checked.
      * @return A Boolean representing whether the conditions are met or not.
      */
@@ -468,6 +474,7 @@ public class WorldManager {
 
     /**
      * Calculates the amount of additional units a player gets for occupying entire continents.
+     *
      * @param player Object of the player that is being checked.
      * @return An Integer containing the amount of additional units the player gets.
      */
@@ -488,6 +495,7 @@ public class WorldManager {
 
     /**
      * Retrieves and sets the amount of units a player gets to distribute in the reinforcement phase.
+     *
      * @param player Object of the player whose turn it is.
      */
     public void getReinforcementUnits(Player player) {
@@ -511,9 +519,10 @@ public class WorldManager {
 
     /**
      * Adds a specified amount of units to a country and subtracts that amount from the players counter of units left to place.
-     * @param player Object of the player distributing units.
+     *
+     * @param player    Object of the player distributing units.
      * @param countryId ID of the country units are to be distributed to.
-     * @param amount Amount of units distributed to the country.
+     * @param amount    Amount of units distributed to the country.
      */
     public void distributeArmy(Player player, int countryId, int amount) {
         countryList.get(countryId).setArmies(countryList.get(countryId).getArmies() + amount);
