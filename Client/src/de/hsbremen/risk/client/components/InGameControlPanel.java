@@ -1,5 +1,6 @@
 package de.hsbremen.risk.client.components;
 
+import de.hsbremen.risk.common.entities.Player;
 import de.hsbremen.risk.common.entities.Turn;
 
 import javax.imageio.ImageIO;
@@ -21,7 +22,7 @@ public class InGameControlPanel extends JPanel {
 
     BufferedImage bufferedCardStack;
 
-    public InGameControlPanel(Turn turn) {
+    public InGameControlPanel(Turn turn, Player player) {
         super();
         try {
             this.bufferedCardStack = ImageIO.read(new File("assets/CardStack.png"));
@@ -54,7 +55,7 @@ public class InGameControlPanel extends JPanel {
         Image scaledImage = bufferedCardStack.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
         this.btnCardStack = new DarkButton(new ImageIcon(scaledImage));
         this.btnCardStack.setOpaque(false);
-        this.missionDisplay = new MissionDisplay(turn.getPlayer().getMissionString());
+        this.missionDisplay = new MissionDisplay(player.getMissionString());
         this.phaseInformation = new PhaseInformation(turn);
 
         left.add(btnCardStack);
@@ -70,7 +71,7 @@ public class InGameControlPanel extends JPanel {
     }
 
     public void setNewPhaseContent(Turn turn) {
-        this.missionDisplay.updateMissionText(turn.getPlayer().getMissionString());
+       // this.missionDisplay.updateMissionText(turn.getPlayer().getMissionString());
         this.phaseInformation.updatePhaseInformation(turn);
         switch (turn.getPhase()) {
             case REINFORCEMENT_PHASE -> {
