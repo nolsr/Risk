@@ -24,7 +24,7 @@ public class RiskInGame extends JPanel {
     private ShowCardsFrame showCardsFrame;
 
     private final Attack attack;
-    private Movement movement;
+    private final Movement movement;
 
     public RiskInGame(ServerRemote riskServer, ArrayList<Player> players, ArrayList<Country> countries, Player player, Turn turn) {
         this.riskServer = riskServer;
