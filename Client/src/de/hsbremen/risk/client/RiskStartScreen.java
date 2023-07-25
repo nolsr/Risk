@@ -1,6 +1,9 @@
 package de.hsbremen.risk.client;
 
 import de.hsbremen.risk.client.components.LightButton;
+import de.hsbremen.risk.common.GameEventListener;
+import de.hsbremen.risk.common.events.GameEvent;
+import de.hsbremen.risk.common.events.GameLobbyEvent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,10 +12,9 @@ import java.awt.*;
  * @author Raphael Tam-Dao
  */
 
-public class RiskStartScreen extends JPanel {
+public class RiskStartScreen extends JPanel implements GameEventListener {
 
-    private JButton newGameButton = new LightButton("New Game");
-    private JButton loadGameButton = new LightButton("Load Game");
+    private JButton newGameButton = new LightButton("Enter Lobby");
     private JButton quitGameButton = new LightButton("Quit Game");
 
     public RiskStartScreen() {
@@ -20,7 +22,6 @@ public class RiskStartScreen extends JPanel {
         this.setOpaque(false);
         this.setLayout(new FlowLayout(FlowLayout.CENTER));
         add(newGameButton, BorderLayout.CENTER);
-        add(loadGameButton, BorderLayout.CENTER);
         add(quitGameButton);
     }
 
@@ -28,11 +29,11 @@ public class RiskStartScreen extends JPanel {
         return newGameButton;
     }
 
-    public JButton getLoadGameButton() {
-        return loadGameButton;
-    }
-
     public JButton getQuitGameButton() {
         return quitGameButton;
+    }
+
+    public void handleGameEvent(GameEvent event) {
+
     }
 }

@@ -19,6 +19,12 @@ public class WorldManager {
         buildAdjacencyMatrix();
     }
 
+    /**
+     * Searches for a country based on its country ID (countryId) in the list of countries.
+     *
+     * @param countryId The ID of the country being searched for.
+     * @return The found country if it exists; otherwise, null is returned.
+     */
     public Country getCountry(int countryId) {
         for (Country country : countryList) {
             if (country.getAdjacencyId() == countryId) {
@@ -28,27 +34,47 @@ public class WorldManager {
         return null;
     }
 
+    /**
+     * Retrieves the list of countries.
+     *
+     * @return An ArrayList containing the countries of the risk map.
+     */
     public ArrayList<Country> getCountries() {
         return countryList;
     }
 
+    /**
+     * Retrieves the list of continents.
+     *
+     * @return An ArrayList containing the continents of the risk map.
+     */
     public ArrayList<Continent> getContinentList() {
         return continentList;
     }
 
+
+    /**
+     * Searches for neighbouring countries based on specified country (countryId).
+     *
+     * @param countryId The ID of the country whose neighbours you want to find out.
+     * @return An ArrayList containing the IDs of the neighbouring countries.
+     */
     public ArrayList<Integer> getNeighbourCountries(int countryId) {
-        ArrayList<Integer> neighbourCountryId = new ArrayList<>();
+        ArrayList<Integer> neighbourCountryIds = new ArrayList<>();
         for (int i = 0; i < adjacencyMatrix.length; i++) {
             for (int j = 0; j < adjacencyMatrix[i].length; j++) {
                 if (adjacencyMatrix[i][j] && i == countryId) {
-                    neighbourCountryId.add(j);
+                    neighbourCountryIds.add(j);
                 }
             }
         }
-        return neighbourCountryId;
+        return neighbourCountryIds;
     }
 
 
+    /**
+     * Populates the lists of continents and countries.
+     */
     private void fillWorldList() {
         countryList = new ArrayList<>();
         continentList = new ArrayList<>();
@@ -127,6 +153,9 @@ public class WorldManager {
         countryList.addAll(australiaList);
     }
 
+    /**
+     * Populates the adjacency matrix which specifies what countries lie next to one another.
+     */
     private void buildAdjacencyMatrix() {
         adjacencyMatrix = new boolean[42][42];
         for (int i = 0; i < 42; i++) {
@@ -232,11 +261,23 @@ public class WorldManager {
         setAdjacencyBetween(37, 38);
     }
 
+    /**
+     * Sets two countries as neighbours in the respective fields of the adjacency matrix.
+     *
+     * @param countryOneId ID of the first country.
+     * @param countryTwoId ID of the second country.
+     */
     private void setAdjacencyBetween(int countryOneId, int countryTwoId) {
         adjacencyMatrix[countryOneId][countryTwoId] = true;
         adjacencyMatrix[countryTwoId][countryOneId] = true;
     }
 
+    /**
+     * Counts how many countries are owned by a specific player.
+     *
+     * @param username The username of the player you want to get the number of countries owned from.
+     * @return An Integer containing the amount of countries owned by the player.
+     */
     public int getAmountOfCountriesOwnedBy(String username) {
         int amount = 0;
         for (Country country : countryList) {
@@ -245,6 +286,20 @@ public class WorldManager {
         return amount;
     }
 
+    /**
+     * Moves a specified amount of forces from one country to another.
+     *
+     * @param originCountryId The ID of the country from which the forces will be moved.
+     * @param targetCountryId The ID of the country to which the forces will be moved.
+     * @param amount          The number of forces to be moved.
+     * @param currentPlayer   The Player object of the player moving units.
+     * @throws MovementException If any of the movement conditions are not met, appropriate exceptions are thrown:
+     *                           - MovementBetweenSameCountriesException if the origin and target country IDs are the same.
+     *                           - DoNotOccupyBothCountriesException if the current player doesn't occupy both countries.
+     *                           - ArmiesAlreadyMovedException if forces from the origin country have already been moved.
+     *                           - NoArmiesLeftException if there are not enough armies in the origin country.
+     *                           - CountriesNotConnectedException if the origin and target countries are not connected.
+     */
     public void moveForces(int originCountryId, int targetCountryId, int amount, Player currentPlayer) throws MovementException {
         Country originCountry = getCountry(originCountryId);
         Country targetCountry = getCountry(targetCountryId);
@@ -265,10 +320,19 @@ public class WorldManager {
         targetCountry.setUnitsMoved(true);
     }
 
+    /**
+     * Allows units of all countries to take action again.
+     */
     public void resetUnitsMoved() {
         countryList.forEach(country -> country.setUnitsMoved(false));
     }
 
+    /**
+     * Retrieves the countries owned by a specified player.
+     *
+     * @param player The player object of the player you want to get the list of countries owned from.
+     * @return An ArrayList containing the countries owned by the player.
+     */
     private ArrayList<Country> getCountriesOccupiedBy(Player player) {
         ArrayList<Country> countries = new ArrayList<>();
         countryList.forEach(country -> {
@@ -279,12 +343,30 @@ public class WorldManager {
         return countries;
     }
 
-    private boolean hasConnection(int originCountryId, int targetCountryId, Player currentPlayer) {
-        ArrayList<Country> playersCountries = getCountriesOccupiedBy(currentPlayer);
+    /**
+     * Checks if there is a connection from one country to another, that only consists of countries occupied by the specified player
+     *
+     * @param originCountryId ID of the country the movement starts in.
+     * @param targetCountryId ID of the country the movement should end in.
+     * @param player          Player object of the player making the move.
+     * @return A Boolean representing whether there is valid a connection or not.
+     */
+    private boolean hasConnection(int originCountryId, int targetCountryId, Player player) {
+        ArrayList<Country> playersCountries = getCountriesOccupiedBy(player);
         boolean[] checked = new boolean[42];
         return recurseFindConnection(originCountryId, targetCountryId, playersCountries, checked);
     }
 
+    /**
+     * Recursive function that is used to determine if there is a connection between two countries only through
+     * countries owned by the same player, by recursively checking the neighbours of every country owned by that player.
+     *
+     * @param currentCountryId Pointer to the country currently being checked.
+     * @param targetCountryId  Pointer to the country that is the desired destination.
+     * @param playersCountries An ArrayList containing all of the countries owned by the player.
+     * @param checked          An Array containing the information what countries already have been checked to avoid endless loops.
+     * @return A Boolean representing whether a valid connection has been found this iteration or not.
+     */
     private boolean recurseFindConnection(int currentCountryId, int targetCountryId, ArrayList<Country> playersCountries, boolean[] checked) {
         if (currentCountryId == targetCountryId) {
             return true;
@@ -301,6 +383,11 @@ public class WorldManager {
         return false;
     }
 
+    /**
+     * Initially distributes countries to the players at the start of the game.
+     *
+     * @param playerList List of players playing the game.
+     */
     public void assignCountriesToPlayers(ArrayList<Player> playerList) {
         int defaultArmyStartSize = 1;
         try {
@@ -333,20 +420,33 @@ public class WorldManager {
         }
     }
 
-    public void checkIfPlayerOwnsContinentAndSet(String continentName, String occupant) {
+    /**
+     * Checks if every country of a continent is owned by a specific player.
+     *
+     * @param continentName Name of the continent that should be checked.
+     * @param username      Name of the player ownership is checked for.
+     */
+    public void checkIfPlayerOwnsContinentAndSet(String continentName, String username) {
         for (Continent continent1 : continentList) {
             if (continent1.getName().equals(continentName)) {
                 for (int i = 0; i < continent1.getCountriesWithin().size(); i++) {
-                    if (!(continent1.getCountriesWithin().get(i).getOccupiedBy().equals(occupant))) {
+                    if (!(continent1.getCountriesWithin().get(i).getOccupiedBy().equals(username))) {
                         return;
                     }
                 }
-                continent1.setOwnedBy(occupant);
+                continent1.setOwnedBy(username);
                 return;
             }
         }
     }
 
+    /**
+     * Checks if a country is occupied by a player.
+     *
+     * @param player    Player that ownership is checked for.
+     * @param countryId ID of the country checked.
+     * @return A Boolean representing whether the conditions are met or not.
+     */
     public boolean isPlayerOccupantOfGivenCountry(Player player, int countryId) {
         return player.getUsername().equals(getCountry(countryId).getOccupiedBy());
     }
@@ -372,6 +472,12 @@ public class WorldManager {
     // Asia:          7
     // Australia:     2
 
+    /**
+     * Calculates the amount of additional units a player gets for occupying entire continents.
+     *
+     * @param player Object of the player that is being checked.
+     * @return An Integer containing the amount of additional units the player gets.
+     */
     public int getAdditionalUnitsPerContinent(Player player) {
         int additionalUnits = 0;
         for (Continent continent : continentList) {
@@ -387,6 +493,11 @@ public class WorldManager {
         return additionalUnits;
     }
 
+    /**
+     * Retrieves and sets the amount of units a player gets to distribute in the reinforcement phase.
+     *
+     * @param player Object of the player whose turn it is.
+     */
     public void getReinforcementUnits(Player player) {
         int additionalUnits = getAdditionalUnitsPerContinent(player);
         int occupiedCountries = 0;
@@ -403,10 +514,16 @@ public class WorldManager {
                 }
             }
         }
-        //System.out.println("Reinforcement: " + reinforcementUnits + " Additional: " + additionalUnits);
         player.setArmies(player.getArmies() + additionalUnits + reinforcementUnits);
     }
 
+    /**
+     * Adds a specified amount of units to a country and subtracts that amount from the players counter of units left to place.
+     *
+     * @param player    Object of the player distributing units.
+     * @param countryId ID of the country units are to be distributed to.
+     * @param amount    Amount of units distributed to the country.
+     */
     public void distributeArmy(Player player, int countryId, int amount) {
         countryList.get(countryId).setArmies(countryList.get(countryId).getArmies() + amount);
         player.setArmies(player.getArmies() - amount);

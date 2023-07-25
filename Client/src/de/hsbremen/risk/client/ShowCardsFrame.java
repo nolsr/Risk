@@ -1,6 +1,7 @@
 package de.hsbremen.risk.client;
 
-import de.hsbremen.risk.server.Risk;
+import de.hsbremen.risk.common.ServerRemote;
+import de.hsbremen.risk.server.RiskServer;
 import de.hsbremen.risk.common.exceptions.InvalidCardCombinationException;
 import de.hsbremen.risk.common.entities.Player;
 import de.hsbremen.risk.common.entities.cards.Card;
@@ -10,6 +11,7 @@ import de.hsbremen.risk.client.components.DarkButton;
 
 import javax.swing.*;
 import java.awt.*;
+import java.rmi.RemoteException;
 
 /**
  * @author Raphael Tam-Dao
@@ -20,7 +22,7 @@ public class ShowCardsFrame extends JPanel {
     private final int[] chosenCard = new int[3];
     private int clickCounter;
 
-    public ShowCardsFrame(Player currentPlayer, Risk risk,boolean stack) {
+    public ShowCardsFrame(Player currentPlayer, ServerRemote riskServer, boolean stack) {
         super();
 
         this.setLayout(new BorderLayout());
@@ -50,16 +52,17 @@ public class ShowCardsFrame extends JPanel {
             darkButton.addActionListener(e -> {
                 chosenCard[clickCounter] = card.getId();
 
+                System.out.println("Clicked Card: " + chosenCard[clickCounter]);
                 darkButton.setEnabled(false);
                 clickCounter++;
                 if (clickCounter == 3) {
                     try {
                         JFrame thisFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
                         thisFrame.dispose();
-                        risk.tradeCards(chosenCard);
+                        riskServer.tradeCards(chosenCard);
                         JOptionPane.showMessageDialog(null, "You have successfully traded your cards!");
-                    } catch (InvalidCardCombinationException ex) {
-
+                    } catch (InvalidCardCombinationException | RemoteException ex) {
+                        JOptionPane.showMessageDialog(this, ex.getMessage());
                     }
                 }
             });

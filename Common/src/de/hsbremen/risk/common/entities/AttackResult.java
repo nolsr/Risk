@@ -1,10 +1,15 @@
 package de.hsbremen.risk.common.entities;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-public class AttackResult {
+public class AttackResult implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 528324944731843347L;
+
     private ArrayList<Integer> attackingRolls;
     private ArrayList<Integer> defendingRolls;
     private int winningAttackingDice;
@@ -38,7 +43,7 @@ public class AttackResult {
         for (int i = 0; i < minSize; i++) {
             if (attackingRolls.get(i) > defendingRolls.get(i)) {
                 winningAttackingDice++;
-            } else if (attackingRolls.get(i) < defendingRolls.get(i)) {
+            } else if (attackingRolls.get(i) <= defendingRolls.get(i)) {
                 winningDefendingDice++;
             }
         }

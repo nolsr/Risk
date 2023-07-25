@@ -4,6 +4,7 @@ import de.hsbremen.risk.common.entities.cards.Card;
 import de.hsbremen.risk.common.entities.cards.PeaceCard;
 import de.hsbremen.risk.common.entities.cards.UnitCard;
 import de.hsbremen.risk.common.entities.cards.WildCard;
+import de.hsbremen.risk.common.exceptions.NotEntitledToDrawCardException;
 import de.hsbremen.risk.server.CardManager;
 import de.hsbremen.risk.common.entities.*;
 import org.json.JSONArray;
@@ -145,7 +146,7 @@ public class FilePersistenceManager implements PersistenceManager{
         return cardList;
     }
 
-    public ArrayList<Player> retrievePlayerData(JSONObject jsonObject) {
+    public ArrayList<Player> retrievePlayerData(JSONObject jsonObject) throws NotEntitledToDrawCardException {
             ArrayList<Player> playerList = new ArrayList<>();
             JSONArray jsonArray = jsonObject.getJSONArray("players");
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -170,6 +171,7 @@ public class FilePersistenceManager implements PersistenceManager{
                     {
                         player.insertCardToHand(new PeaceCard(cardjsonArray.getJSONObject(j).getInt("id")));
                     }
+                  //  System.out.println(player.getUsername() + ": " + player.getCards().get(j));
                 }
 
                 playerList.add(player);

@@ -4,6 +4,7 @@ import de.hsbremen.risk.common.entities.cards.Card;
 import de.hsbremen.risk.common.entities.cards.PeaceCard;
 import de.hsbremen.risk.common.entities.cards.UnitCard;
 import de.hsbremen.risk.common.entities.cards.WildCard;
+import de.hsbremen.risk.common.exceptions.InvalidCardCombinationException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -141,8 +142,14 @@ public class CardManager {
         return tempCard;
     }
 
-    public int tradeCards(int[] cardIds)
-    {
+    public int drawCardID() {
+        Card tempCard = cardList.get(deckPosition);
+        deckPosition++;
+        //cardList.remove(0);
+        return tempCard.getId();
+    }
+
+    public int tradeCards(int[] cardIds) {
 
         Card card1 = getCardById(cardIds[0]);
         Card card2 = getCardById(cardIds[1]);

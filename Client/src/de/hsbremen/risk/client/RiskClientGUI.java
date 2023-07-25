@@ -1,6 +1,16 @@
 package de.hsbremen.risk.client;
 
-import de.hsbremen.risk.server.Risk;
+import de.hsbremen.risk.common.GameEventListener;
+import de.hsbremen.risk.common.ServerRemote;
+import de.hsbremen.risk.common.entities.Player;
+import de.hsbremen.risk.common.events.GameActionEvent;
+import de.hsbremen.risk.common.events.GameControlEvent;
+import de.hsbremen.risk.common.events.GameEvent;
+import de.hsbremen.risk.common.events.GameLobbyEvent;
+import de.hsbremen.risk.common.exceptions.LoadGameWrongPlayerException;
+import de.hsbremen.risk.common.exceptions.NotEnoughPlayersException;
+import de.hsbremen.risk.common.exceptions.NotEntitledToDrawCardException;
+import de.hsbremen.risk.server.RiskServer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,27 +18,39 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
+import java.io.Serial;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
-public class RiskClientGUI {
+public class RiskClientGUI extends UnicastRemoteObject implements GameEventListener {
+    @Serial
+    private static final long serialVersionUID = 8358370513053391721L;
 
-    // GameState Windows
-    private RiskLobby riskLobby;
-    private RiskStartScreen startScreen;
+    // Client view states
+    private final RiskLobby riskLobby;
+    private final RiskStartScreen startScreen;
     private RiskInGame inGame;
+    private final GameStateManager gamestateManager;
 
     private final JFrame window;
 
-    private final Risk risk;
+    private ServerRemote riskServer;
+    private Player player;
 
-    private final GameStateManager gamestateManager;
-
-    private final boolean quitGame = false;
-
-    public RiskClientGUI() {
+    public RiskClientGUI() throws RemoteException {
         gamestateManager = new GameStateManager();
-        risk = new Risk();
+        riskServer = new RiskServer();
         window = new JFrame();
+        riskLobby = new RiskLobby();
+        startScreen = new RiskStartScreen();
+
+        addStartScreenButtonListeners();
+        addLobbyButtonListeners();
     }
 
     public void createGameWindow() {
@@ -38,135 +60,142 @@ public class RiskClientGUI {
         window.setSize(1600, 900);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setLayout(new BorderLayout());
-
-        gameManager();
+        setView();
     }
 
-    public void gameManager() {
-        GameStateManager.GameState state = gamestateManager.getGameState();
-        switch (state) {
-            case MAIN_MENU -> {
-                startScreen = new RiskStartScreen();
-                changePanel(window, startScreen);
-                System.out.println("Game Manager Main Menu");
-                mainMenu();
-            }
-            case LOBBY -> {
-                riskLobby = new RiskLobby();
-                changePanel(window, riskLobby);
-                System.out.println("Game Manager Lobby Menu");
-                lobbyMenu();
-            }
-            case IN_GAME -> {
-                inGame = new RiskInGame(this.risk);
-                changePanel(window, inGame);
-                turnMenu();
-
-                window.addComponentListener(new ComponentAdapter() {
-                    @Override
-                    public void componentResized(ComponentEvent e) {
-                        super.componentResized(e);
-                        window.setVisible(true);
-                        inGame.redrawMap();
-                        window.setVisible(true);
-                    }
-                });
-
-                window.addWindowStateListener(new WindowAdapter() {
-                    @Override
-                    public void windowStateChanged(WindowEvent e) {
-                        super.windowStateChanged(e);
-                        window.setVisible(true);
-                        inGame.redrawMap();
-                        window.setVisible(true);
-                    }
-                });
-            }
+    public void setView() {
+        switch (gamestateManager.getGameState()) {
+            case MAIN_MENU -> changePanel(window, startScreen);
+            case LOBBY -> changePanel(window, riskLobby);
+            case IN_GAME -> changePanel(window, inGame);
         }
     }
 
-    private void mainMenu() {
-        System.out.println("Main Menu");
-        startScreen.getNewGameButton().addActionListener(e -> {
-            gamestateManager.enterLobby();
-            gameManager();
-        });
-        startScreen.getLoadGameButton().addActionListener(e -> {
-            String name = JOptionPane.showInputDialog("Please type in the file you want to load.");
+    private void addStartScreenButtonListeners() {
+        startScreen.getNewGameButton().addActionListener(listener -> {
+            String name = JOptionPane.showInputDialog(window, "Please enter your username");
+
+            if (name == null) {
+                return;
+            }
+
+            // Server connection
             try {
-                if (risk.loadGame(name)) {
-                    gamestateManager.enterGame();
-                } else if (name != null){
-                    JOptionPane.showMessageDialog(new JFrame(), "Couldn't find the file " + name + ".json");
+                String serviceName = "RiskServer";
+                Registry registry = LocateRegistry.getRegistry();
+                riskServer = (ServerRemote) registry.lookup(serviceName);
+
+                riskServer.addGameEventListener(this);
+
+
+                // Enter lobby
+                if (riskServer.getPlayer(name) == null) {
+                    if (name.length() < 3) {
+                        JOptionPane.showMessageDialog(window, "Your username cannot have less than 3 letters");
+                    } else {
+                        this.player = new Player(name);
+                        window.addWindowListener(new WindowAdapter() {
+                            @Override
+                            public void windowClosing(WindowEvent e) {
+                                super.windowClosing(e);
+                                try {
+                                    riskServer.removePlayer(getPlayer());
+                                    riskServer.removeGameEventListener(getGameEventListener());
+                                } catch (RemoteException remoteException) {
+                                    remoteException.printStackTrace();
+                                }
+                            }
+                        });
+                        try {
+                            riskServer.addPlayer(this.player);
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                        }
+                        riskLobby.updatePlayerList(riskServer.updatePlayerModel());
+                        gamestateManager.enterLobby();
+                        setView();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(window, name + " is already taken");
                 }
-                gameManager();
+            } catch (RemoteException | NotBoundException e) {
+                e.printStackTrace();
+            }
+        });
+        startScreen.getQuitGameButton().addActionListener(e -> System.exit(0));
+    }
+
+    private void addLobbyButtonListeners() {
+        riskLobby.getStartGameButton().addActionListener(e -> {
+            try {
+                riskServer.startGame();
+            } catch (NotEnoughPlayersException notEnoughPlayersException) {
+                JOptionPane.showMessageDialog(window, notEnoughPlayersException.getMessage());
+            } catch (RemoteException remoteException) {
+                remoteException.printStackTrace();
+            }
+        });
+
+        riskLobby.getExitButton().addActionListener(e -> {
+            try {
+                riskServer.removePlayer(this.player);
+            } catch (RemoteException remoteException) {
+                remoteException.printStackTrace();
+            }
+            gamestateManager.exitLobby();
+            setView();
+        });
+
+        riskLobby.getLoadGameButton().addActionListener(e -> {
+            String file = JOptionPane.showInputDialog(window, "Please type in the file you want to load.");
+            File f = new File(file + ".json");
+            try {
+                System.out.println("File: " + f);
+                if (f.isFile()) {
+                    riskServer.loadGame(file);
+                } else {
+                    JOptionPane.showMessageDialog(window, "Couldn't find the file " + file + ".json");
+                }
+            } catch (IOException ex) {
+               ex.printStackTrace();
+            } catch (LoadGameWrongPlayerException ex) {
+                JOptionPane.showMessageDialog(window, ex.getMessage());
+            }
+        });
+    }
+
+    private void addInGameButtonListeners() {
+        inGame.getSaveGameButton().addActionListener(e -> {
+            String name = JOptionPane.showInputDialog(window, "Please assign a file name for your saved game.");
+            try {
+                if (name.isEmpty()) {
+                    JOptionPane.showMessageDialog(window, "Please use at least one character as your file name");
+                } else {
+                    riskServer.saveGame(name);
+                }
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
-        startScreen.getQuitGameButton().addActionListener(e -> System.exit(0)) ;
-    }
-
-    private void lobbyMenu() {
-        System.out.println("Lobby Menu");
-
-        riskLobby.getStartGameButton().addActionListener(e -> {
-            if (risk.getModel().size() >= 3 && risk.getModel().size() <= 6) {
-                gamestateManager.enterGame();
-                risk.startGame();
-                System.out.println("Game gestartet");
-                gameManager();
-            } else {
-                JOptionPane.showMessageDialog(new JFrame(), "You can only start the game if you have a minimum of 3 players and a maximum of 6 players");
+        window.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
+                window.setVisible(true);
+                inGame.redrawMap();
+                window.setVisible(true);
             }
         });
-        riskLobby.getAddPlayerButton().addActionListener(e -> {
-                String name = JOptionPane.showInputDialog("Please enter your username");
 
-                if (risk.getPlayer(name) == null) {
-                    if (name.length() < 3) {
-                        JOptionPane.showMessageDialog(new JFrame(), "Your username cannot have less than 3 letters");
-                    } else {
-                        risk.addPlayer(name);
-                        riskLobby.getPlayerJList().setModel(risk.addPlayerToModel(name));
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(new JFrame(), name + " is already taken");
-                }
-        });
-        riskLobby.getRemovePlayerButton().addActionListener(e -> {
-            if (risk.getModel().size() == 0) {
-                JOptionPane.showMessageDialog(new JFrame(), "There are no players signed up for the game yet");
-            } else {
-                String name = JOptionPane.showInputDialog("Please enter the player you want to remove");
-                if (!name.isEmpty()){
-                    risk.removePlayer(name);
-                    riskLobby.getPlayerJList().setModel(risk.removePlayerFromModel(name));
-                }
+        window.addWindowStateListener(new WindowAdapter() {
+            @Override
+            public void windowStateChanged(WindowEvent e) {
+                super.windowStateChanged(e);
+                window.setVisible(true);
+                inGame.redrawMap();
+                window.setVisible(true);
             }
         });
-        riskLobby.getExitButton().addActionListener(e -> {
-            risk.getModel().clear();
-            risk.getPlayerList().clear();
-            gamestateManager.exitLobby();
-            gameManager();
-        });
-    }
-
-    private void turnMenu() {
-        System.out.println("Turn Menu");
-        inGame.getSaveGameButton().addActionListener(e -> {
-            String name = JOptionPane.showInputDialog("Please assign a file name for your saved game.");
-                try {
-                    if (name.isEmpty()) {
-                        JOptionPane.showMessageDialog(new JFrame(), "Please use at least one character as your file name");
-                    } else {
-                        risk.saveGame(name);
-                    }
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            });
     }
 
     public void changePanel(JFrame frame, JPanel panel) {
@@ -175,8 +204,66 @@ public class RiskClientGUI {
         frame.revalidate();
     }
 
+    public Player getPlayer() {
+        return player;
+    }
 
-    public static void main(String[] args) {
+    public RiskClientGUI getGameEventListener() {
+        return this;
+    }
+
+    @Override
+    public void handleGameEvent(GameEvent event) throws RemoteException {
+        if (event instanceof GameActionEvent) {
+            GameActionEvent e = (GameActionEvent) event;
+            if (e.getPlayer().getUsername().equals(this.getPlayer().getUsername())) {
+                inGame.updatePlayer(e.getPlayer());
+            }
+            inGame.updateGUI(e);
+            switch(e.getType()) {
+                case ATTACK -> {
+                    if (e.getAttack().getDefendingPlayer().getUsername().equals(this.getPlayer().getUsername())) {
+                        inGame.getDefendingDice(e);
+                    }
+                }
+                case ATTACK_RESULT -> inGame.handleAttackResultEvent(e);
+                case DRAW -> {
+                    if (e.getPlayer().getUsername().equals(player.getUsername())) {
+                        inGame.updatePlayer(e.getPlayer());
+                        JOptionPane.showMessageDialog(window, "You drew a card");
+                    }
+                }
+                case TRADE -> {
+                    if (e.getPlayer().getUsername().equals(player.getUsername())) {
+                        inGame.updatePlayer(e.getPlayer());
+                    }
+                }
+            }
+        } else if (event instanceof GameControlEvent) {
+            GameControlEvent e = (GameControlEvent) event;
+                if (e.getType() == GameControlEvent.GameControlEventType.GAME_STARTED) {
+                this.player = riskServer.getPlayer(this.player.getUsername());
+                inGame = new RiskInGame(this.riskServer, this.riskServer.getPlayerList(),
+                        e.getCountries(), this.player, ((GameControlEvent) event).getTurn());
+                addInGameButtonListeners();
+                gamestateManager.enterGame();
+                setView();
+            } else if (((GameControlEvent) event).getType() == GameControlEvent.GameControlEventType.NEXT_PHASE) {
+                inGame.updateTurn(((GameControlEvent) event).getTurn());
+            } else if (((GameControlEvent) event).getType() == GameControlEvent.GameControlEventType.GAME_OVER) {
+                inGame.updateTurn(((GameControlEvent) event).getTurn());
+            }
+        } else if (event instanceof GameLobbyEvent) {
+            if (((GameLobbyEvent) event).getType() == GameLobbyEvent.GameLobbyEventType.PLAYER_ENTERED) {
+                riskLobby.updateLobbyLog(event.getPlayer().getUsername() +" joined the lobby\n");
+            } else {
+                riskLobby.updateLobbyLog(event.getPlayer().getUsername() +" left the lobby\n");
+            }
+            riskLobby.updatePlayerList(riskServer.updatePlayerModel());
+        }
+    }
+
+    public static void main(String[] args) throws RemoteException {
         RiskClientGUI riskClientGUI = new RiskClientGUI();
         riskClientGUI.createGameWindow();
     }

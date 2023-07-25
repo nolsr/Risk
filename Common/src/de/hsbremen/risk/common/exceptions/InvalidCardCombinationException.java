@@ -16,8 +16,10 @@ public class InvalidCardCombinationException extends CardExceptions
                 "3 cards with a different unit\n" +
                 "or 3 random cards and a wild card", player.getUsername()));
 
-         */
+
         JOptionPane.showMessageDialog(new JFrame(), String.format("%s has given a invalid combination of Cards!\n" +
                 "blablablablbal" , player.getUsername()));
+
+         */
     }
 }

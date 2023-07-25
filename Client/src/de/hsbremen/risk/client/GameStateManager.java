@@ -25,5 +25,7 @@ public class GameStateManager {
         this.state = GameState.MAIN_MENU;
     }
 
-    public void enterGame() { this.state = GameState.IN_GAME; }
+    public void enterGame() {
+        this.state = GameState.IN_GAME;
+    }
 }

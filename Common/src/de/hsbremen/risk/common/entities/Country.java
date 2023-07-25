@@ -1,7 +1,12 @@
 package de.hsbremen.risk.common.entities;
 
-public class Country
-{
+import java.io.Serial;
+import java.io.Serializable;
+
+public class Country implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -1590791042578738044L;
+
     private final int adjacencyId;
     private final String name;
     private int armies;

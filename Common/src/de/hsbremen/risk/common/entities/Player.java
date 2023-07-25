@@ -2,16 +2,28 @@ package de.hsbremen.risk.common.entities;
 
 import de.hsbremen.risk.common.entities.cards.Card;
 import de.hsbremen.risk.common.entities.missions.Mission;
+import de.hsbremen.risk.common.exceptions.NotEntitledToDrawCardException;
+
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Player {
+public class Player implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -5630139682033064525L;
+
     private final String username;
     private int armies;
-    private ArrayList<Card> cards = new ArrayList<>();
+    private final ArrayList<Card> cards = new ArrayList<>();
     private Mission mission;
     private boolean entitledToDraw = false;
 
     private double randomNumber;
+
+    public Player(String username) {
+        this.username = username;
+        this.armies = 0;
+    }
 
     public Player(String username, int armyAmount) {
         this.username = username;
@@ -66,10 +78,11 @@ public class Player {
      * Insert a new Card to a Players hand
      * @param card the card that needs to be inserted into the players hand
      */
-    public void insertCardToHand(Card card)
-    {
+    public void insertCardToHand(Card card) {
         cards.add(card);
     }
+
+
 
     /**
      * Get all cards on the player hand
