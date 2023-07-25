@@ -329,41 +329,23 @@
                     "id": 3
                 },
                 {
-                    "country": "Greenland",
-                    "kind": "Unit-Card",
-                    "units": "Cavalry",
-                    "id": 2
-                },
-                {
-                    "country": "India",
-                    "kind": "Unit-Card",
-                    "units": "Cavalry",
-                    "id": 36
-                },
-                {
-                    "country": "Ural",
-                    "kind": "Unit-Card",
-                    "units": "Cavalry",
-                    "id": 27
-                },
-                {
                     "kind": "Wild-Card",
                     "units": "Wild",
                     "id": 42
                 }
             ],
-            "armies": 4,
+            "armies": 0,
             "rndomNmbr": 0.11800919475593863,
             "username": "aaa"
         }
     ],
     "cardManager": {
-        "nthTrade": 0,
+        "nthTrade": 1,
         "deckPosition": 11
     },
     "turn": {
-        "phase": "Reinforcement Phase",
-        "player": "aaa"
+        "phase": "Drawing Phase",
+        "player": "ccc"
     },
     "continents": [
         {
@@ -400,7 +382,7 @@
                     "countryId": 5
                 },
                 {
-                    "armies": 3,
+                    "armies": 4,
                     "occupiedBy": "ccc",
                     "countryId": 6
                 },
@@ -410,8 +392,8 @@
                     "countryId": 7
                 },
                 {
-                    "armies": 5,
-                    "occupiedBy": "ccc",
+                    "armies": 1,
+                    "occupiedBy": "aaa",
                     "countryId": 8
                 }
             ],
@@ -529,17 +511,17 @@
                     "countryId": 26
                 },
                 {
-                    "armies": 3,
-                    "occupiedBy": "bbb",
+                    "armies": 1,
+                    "occupiedBy": "ccc",
                     "countryId": 27
                 },
                 {
-                    "armies": 5,
+                    "armies": 9,
                     "occupiedBy": "bbb",
                     "countryId": 28
                 },
                 {
-                    "armies": 1,
+                    "armies": 5,
                     "occupiedBy": "ccc",
                     "countryId": 29
                 },
@@ -549,12 +531,12 @@
                     "countryId": 30
                 },
                 {
-                    "armies": 2,
+                    "armies": 1,
                     "occupiedBy": "bbb",
                     "countryId": 31
                 },
                 {
-                    "armies": 2,
+                    "armies": 8,
                     "occupiedBy": "aaa",
                     "countryId": 32
                 },

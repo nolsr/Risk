@@ -10,7 +10,7 @@ public class GameControlEvent extends GameEvent {
     @Serial
     private static final long serialVersionUID = -5597502502428648233L;
 
-    public enum GameControlEventType { GAME_STARTED, NEXT_PHASE, GAME_OVER }
+    public enum GameControlEventType { GAME_STARTED, NEXT_PHASE, GAME_OVER}
 
     private final GameControlEventType type;
     private final Turn turn;

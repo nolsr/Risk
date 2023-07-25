@@ -39,8 +39,6 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
     private Attack attack;
     private List<GameEventListener> listeners;
 
-    private int defendingDice;
-
     public RiskServer() throws RemoteException {
         filePersistenceManager = new FilePersistenceManager();
         playerManager = new PlayerManager();
@@ -138,7 +136,6 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
             this.currentTurn.setPhase(filePersistenceManager.retrieveTurnPhase(loadFile(file)));
             filePersistenceManager.retrieveCardManagerInfo(loadFile(file), cardManager);
             cardManager.updateCardManager(filePersistenceManager.retrieveCardsData(loadFile(file)));
-
             assignMissions(false, file); // Wildcards noch nicht
             this.notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.GAME_STARTED, getCountries()));
         } catch (NullPointerException ignored) {
@@ -388,19 +385,15 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
     }
 
     public void playerDrawsCard() throws RemoteException, NotEntitledToDrawCardException {
-        Card c = cardManager.drawCard();
-        System.out.print("PULLED CARD: ");
-        System.out.println(c.getId());
-        this.currentTurn.getPlayer().insertCardToHand(c);
-        this.currentTurn.getPlayer().setEntitledToDraw(false);
-        this.notifyListeners(new GameActionEvent(this.currentTurn.getPlayer(), GameActionEvent.GameActionEventType.DRAW, getPlayerList(), getCountries()));
+       if (!this.currentTurn.getPlayer().getEntitledToDraw()) {
+           throw new NotEntitledToDrawCardException();
+       }
+       Card c = cardManager.drawCard();
+       this.currentTurn.getPlayer().insertCardToHand(c);
+       this.currentTurn.getPlayer().setEntitledToDraw(false);
+       this.notifyListeners(new GameActionEvent(this.currentTurn.getPlayer(), GameActionEvent.GameActionEventType.DRAW, getPlayerList(), getCountries()));
     }
 
-
-    public void playerInsertCardToHand(int cardID) throws NotEntitledToDrawCardException, RemoteException {
-        this.currentTurn.getPlayer().insertCardToHand(cardManager.getCardById(cardID));
-        System.out.println("Server Side Card ID " + cardID);
-    }
 
     public boolean playerHasPeaceCard(Player player) {
         for (Card card : player.getCards()) {
