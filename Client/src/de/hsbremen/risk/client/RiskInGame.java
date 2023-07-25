@@ -31,7 +31,7 @@ public class RiskInGame extends JPanel {
         this.player = player;
         this.map = new RiskMap(players, countries);
         this.infoPanel = new InGameInfoPanel(players, player);
-        this.controlPanel = new InGameControlPanel(turn);
+        this.controlPanel = new InGameControlPanel(turn, player);
         this.currentTurnPanel = new CurrentTurnPanel(turn);
         updateTurn(turn);
         this.listenToCountryClicked = false;
