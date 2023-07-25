@@ -9,7 +9,6 @@ import de.hsbremen.risk.common.events.GameEvent;
 import de.hsbremen.risk.common.events.GameLobbyEvent;
 import de.hsbremen.risk.common.exceptions.LoadGameWrongPlayerException;
 import de.hsbremen.risk.common.exceptions.NotEnoughPlayersException;
-import de.hsbremen.risk.common.exceptions.NotEntitledToDrawCardException;
 import de.hsbremen.risk.server.RiskServer;
 
 import javax.swing.*;
@@ -139,6 +138,7 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
         riskLobby.getExitButton().addActionListener(e -> {
             try {
                 riskServer.removePlayer(this.player);
+                riskServer.removeGameEventListener(getGameEventListener());
             } catch (RemoteException remoteException) {
                 remoteException.printStackTrace();
             }
