@@ -236,7 +236,7 @@ public class RiskInGame extends JPanel {
                 amountOfUnits = Integer.parseInt(JOptionPane.showInputDialog(
                         this,
                         "You country " + event.getCountries().get(event.getAttack().getTargetCountry()).getName() +
-                                " is being attacked with " + Math.max(event.getAttack().getAmount(), 3)
+                                " is being attacked with " + Math.min(event.getAttack().getAmount(), 3)
                                 + " dice! How many armies do you want to defend with?"));
                 this.riskServer.defendAttack(amountOfUnits);
             } catch (NumberFormatException e) {

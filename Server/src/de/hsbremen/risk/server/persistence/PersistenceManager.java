@@ -15,6 +15,4 @@ public interface PersistenceManager {
     JSONObject saveGame(ArrayList<Player> player, ArrayList<Continent> continentList, Turn turn, ArrayList<Card> card, CardManager cardManager) throws IOException;
 
     JSONObject loadFile(String file) throws IOException;
-
-
 }

@@ -4,7 +4,6 @@ import de.hsbremen.risk.common.entities.cards.Card;
 import de.hsbremen.risk.common.entities.cards.PeaceCard;
 import de.hsbremen.risk.common.entities.cards.UnitCard;
 import de.hsbremen.risk.common.entities.cards.WildCard;
-import de.hsbremen.risk.common.exceptions.NotEntitledToDrawCardException;
 import de.hsbremen.risk.server.CardManager;
 import de.hsbremen.risk.common.entities.*;
 import org.json.JSONArray;
@@ -13,11 +12,11 @@ import org.json.JSONObject;
 import java.io.*;
 import java.util.ArrayList;
 
-public class FilePersistenceManager implements PersistenceManager{
+public class FilePersistenceManager implements PersistenceManager {
 
     @Override
     public JSONObject saveGame(ArrayList<Player> playerList, ArrayList<Continent> continentList, Turn turn, ArrayList<Card> cardList, CardManager cardManager) {
-        try{
+        try {
             JSONObject rootObject = new JSONObject();
 
             JSONArray playerArray = new JSONArray();
@@ -29,11 +28,9 @@ public class FilePersistenceManager implements PersistenceManager{
                 jsonObject.put("mission", player.getMissionString());
 
                 JSONArray jsonCardOnHand = new JSONArray();
-                for (Card card: player.getCards())
-                {
+                for (Card card : player.getCards()) {
                     JSONObject jsonCardObject = new JSONObject();
-                    if(card instanceof UnitCard)
-                    {
+                    if (card instanceof UnitCard) {
                         jsonCardObject.put("country", ((UnitCard) card).getCountry());
                     }
                     jsonCardObject.put("kind", card.getKind());
@@ -78,14 +75,12 @@ public class FilePersistenceManager implements PersistenceManager{
             System.out.println(turn.getPhase());
             jsonObject.put("phase", turn.getPhase());
             rootObject.put("turn", jsonObject);
-        //    System.out.println("JSON Object" + rootObject.toString(4));
+            //    System.out.println("JSON Object" + rootObject.toString(4));
 
             JSONArray jsonCardArray = new JSONArray();
-            for (Card card: cardList)
-            {
+            for (Card card : cardList) {
                 JSONObject jsonCardObject = new JSONObject();
-                if(card instanceof UnitCard)
-                {
+                if (card instanceof UnitCard) {
                     jsonCardObject.put("country", ((UnitCard) card).getCountry());
                 }
                 jsonCardObject.put("kind", card.getKind());
@@ -109,74 +104,59 @@ public class FilePersistenceManager implements PersistenceManager{
 
     @Override
     public JSONObject loadFile(String file) throws IOException {
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file + ".json"));
-            String line;
-            StringBuilder builder = new StringBuilder();
-            while ((line = br.readLine()) != null) {
-                builder.append(line);
-            }
-          //  System.out.println("JSON: " + builder);
-            br.close();
-            return new JSONObject(builder.toString());
-        } catch (FileNotFoundException ignored) {
-
+        BufferedReader br = new BufferedReader(new FileReader(file + ".json"));
+        String line;
+        StringBuilder builder = new StringBuilder();
+        while ((line = br.readLine()) != null) {
+            builder.append(line);
         }
-        return null;
+        br.close();
+        return new JSONObject(builder.toString());
     }
-    public ArrayList<Card> retrieveCardsData(JSONObject jsonObject)
-    {
+
+    public ArrayList<Card> retrieveCardsData(JSONObject jsonObject) {
         ArrayList<Card> cardList = new ArrayList<>();
         JSONArray jsonArray = jsonObject.getJSONArray("cardList");
-        for(int i = 0; i < jsonArray.length(); i++)
-        {
-            if(jsonArray.getJSONObject(i).getString("kind").equals("Unit-Card"))
-            {
-                cardList.add(new UnitCard(jsonArray.getJSONObject(i).getString("units"), jsonArray.getJSONObject(i).getString("country"),jsonArray.getJSONObject(i).getInt("id")));
+        for (int i = 0; i < jsonArray.length(); i++) {
+            if (jsonArray.getJSONObject(i).getString("kind").equals("Unit-Card")) {
+                cardList.add(new UnitCard(jsonArray.getJSONObject(i).getString("units"), jsonArray.getJSONObject(i).getString("country"), jsonArray.getJSONObject(i).getInt("id")));
             }
-            if(jsonArray.getJSONObject(i).getString("kind").equals("Peace-Card"))
-            {
+            if (jsonArray.getJSONObject(i).getString("kind").equals("Peace-Card")) {
                 cardList.add(new PeaceCard(jsonArray.getJSONObject(i).getInt("id")));
             }
-            if(jsonArray.getJSONObject(i).getString("kind").equals("Wild-Card"))
-            {
+            if (jsonArray.getJSONObject(i).getString("kind").equals("Wild-Card")) {
                 cardList.add(new WildCard(jsonArray.getJSONObject(i).getInt("id")));
             }
         }
         return cardList;
     }
 
-    public ArrayList<Player> retrievePlayerData(JSONObject jsonObject) throws NotEntitledToDrawCardException {
-            ArrayList<Player> playerList = new ArrayList<>();
-            JSONArray jsonArray = jsonObject.getJSONArray("players");
-            for (int i = 0; i < jsonArray.length(); i++) {
+    public ArrayList<Player> retrievePlayerData(JSONObject jsonObject) {
+        ArrayList<Player> playerList = new ArrayList<>();
+        JSONArray jsonArray = jsonObject.getJSONArray("players");
+        for (int i = 0; i < jsonArray.length(); i++) {
 
-                Player player = new Player(jsonArray.getJSONObject(i).getString("username"), jsonArray.getJSONObject(i).getInt("armies"));
-                double randomNumber = jsonArray.getJSONObject(i).getDouble("rndomNmbr");
-                player.setRandomNumber(randomNumber);
+            Player player = new Player(jsonArray.getJSONObject(i).getString("username"), jsonArray.getJSONObject(i).getInt("armies"));
+            double randomNumber = jsonArray.getJSONObject(i).getDouble("rndomNmbr");
+            player.setRandomNumber(randomNumber);
 
-                JSONArray cardjsonArray = jsonArray.getJSONObject(i).getJSONArray("cards");
+            JSONArray cardJsonArray = jsonArray.getJSONObject(i).getJSONArray("cards");
 
-                for (int j = 0; j < cardjsonArray.length(); j++)
-                {
-                    if(cardjsonArray.getJSONObject(j).getString("kind").equals("Unit-Card"))
-                    {
-                        player.insertCardToHand(new UnitCard(cardjsonArray.getJSONObject(j).getString("units"), cardjsonArray.getJSONObject(j).getString("country"), cardjsonArray.getJSONObject(j).getInt("id")));
-                    }
-                    if(cardjsonArray.getJSONObject(j).getString("kind").equals("Peace-Card"))
-                    {
-                        player.insertCardToHand(new WildCard(cardjsonArray.getJSONObject(j).getInt("id")));
-                    }
-                    if(cardjsonArray.getJSONObject(j).getString("kind").equals("Wild-Card"))
-                    {
-                        player.insertCardToHand(new PeaceCard(cardjsonArray.getJSONObject(j).getInt("id")));
-                    }
-                  //  System.out.println(player.getUsername() + ": " + player.getCards().get(j));
+            for (int j = 0; j < cardJsonArray.length(); j++) {
+                if (cardJsonArray.getJSONObject(j).getString("kind").equals("Unit-Card")) {
+                    player.insertCardToHand(new UnitCard(cardJsonArray.getJSONObject(j).getString("units"), cardJsonArray.getJSONObject(j).getString("country"), cardJsonArray.getJSONObject(j).getInt("id")));
                 }
-
-                playerList.add(player);
+                if (cardJsonArray.getJSONObject(j).getString("kind").equals("Peace-Card")) {
+                    player.insertCardToHand(new WildCard(cardJsonArray.getJSONObject(j).getInt("id")));
+                }
+                if (cardJsonArray.getJSONObject(j).getString("kind").equals("Wild-Card")) {
+                    player.insertCardToHand(new PeaceCard(cardJsonArray.getJSONObject(j).getInt("id")));
+                }
             }
-            return playerList;
+
+            playerList.add(player);
+        }
+        return playerList;
     }
 
     public Player retrieveDefeatPlayerMission(JSONObject jsonObject, Player player, ArrayList<Player> playerList) {
@@ -187,8 +167,6 @@ public class FilePersistenceManager implements PersistenceManager{
             if (username.equals(player.getUsername())) {
                 for (Player searchPlayer : playerList) {
                     if (mission.contains(searchPlayer.getUsername())) {
-                  //      System.out.println("Mission " + mission);
-                    //    System.out.println("Mission contains " + searchPlayer.getUsername() + " " + mission.contains(searchPlayer.getUsername()));
                         return searchPlayer;
                     }
                 }
@@ -206,7 +184,7 @@ public class FilePersistenceManager implements PersistenceManager{
             if (username.equals(player.getUsername())) {
                 if (mission.contains("North America")) {
                     trimmedContinentList.add(continentList.get(0));
-                    }
+                }
                 if (mission.contains("South America")) {
                     trimmedContinentList.add(continentList.get(1));
                 }
@@ -227,8 +205,7 @@ public class FilePersistenceManager implements PersistenceManager{
         return trimmedContinentList;
     }
 
-    public void retrieveCardManagerInfo(JSONObject jsonObject, CardManager cardManager)
-    {
+    public void retrieveCardManagerInfo(JSONObject jsonObject, CardManager cardManager) {
         JSONObject jObject = jsonObject.getJSONObject("cardManager");
         cardManager.setNthTrade(jObject.getInt("nthTrade"));
         cardManager.setDeckPosition(jObject.getInt("deckPosition"));
