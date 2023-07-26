@@ -109,7 +109,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
 
         Player firstTurnPlayer = getFirstTurnPlayer();
         this.currentTurn = new Turn(firstTurnPlayer);
-        System.out.println("Star game turn: " + this.currentTurn);
+        System.out.println("Start game turn: " + this.currentTurn);
         for (Continent continent : worldManager.getContinentList())
             for (Player player : getPlayerList()) {
                 checkIfPlayerOwnsContinentAndSet(continent.getName(), player.getUsername());
@@ -125,7 +125,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
      * @throws IOException                  When there is a problem reading the file.
      * @throws LoadGameWrongPlayerException When there are not the same players in the lobby as in the saved game.
      */
-    public void loadGame(String file) throws IOException, LoadGameWrongPlayerException, FileNotFoundException {
+    public void loadGame(String file) throws IOException, LoadGameWrongPlayerException {
         try {
             if (!checkLoadGamePossible(file)) {
                 throw new LoadGameWrongPlayerException(file);
@@ -165,7 +165,6 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
                 for (Player jsonFilePlayer : temp) {
                     if (playerListPlayer.getUsername().equals(jsonFilePlayer.getUsername())) {
                         counter++;
-                        System.out.println("Counter: " + counter);
                     }
                 }
             }
@@ -520,7 +519,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
      * @throws IOException When having trouble writing the save file.
      */
     public void saveGame(String file) throws IOException {
-        filePersistenceManager.writeGameIntoFile(getPlayerList(), worldManager.getContinentList(), getCurrentTurn(), cardManager.getCardList(), cardManager, file);
+        filePersistenceManager.writeGameIntoFile(getPlayerList(), worldManager.getContinentList(), getCurrentTurn(), cardManager, file);
     }
 
     /**
@@ -581,7 +580,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
      * @return JSONObject of the contents of the file.
      * @throws IOException When having trouble reading or finding the file.
      */
-    private JSONObject loadFile(String file) throws IOException, FileNotFoundException {
+    private JSONObject loadFile(String file) throws IOException {
         return filePersistenceManager.loadFile(file);
     }
 
