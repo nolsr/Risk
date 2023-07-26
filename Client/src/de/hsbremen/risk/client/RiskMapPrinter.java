@@ -9,6 +9,7 @@ public class RiskMapPrinter {
     /*
      * Not used anymore but was a lot of work so we left it in the project.
      *
+     * This was the class that printed a colorized map to the command line interface.
      */
     private static final String ANSI_RESET = "\u001B[0m";
     private static final String ANSI_RED = "\u001B[31m";
