@@ -1,57 +1,10 @@
 {
     "cardList": [
         {
-            "country": "Northwest Territory",
+            "country": "Japan",
             "kind": "Unit-Card",
             "units": "Artillery",
-            "id": 1
-        },
-        {
-            "country": "Alberta",
-            "kind": "Unit-Card",
-            "units": "Cavalry",
-            "id": 3
-        },
-        {
-            "country": "Greenland",
-            "kind": "Unit-Card",
-            "units": "Cavalry",
-            "id": 2
-        },
-        {
-            "country": "India",
-            "kind": "Unit-Card",
-            "units": "Cavalry",
-            "id": 36
-        },
-        {
-            "country": "Ural",
-            "kind": "Unit-Card",
-            "units": "Cavalry",
-            "id": 27
-        },
-        {
-            "country": "Siberia",
-            "kind": "Unit-Card",
-            "units": "Cavalry",
-            "id": 28
-        },
-        {
-            "country": "East Africa",
-            "kind": "Unit-Card",
-            "units": "Infantry",
-            "id": 23
-        },
-        {
-            "country": "Egypt",
-            "kind": "Unit-Card",
-            "units": "Infantry",
-            "id": 21
-        },
-        {
-            "kind": "Wild-Card",
-            "units": "Wild",
-            "id": 42
+            "id": 34
         },
         {
             "country": "Madagascar",
@@ -60,28 +13,22 @@
             "id": 25
         },
         {
-            "country": "Western US",
+            "country": "Mongolia",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 33
+        },
+        {
+            "country": "Western Europe",
             "kind": "Unit-Card",
             "units": "Artillery",
-            "id": 6
+            "id": 18
         },
         {
-            "country": "Irkutsk",
+            "country": "Siberia",
             "kind": "Unit-Card",
             "units": "Cavalry",
-            "id": 29
-        },
-        {
-            "country": "China",
-            "kind": "Unit-Card",
-            "units": "Infantry",
-            "id": 32
-        },
-        {
-            "country": "New Guinea",
-            "kind": "Unit-Card",
-            "units": "Infantry",
-            "id": 39
+            "id": 28
         },
         {
             "country": "Peru",
@@ -90,34 +37,10 @@
             "id": 11
         },
         {
-            "country": "Central America",
-            "kind": "Unit-Card",
-            "units": "Artillery",
-            "id": 8
-        },
-        {
-            "country": "Iceland",
+            "country": "New Guinea",
             "kind": "Unit-Card",
             "units": "Infantry",
-            "id": 13
-        },
-        {
-            "country": "Northern Europe",
-            "kind": "Unit-Card",
-            "units": "Artillery",
-            "id": 16
-        },
-        {
-            "country": "Ontario",
-            "kind": "Unit-Card",
-            "units": "Cavalry",
-            "id": 4
-        },
-        {
-            "country": "Yakutsk",
-            "kind": "Unit-Card",
-            "units": "Cavalry",
-            "id": 26
+            "id": 39
         },
         {
             "country": "Eastern Australia",
@@ -126,9 +49,46 @@
             "id": 41
         },
         {
-            "kind": "Peace-Card",
-            "units": "Peace",
-            "id": 44
+            "country": "Western Australia",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 40
+        },
+        {
+            "country": "Yakutsk",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 26
+        },
+        {
+            "country": "Afghanistan",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 31
+        },
+        {
+            "country": "Ural",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 27
+        },
+        {
+            "country": "South Africa",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 24
+        },
+        {
+            "country": "Southern Europe",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 19
+        },
+        {
+            "country": "Iceland",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 13
         },
         {
             "country": "Siam",
@@ -137,16 +97,15 @@
             "id": 37
         },
         {
-            "country": "Eastern US",
+            "country": "Ontario",
             "kind": "Unit-Card",
-            "units": "Artillery",
-            "id": 7
+            "units": "Cavalry",
+            "id": 4
         },
         {
-            "country": "Mongolia",
-            "kind": "Unit-Card",
-            "units": "Infantry",
-            "id": 33
+            "kind": "Wild-Card",
+            "units": "Wild",
+            "id": 42
         },
         {
             "country": "Brazil",
@@ -161,94 +120,10 @@
             "id": 12
         },
         {
-            "country": "Afghanistan",
-            "kind": "Unit-Card",
-            "units": "Cavalry",
-            "id": 31
-        },
-        {
-            "country": "Southern Europe",
-            "kind": "Unit-Card",
-            "units": "Artillery",
-            "id": 19
-        },
-        {
-            "country": "Western Australia",
-            "kind": "Unit-Card",
-            "units": "Artillery",
-            "id": 40
-        },
-        {
-            "country": "Venezuela",
+            "country": "East Africa",
             "kind": "Unit-Card",
             "units": "Infantry",
-            "id": 9
-        },
-        {
-            "country": "Japan",
-            "kind": "Unit-Card",
-            "units": "Artillery",
-            "id": 34
-        },
-        {
-            "country": "South Africa",
-            "kind": "Unit-Card",
-            "units": "Artillery",
-            "id": 24
-        },
-        {
-            "country": "Quebec",
-            "kind": "Unit-Card",
-            "units": "Cavalry",
-            "id": 5
-        },
-        {
-            "country": "Ukraine",
-            "kind": "Unit-Card",
-            "units": "Cavalry",
-            "id": 17
-        },
-        {
-            "country": "Great Britain",
-            "kind": "Unit-Card",
-            "units": "Artillery",
-            "id": 15
-        },
-        {
-            "country": "Middle East",
-            "kind": "Unit-Card",
-            "units": "Infantry",
-            "id": 35
-        },
-        {
-            "country": "Kamchatka",
-            "kind": "Unit-Card",
-            "units": "Infantry",
-            "id": 30
-        },
-        {
-            "country": "Western Europe",
-            "kind": "Unit-Card",
-            "units": "Artillery",
-            "id": 18
-        },
-        {
-            "country": "Alaska",
-            "kind": "Unit-Card",
-            "units": "Infantry",
-            "id": 0
-        },
-        {
-            "country": "North Africa",
-            "kind": "Unit-Card",
-            "units": "Cavalry",
-            "id": 20
-        },
-        {
-            "country": "Scandinavia",
-            "kind": "Unit-Card",
-            "units": "Cavalry",
-            "id": 14
+            "id": 23
         },
         {
             "country": "Indonesia",
@@ -257,113 +132,227 @@
             "id": 38
         },
         {
+            "country": "North Africa",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 20
+        },
+        {
+            "kind": "Peace-Card",
+            "units": "Peace",
+            "id": 44
+        },
+        {
+            "country": "Ukraine",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 17
+        },
+        {
+            "country": "Northern Europe",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 16
+        },
+        {
+            "country": "India",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 36
+        },
+        {
             "country": "Congo",
             "kind": "Unit-Card",
             "units": "Infantry",
             "id": 22
         },
         {
+            "country": "China",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 32
+        },
+        {
+            "country": "Alberta",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 3
+        },
+        {
+            "country": "Greenland",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 2
+        },
+        {
+            "country": "Quebec",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 5
+        },
+        {
+            "country": "Scandinavia",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 14
+        },
+        {
             "kind": "Wild-Card",
             "units": "Wild",
             "id": 43
+        },
+        {
+            "country": "Alaska",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 0
+        },
+        {
+            "country": "Kamchatka",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 30
+        },
+        {
+            "country": "Western US",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 6
+        },
+        {
+            "country": "Middle East",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 35
+        },
+        {
+            "country": "Northwest Territory",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 1
+        },
+        {
+            "country": "Eastern US",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 7
+        },
+        {
+            "country": "Irkutsk",
+            "kind": "Unit-Card",
+            "units": "Cavalry",
+            "id": 29
+        },
+        {
+            "country": "Egypt",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 21
+        },
+        {
+            "country": "Central America",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 8
+        },
+        {
+            "country": "Great Britain",
+            "kind": "Unit-Card",
+            "units": "Artillery",
+            "id": 15
+        },
+        {
+            "country": "Venezuela",
+            "kind": "Unit-Card",
+            "units": "Infantry",
+            "id": 9
         }
     ],
     "players": [
         {
-            "mission": "Occupy 24 countries",
-            "cards": [{
-                "country": "Madagascar",
-                "kind": "Unit-Card",
-                "units": "Cavalry",
-                "id": 25
-            }],
-            "armies": 0,
-            "rndomNmbr": 0.7842015776217951,
-            "username": "bbb"
-        },
-        {
-            "mission": "Occupy the continents: South America and Asia",
+            "mission": "Occupy the continents: North America and Australia",
             "cards": [
                 {
-                    "country": "Siberia",
-                    "kind": "Unit-Card",
-                    "units": "Cavalry",
-                    "id": 28
-                },
-                {
-                    "country": "East Africa",
-                    "kind": "Unit-Card",
-                    "units": "Infantry",
-                    "id": 23
-                },
-                {
-                    "country": "Egypt",
-                    "kind": "Unit-Card",
-                    "units": "Infantry",
-                    "id": 21
-                },
-                {
-                    "country": "Western US",
+                    "country": "South Africa",
                     "kind": "Unit-Card",
                     "units": "Artillery",
-                    "id": 6
+                    "id": 24
+                },
+                {
+                    "country": "Siam",
+                    "kind": "Unit-Card",
+                    "units": "Infantry",
+                    "id": 37
+                },
+                {
+                    "country": "Brazil",
+                    "kind": "Unit-Card",
+                    "units": "Artillery",
+                    "id": 10
+                },
+                {
+                    "kind": "Peace-Card",
+                    "units": "Peace",
+                    "id": 44
                 }
             ],
             "armies": 0,
-            "rndomNmbr": 0.6831885854126157,
+            "rndomNmbr": 0.67785234819442,
+            "username": "bbb"
+        },
+        {
+            "mission": "Occupy the continents: Australia and Asia",
+            "cards": [
+                {
+                    "country": "Eastern Australia",
+                    "kind": "Unit-Card",
+                    "units": "Artillery",
+                    "id": 41
+                },
+                {
+                    "country": "Indonesia",
+                    "kind": "Unit-Card",
+                    "units": "Artillery",
+                    "id": 38
+                }
+            ],
+            "armies": 0,
+            "rndomNmbr": 0.5301599943239945,
             "username": "ccc"
         },
         {
-            "mission": "Defeat: bbb",
+            "mission": "Occupy 24 countries",
             "cards": [
                 {
-                    "country": "Northwest Territory",
+                    "country": "Japan",
                     "kind": "Unit-Card",
                     "units": "Artillery",
-                    "id": 1
-                },
-                {
-                    "country": "Alberta",
-                    "kind": "Unit-Card",
-                    "units": "Cavalry",
-                    "id": 3
-                },
-                {
-                    "country": "Greenland",
-                    "kind": "Unit-Card",
-                    "units": "Cavalry",
-                    "id": 2
-                },
-                {
-                    "country": "India",
-                    "kind": "Unit-Card",
-                    "units": "Cavalry",
-                    "id": 36
-                },
-                {
-                    "country": "Ural",
-                    "kind": "Unit-Card",
-                    "units": "Cavalry",
-                    "id": 27
+                    "id": 34
                 },
                 {
                     "kind": "Wild-Card",
                     "units": "Wild",
                     "id": 42
+                },
+                {
+                    "country": "North Africa",
+                    "kind": "Unit-Card",
+                    "units": "Cavalry",
+                    "id": 20
                 }
             ],
-            "armies": 4,
-            "rndomNmbr": 0.11800919475593863,
+            "armies": 0,
+            "rndomNmbr": 0.9444967942861487,
             "username": "aaa"
         }
     ],
     "cardManager": {
-        "nthTrade": 0,
-        "deckPosition": 11
+        "nthTrade": 5,
+        "deckPosition": 24
     },
     "turn": {
-        "phase": "Reinforcement Phase",
-        "player": "aaa"
+        "phase": "Drawing Phase",
+        "player": "bbb"
     },
     "continents": [
         {
@@ -371,22 +360,22 @@
             "countries": [
                 {
                     "armies": 1,
-                    "occupiedBy": "ccc",
+                    "occupiedBy": "bbb",
                     "countryId": 0
                 },
                 {
                     "armies": 1,
-                    "occupiedBy": "bbb",
+                    "occupiedBy": "aaa",
                     "countryId": 1
                 },
                 {
                     "armies": 1,
-                    "occupiedBy": "bbb",
+                    "occupiedBy": "ccc",
                     "countryId": 2
                 },
                 {
                     "armies": 1,
-                    "occupiedBy": "aaa",
+                    "occupiedBy": "ccc",
                     "countryId": 3
                 },
                 {
@@ -396,22 +385,22 @@
                 },
                 {
                     "armies": 1,
-                    "occupiedBy": "aaa",
+                    "occupiedBy": "ccc",
                     "countryId": 5
                 },
                 {
                     "armies": 3,
-                    "occupiedBy": "ccc",
+                    "occupiedBy": "aaa",
                     "countryId": 6
                 },
                 {
                     "armies": 1,
-                    "occupiedBy": "ccc",
+                    "occupiedBy": "aaa",
                     "countryId": 7
                 },
                 {
-                    "armies": 5,
-                    "occupiedBy": "ccc",
+                    "armies": 1,
+                    "occupiedBy": "bbb",
                     "countryId": 8
                 }
             ],
@@ -426,8 +415,8 @@
                     "countryId": 9
                 },
                 {
-                    "armies": 1,
-                    "occupiedBy": "bbb",
+                    "armies": 9,
+                    "occupiedBy": "aaa",
                     "countryId": 10
                 },
                 {
@@ -453,7 +442,7 @@
                 },
                 {
                     "armies": 1,
-                    "occupiedBy": "bbb",
+                    "occupiedBy": "aaa",
                     "countryId": 14
                 },
                 {
@@ -463,17 +452,17 @@
                 },
                 {
                     "armies": 1,
-                    "occupiedBy": "aaa",
+                    "occupiedBy": "bbb",
                     "countryId": 16
                 },
                 {
-                    "armies": 1,
+                    "armies": 4,
                     "occupiedBy": "aaa",
                     "countryId": 17
                 },
                 {
                     "armies": 1,
-                    "occupiedBy": "ccc",
+                    "occupiedBy": "bbb",
                     "countryId": 18
                 },
                 {
@@ -509,16 +498,16 @@
                 },
                 {
                     "armies": 1,
-                    "occupiedBy": "bbb",
+                    "occupiedBy": "ccc",
                     "countryId": 24
                 },
                 {
-                    "armies": 1,
-                    "occupiedBy": "bbb",
+                    "armies": 2,
+                    "occupiedBy": "ccc",
                     "countryId": 25
                 }
             ],
-            "ownedBy": ""
+            "ownedBy": "ccc"
         },
         {
             "name": "Asia",
@@ -529,43 +518,43 @@
                     "countryId": 26
                 },
                 {
-                    "armies": 3,
-                    "occupiedBy": "bbb",
+                    "armies": 1,
+                    "occupiedBy": "aaa",
                     "countryId": 27
                 },
                 {
-                    "armies": 5,
+                    "armies": 3,
                     "occupiedBy": "bbb",
                     "countryId": 28
                 },
                 {
-                    "armies": 1,
+                    "armies": 2,
                     "occupiedBy": "ccc",
                     "countryId": 29
                 },
                 {
                     "armies": 1,
-                    "occupiedBy": "bbb",
+                    "occupiedBy": "ccc",
                     "countryId": 30
-                },
-                {
-                    "armies": 2,
-                    "occupiedBy": "bbb",
-                    "countryId": 31
-                },
-                {
-                    "armies": 2,
-                    "occupiedBy": "aaa",
-                    "countryId": 32
                 },
                 {
                     "armies": 1,
                     "occupiedBy": "aaa",
+                    "countryId": 31
+                },
+                {
+                    "armies": 1,
+                    "occupiedBy": "bbb",
+                    "countryId": 32
+                },
+                {
+                    "armies": 12,
+                    "occupiedBy": "ccc",
                     "countryId": 33
                 },
                 {
                     "armies": 1,
-                    "occupiedBy": "bbb",
+                    "occupiedBy": "ccc",
                     "countryId": 34
                 },
                 {
@@ -574,7 +563,7 @@
                     "countryId": 35
                 },
                 {
-                    "armies": 1,
+                    "armies": 2,
                     "occupiedBy": "aaa",
                     "countryId": 36
                 },
@@ -591,7 +580,7 @@
             "countries": [
                 {
                     "armies": 1,
-                    "occupiedBy": "aaa",
+                    "occupiedBy": "bbb",
                     "countryId": 38
                 },
                 {
@@ -601,12 +590,12 @@
                 },
                 {
                     "armies": 1,
-                    "occupiedBy": "aaa",
+                    "occupiedBy": "bbb",
                     "countryId": 40
                 },
                 {
-                    "armies": 1,
-                    "occupiedBy": "bbb",
+                    "armies": 5,
+                    "occupiedBy": "aaa",
                     "countryId": 41
                 }
             ],

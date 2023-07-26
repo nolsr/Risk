@@ -175,10 +175,10 @@ public class FilePersistenceManager implements PersistenceManager {
                     player.insertCardToHand(new UnitCard(cardJsonArray.getJSONObject(j).getString("units"), cardJsonArray.getJSONObject(j).getString("country"), cardJsonArray.getJSONObject(j).getInt("id")));
                 }
                 if (cardJsonArray.getJSONObject(j).getString("kind").equals("Peace-Card")) {
-                    player.insertCardToHand(new WildCard(cardJsonArray.getJSONObject(j).getInt("id")));
+                    player.insertCardToHand(new PeaceCard(cardJsonArray.getJSONObject(j).getInt("id")));
                 }
                 if (cardJsonArray.getJSONObject(j).getString("kind").equals("Wild-Card")) {
-                    player.insertCardToHand(new PeaceCard(cardJsonArray.getJSONObject(j).getInt("id")));
+                    player.insertCardToHand(new WildCard(cardJsonArray.getJSONObject(j).getInt("id")));
                 }
             }
 
