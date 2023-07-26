@@ -20,6 +20,14 @@ public class GameActionEvent extends GameEvent {
     private final ArrayList<Player> players;
     private final ArrayList<Country> countries;
 
+    /**
+     * Initialise and set the values for the GameActionEvent with the given parameters.
+     *
+     * @param player Player that is passed to the GameEvent.
+     * @param type Which type of GameActionEventType.
+     * @param players ArrayList of all Players.
+     * @param countries ArrayList of all Countries.
+     */
     public GameActionEvent(Player player, GameActionEventType type,
                            ArrayList<Player> players, ArrayList<Country> countries) {
         super(player);
@@ -29,6 +37,15 @@ public class GameActionEvent extends GameEvent {
         this.countries = countries;
     }
 
+    /**
+     * Initialise and set the values for the GameActionEvent with the given parameters.
+     *
+     * @param player Player that is passed to the GameEvent.
+     * @param type Which type of GameActionEventType.
+     * @param players ArrayList of all Players.
+     * @param countries ArrayList of all Countries.
+     * @param attack current Attack.
+     */
     public GameActionEvent(Player player, GameActionEventType type,
                            ArrayList<Player> players, ArrayList<Country> countries,
                            Attack attack) {
@@ -40,7 +57,16 @@ public class GameActionEvent extends GameEvent {
         this.attack = attack;
     }
 
-
+    /**
+     * Initialise and set the values for the GameActionEvent with the given parameters.
+     *
+     * @param player Player that is passed to the GameEvent.
+     * @param type Which type of GameActionEventType.
+     * @param players ArrayList of all Players.
+     * @param countries ArrayList of all Countries.
+     * @param attack current Attack.
+     * @param result current AttackResult.
+     */
     public GameActionEvent(Player player, GameActionEventType type,
                            ArrayList<Player> players, ArrayList<Country> countries,
                            Attack attack, AttackResult result) {
@@ -53,22 +79,47 @@ public class GameActionEvent extends GameEvent {
         this.result = result;
     }
 
+    /**
+     * Get the GameActionEventType.
+     *
+     * @return the set GameActionEventType.
+     */
     public GameActionEventType getType() {
         return type;
     }
 
+    /**
+     * Get the ArrayList of all Players.
+     *
+     * @return ArrayList of all Players.
+     */
     public ArrayList<Player> getPlayers() {
         return players;
     }
 
+    /**
+     * Get the ArrayList of all Countries.
+     *
+     * @return ArrayList of all Countries.
+     */
     public ArrayList<Country> getCountries() {
         return countries;
     }
 
+    /**
+     * Get the current Attack.
+     *
+     * @return current Attack.
+     */
     public Attack getAttack() {
         return attack;
     }
 
+    /**
+     * get the current AttackResult.
+     *
+     * @return current AttackResult.
+     */
     public AttackResult getAttackResult() {
         return result;
     }

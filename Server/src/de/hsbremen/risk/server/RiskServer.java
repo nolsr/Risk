@@ -14,7 +14,6 @@ import de.hsbremen.risk.server.persistence.FilePersistenceManager;
 import org.json.JSONObject;
 
 import javax.swing.*;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serial;
 import java.rmi.ConnectException;
