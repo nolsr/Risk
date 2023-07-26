@@ -17,6 +17,12 @@ public class InGameInfoPanel extends JPanel {
     private final JLabel countryUnits = new WhiteLabel("");;
     private final JLabel countryOccupiedBy = new WhiteLabel("");;
 
+    /**
+     * InGameInfoPanel constructor displays all players and adds the country information labels to the panel.
+     * Additionally, the panel will be formatted to fit our game theme.
+     * @param players ArrayList of all game participants
+     * @param player player Object of the client
+     */
     public InGameInfoPanel(ArrayList<Player> players, Player player) {
         super();
 
@@ -53,6 +59,11 @@ public class InGameInfoPanel extends JPanel {
         this.add(countryOccupiedBy);
     }
 
+    /**
+     * Updates and displays the passed country information.
+     *
+     * @param country country object is being passed
+     */
     public void updateInfoPanel(Country country) {
         countryName.setText(country.getName());
         countryContinent.setText("Continent: " + country.getContinent());
@@ -60,14 +71,20 @@ public class InGameInfoPanel extends JPanel {
         countryOccupiedBy.setText("Occupied by: " + country.getOccupiedBy());
     }
 
-    public String showCurrentPlayerTurn(Turn turn, JLabel label) {
-        return "";
-    }
-
     private class ColorfulListCellRenderer extends DefaultListCellRenderer {
 
         private final Color[] colors = {Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE, Color.PINK, Color.CYAN};
 
+        /**
+         * This method paints the cells of our component by the cell index.
+         *
+         * @param list The JList we're painting.
+         * @param value The value returned by list.getModel().getElementAt(index).
+         * @param index The cells index.
+         * @param isSelected True if the specified cell was selected.
+         * @param cellHasFocus True if the specified cell has the focus.
+         * @return
+         */
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index,
                                                       boolean isSelected, boolean cellHasFocus) {
