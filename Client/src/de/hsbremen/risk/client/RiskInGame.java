@@ -326,6 +326,17 @@ public class RiskInGame extends JPanel {
     }
 
     /**
+     * Displays the winner of the game and the mission he accomplished.
+     *
+     * @param winner String of the username of the winner.
+     * @param missionString String of the mission that the player accomplished.
+     */
+    public void displayWinner(String winner, String missionString) {
+        JOptionPane.showMessageDialog(this, winner + " won the game by completing his mission! Congratulations!"
+        + "\n Mission was: " + missionString);
+    }
+
+    /**
      * Tells the map component to redraw based on the latest information.
      */
     public void redrawMap() {

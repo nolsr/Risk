@@ -181,7 +181,7 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
         inGame.getSaveGameButton().addActionListener(e -> {
             String name = JOptionPane.showInputDialog(window, "Please assign a file name for your saved game.");
             try {
-                if (name.isEmpty()) {
+                if (name == null || name.isEmpty()) {
                     JOptionPane.showMessageDialog(window, "Please use at least one character as your file name");
                 } else {
                     riskServer.saveGame(name);
@@ -279,14 +279,15 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
             if (e.getType() == GameControlEvent.GameControlEventType.GAME_STARTED) {
                 this.player = riskServer.getPlayer(this.player.getUsername());
                 inGame = new RiskInGame(this.riskServer, this.riskServer.getPlayerList(),
-                        e.getCountries(), this.player, ((GameControlEvent) event).getTurn());
+                        e.getCountries(), this.player, e.getTurn());
                 addInGameButtonListeners();
                 gamestateManager.enterGame();
                 setView();
-            } else if (((GameControlEvent) event).getType() == GameControlEvent.GameControlEventType.NEXT_PHASE) {
-                inGame.updateTurn(((GameControlEvent) event).getTurn());
-            } else if (((GameControlEvent) event).getType() == GameControlEvent.GameControlEventType.GAME_OVER) {
-                inGame.updateTurn(((GameControlEvent) event).getTurn());
+            } else if (e.getType() == GameControlEvent.GameControlEventType.NEXT_PHASE) {
+                inGame.updateTurn(e.getTurn());
+            } else if (e.getType() == GameControlEvent.GameControlEventType.GAME_OVER) {
+                inGame.updateTurn(e.getTurn());
+                inGame.displayWinner(e.getPlayer().getUsername(), e.getPlayer().getMissionString());
             }
         } else if (event instanceof GameLobbyEvent) { // Handle GameLobbyEvents
             if (((GameLobbyEvent) event).getType() == GameLobbyEvent.GameLobbyEventType.PLAYER_ENTERED) {
