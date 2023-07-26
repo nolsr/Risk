@@ -21,7 +21,7 @@ public interface ServerRemote extends Remote {
 
     void nextTurn() throws RemoteException, UnplacedArmiesException, GameEndedException;
 
-    void startGame() throws RemoteException, NotEnoughPlayersException;
+    void startGame() throws RemoteException, IllegalPlayerCountException;
 
     void loadGame(String file) throws IOException, LoadGameWrongPlayerException;
 

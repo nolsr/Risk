@@ -7,8 +7,8 @@ import de.hsbremen.risk.common.events.GameActionEvent;
 import de.hsbremen.risk.common.events.GameControlEvent;
 import de.hsbremen.risk.common.events.GameEvent;
 import de.hsbremen.risk.common.events.GameLobbyEvent;
+import de.hsbremen.risk.common.exceptions.IllegalPlayerCountException;
 import de.hsbremen.risk.common.exceptions.LoadGameWrongPlayerException;
-import de.hsbremen.risk.common.exceptions.NotEnoughPlayersException;
 import de.hsbremen.risk.server.RiskServer;
 
 import javax.swing.*;
@@ -128,8 +128,8 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
         riskLobby.getStartGameButton().addActionListener(e -> {
             try {
                 riskServer.startGame();
-            } catch (NotEnoughPlayersException notEnoughPlayersException) {
-                JOptionPane.showMessageDialog(window, notEnoughPlayersException.getMessage());
+            } catch (IllegalPlayerCountException illegalPlayerCountException) {
+                JOptionPane.showMessageDialog(window, illegalPlayerCountException.getMessage());
             } catch (RemoteException remoteException) {
                 remoteException.printStackTrace();
             }

@@ -52,26 +52,6 @@ public class WorldManager {
         return continentList;
     }
 
-
-    /**
-     * Searches for neighbouring countries based on specified country (countryId).
-     *
-     * @param countryId The ID of the country whose neighbours you want to find out.
-     * @return An ArrayList containing the IDs of the neighbouring countries.
-     */
-    public ArrayList<Integer> getNeighbourCountries(int countryId) {
-        ArrayList<Integer> neighbourCountryIds = new ArrayList<>();
-        for (int i = 0; i < adjacencyMatrix.length; i++) {
-            for (int j = 0; j < adjacencyMatrix[i].length; j++) {
-                if (adjacencyMatrix[i][j] && i == countryId) {
-                    neighbourCountryIds.add(j);
-                }
-            }
-        }
-        return neighbourCountryIds;
-    }
-
-
     /**
      * Populates the lists of continents and countries.
      */
