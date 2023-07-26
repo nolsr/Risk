@@ -13,11 +13,8 @@ import java.awt.*;
 public class RiskLobby extends JPanel implements GameEventListener {
     private final LightButton startGameButton = new LightButton("Start Game");
     private final LightButton loadGameButton = new LightButton("Load Game");
-
     private final LightButton exitButton = new LightButton("Back to Main-Menu");
-
     private final DarkList<String> playerJList = new DarkList<>();
-
     private final DarkLog lobbylog = new DarkLog();
     private JScrollPane scrollPane = new JScrollPane(lobbylog, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 

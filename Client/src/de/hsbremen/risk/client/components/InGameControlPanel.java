@@ -10,18 +10,23 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 public class InGameControlPanel extends JPanel {
-    private DarkButton btnNextPhase;
+    private final DarkButton btnNextPhase;
     private final DarkButton btnAction;
     private final DarkButton btnSave;
-    private DarkButton btnCardStack;
+    private final DarkButton btnCardStack;
     private final MissionDisplay missionDisplay;
     private final PhaseInformation phaseInformation;
-    private DarkButton btnTradeCards;
-
-
+    private final DarkButton btnTradeCards;
 
     BufferedImage bufferedCardStack;
 
+    /**
+     * InGameControlPanel constructor displays the player's missions, cards and action.
+     * Additionally, the panel will be formatted to fit our game theme.
+     *
+     * @param turn object of the current turn
+     * @param player player Object of the client
+     */
     public InGameControlPanel(Turn turn, Player player) {
         super();
         try {
@@ -70,8 +75,12 @@ public class InGameControlPanel extends JPanel {
         this.setNewPhaseContent(turn);
     }
 
+    /**
+     * Setting and displaying the action buttons depending on the phase.
+     *
+     * @param turn object of the current turn to check phase
+     */
     public void setNewPhaseContent(Turn turn) {
-       // this.missionDisplay.updateMissionText(turn.getPlayer().getMissionString());
         this.phaseInformation.updatePhaseInformation(turn);
         switch (turn.getPhase()) {
             case REINFORCEMENT_PHASE -> {
@@ -87,6 +96,9 @@ public class InGameControlPanel extends JPanel {
         }
     }
 
+    /**
+     * Setting buttons to be clickable.
+     */
     public void enableControls() {
         this.btnAction.setEnabled(true);
         this.btnTradeCards.setEnabled(true);
@@ -94,6 +106,9 @@ public class InGameControlPanel extends JPanel {
         this.phaseInformation.setVisible(true);
     }
 
+    /**
+     * Disables the buttons clickable attribute.
+     */
     public void disableControls() {
         this.btnAction.setEnabled(false);
         this.btnTradeCards.setEnabled(false);
@@ -101,22 +116,47 @@ public class InGameControlPanel extends JPanel {
         this.phaseInformation.setVisible(false);
     }
 
+    /**
+     * Retrieves the save button.
+     *
+     * @return returns the DarkButton btnSave.
+     */
     public DarkButton getBtnSave() {
         return btnSave;
     }
 
+    /**
+     * Retrieves the next phase button.
+     *
+     * @return returns the DarkButton btnNextPhase.
+     */
     public DarkButton getBtnNextPhase() {
         return btnNextPhase;
     }
 
+    /**
+     * Retrieves the action button.
+     *
+     * @return returns the DarkButton btnAction.
+     */
     public DarkButton getBtnAction() {
         return btnAction;
     }
 
+    /**
+     * Retrieves the trade cards button.
+     *
+     * @return returns the DarkButton btnTradeCards.
+     */
     public DarkButton getBtnTradeCards() {
         return btnTradeCards;
     }
 
+    /**
+     * Retrieves the trade card stack button .
+     *
+     * @return returns the DarkButton btnCardStack.
+     */
     public DarkButton getBtnCardStack() {
         return btnCardStack;
     }
