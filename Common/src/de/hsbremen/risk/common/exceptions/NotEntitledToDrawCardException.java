@@ -1,8 +1,5 @@
 package de.hsbremen.risk.common.exceptions;
 
-/**
- * @author Raphael Tam-Dao
- */
 
 public class NotEntitledToDrawCardException extends Exception{
     public NotEntitledToDrawCardException() {
