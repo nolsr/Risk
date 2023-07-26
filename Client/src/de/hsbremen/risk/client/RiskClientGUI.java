@@ -34,9 +34,7 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
     private final RiskStartScreen startScreen;
     private RiskInGame inGame;
     private final GameStateManager gamestateManager;
-
     private final JFrame window;
-
     private ServerRemote riskServer;
     private Player player;
 

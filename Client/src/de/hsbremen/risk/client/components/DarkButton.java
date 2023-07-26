@@ -7,7 +7,7 @@ public class DarkButton extends JButton {
 
     /**
      * DarkButton Constructor to set the JButton matching the game theme
-     * @param text text which will be displayed on the button
+     * @param text which will be displayed on the button
      */
     public DarkButton(String text) {
         super(text);
@@ -18,7 +18,7 @@ public class DarkButton extends JButton {
 
     /**
      * Set DarkButton values
-     * @param icon icon which will be displayed on the button
+     * @param icon which will be displayed on the button
      */
     public DarkButton(Icon icon) {
         super(icon);

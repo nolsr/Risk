@@ -12,7 +12,7 @@ public class CurrentTurnPanel extends JPanel {
     /**
      * Initializing the CurrentTurnPanel. Displays the current turn player including the phase.
      *
-     * @param turn The Turn object of the current game Turn.
+     * @param turn object of the current game Turn.
      */
     public CurrentTurnPanel(Turn turn) {
         this.currentTurn = turn;
@@ -26,7 +26,7 @@ public class CurrentTurnPanel extends JPanel {
     /**
      * Updates the current turn player display including phase.
      *
-     * @param turn The Turn object of the current game Turn.
+     * @param turn object of the current game Turn.
      */
     public void updateTurnDisplay(Turn turn) {
         this.currentTurn = turn;

@@ -21,7 +21,7 @@ public class InGameInfoPanel extends JPanel {
      * InGameInfoPanel constructor displays all players and adds the country information labels to the panel.
      * Additionally, the panel will be formatted to fit our game theme.
      * @param players ArrayList of all game participants
-     * @param player player Object of the client
+     * @param player Object of the client
      */
     public InGameInfoPanel(ArrayList<Player> players, Player player) {
         super();

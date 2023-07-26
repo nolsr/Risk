@@ -57,7 +57,7 @@ public class RiskLobby extends JPanel  {
     /**
      * Retrieves the start game button.
      *
-     * @return returns the LightButton startGameButton.
+     * @return the LightButton startGameButton.
      */
     public JButton getStartGameButton() {
         return startGameButton;
@@ -66,7 +66,7 @@ public class RiskLobby extends JPanel  {
     /**
      * Retrieves the load game button.
      *
-     * @return returns the LightButton loadGameButton.
+     * @return the LightButton loadGameButton.
      */
     public JButton getLoadGameButton() {
         return loadGameButton;
@@ -75,7 +75,7 @@ public class RiskLobby extends JPanel  {
     /**
      * Retrieves the exit button.
      *
-     * @return returns the LightButton exitButton.
+     * @return the LightButton exitButton.
      */
     public JButton getExitButton() {
         return exitButton;

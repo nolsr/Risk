@@ -23,8 +23,8 @@ public class ShowCardsFrame extends JPanel {
      * Gets all the cards of the client and displays them. Cards are not clickable by default.
      * If stack is true, 3 cards can be selected by a click to trade.
      *
-     * @param currentPlayer currentPlayer is the client
-     * @param riskServer riskServer is the ServerRemote with which we can communicate with the server
+     * @param currentPlayer is the client
+     * @param riskServer is the ServerRemote with which we can communicate with the server
      * @param stack if boolean stack is false, all buttons aren't clickable, else buttons are clickable
      */
     public ShowCardsFrame(Player currentPlayer, ServerRemote riskServer, boolean stack) {
