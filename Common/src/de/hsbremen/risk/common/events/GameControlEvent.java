@@ -16,12 +16,14 @@ public class GameControlEvent extends GameEvent {
     private final Turn turn;
     private final ArrayList<Country> countries;
 
+    private boolean peaceCardDrawn;
+
     /**
      * Initialise and set the all values for the GameControlEvent with the given parameters.
      *
      * @param turn The current Turn.
      * @param type Which type of GameControlEventType.
-     * @param countries ArrayList of all Countries
+     * @param countries ArrayList of all Countries.
      */
     public GameControlEvent(Turn turn, GameControlEventType type, ArrayList<Country> countries) {
         super(turn.getPlayer());
@@ -29,6 +31,23 @@ public class GameControlEvent extends GameEvent {
         this.turn = turn;
         this.type = type;
         this.countries = countries;
+    }
+
+    /**
+     * Initialise and set the all values for the GameControlEvent with the given parameters.
+     *
+     * @param turn The current Turn.
+     * @param type Which type of GameControlEventType.
+     * @param countries ArrayList of all Countries.
+     * @param peaceCardDrawn boolean peaceCardDrawn.
+     */
+    public GameControlEvent(Turn turn, GameControlEventType type, ArrayList<Country> countries, boolean peaceCardDrawn) {
+        super(turn.getPlayer());
+
+        this.turn = turn;
+        this.type = type;
+        this.countries =  countries;
+        this.peaceCardDrawn = peaceCardDrawn;
     }
 
     /**
@@ -56,5 +75,14 @@ public class GameControlEvent extends GameEvent {
      */
     public ArrayList<Country> getCountries() {
         return countries;
+    }
+
+    /**
+     * Get the boolean peaceCardDrawn.
+     *
+     * @return boolean peaceCardDrawn.
+     */
+    public boolean isPeaceCardDrawn() {
+        return peaceCardDrawn;
     }
 }

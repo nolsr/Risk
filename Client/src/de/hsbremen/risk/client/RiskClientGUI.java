@@ -91,7 +91,6 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
 
                 riskServer.addGameEventListener(this);
 
-
                 // Enter lobby
                 if (riskServer.getPlayer(name) == null) {
                     if (name.length() < 3) {
@@ -285,7 +284,11 @@ public class RiskClientGUI extends UnicastRemoteObject implements GameEventListe
                 inGame.updateTurn(e.getTurn());
             } else if (e.getType() == GameControlEvent.GameControlEventType.GAME_OVER) {
                 inGame.updateTurn(e.getTurn());
-                inGame.displayWinner(e.getPlayer().getUsername(), e.getPlayer().getMissionString());
+                if (e.isPeaceCardDrawn()) {
+                    inGame.peaceMesage(e.getPlayer().getUsername());
+                } else {
+                    inGame.displayWinner(e.getPlayer().getUsername(), e.getPlayer().getMissionString());
+                }
             }
         } else if (event instanceof GameLobbyEvent) { // Handle GameLobbyEvents
             if (((GameLobbyEvent) event).getType() == GameLobbyEvent.GameLobbyEventType.PLAYER_ENTERED) {
