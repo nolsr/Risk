@@ -253,6 +253,18 @@ public class WorldManager {
     }
 
     /**
+     * Checks if two countries are adjacent to one another.
+     *
+     * @param countryOne ID of country one to be checked.
+     * @param countryTwo ID of country two to be checked.
+     * @return A Boolean whether or not the specified countries are adjacent.
+     */
+    public boolean areAdjacent(int countryOne, int countryTwo) {
+        return adjacencyMatrix[countryOne][countryTwo];
+    }
+
+
+    /**
      * Counts how many countries are owned by a specific player.
      *
      * @param username The username of the player you want to get the number of countries owned from.

@@ -365,12 +365,13 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
      * Starts the attack sequence and notifies the occupant of the attacked country to defend it.
      *
      * @param attack Attack object containing all of the attack information.
-     * @throws DoNotOccupyCountryException When the player does not own the origin country of the attack.
-     * @throws OccupyTargetCountry         When the player occupies the target country themselves.
-     * @throws NoArmiesLeftException       When the player did not leave at least one army in the origin country.
-     * @throws RemoteException             When having trouble communicating with the client.
+     * @throws DoNotOccupyCountryException   When the player does not own the origin country of the attack.
+     * @throws OccupyTargetCountry           When the player occupies the target country themselves.
+     * @throws NoArmiesLeftException         When the player did not leave at least one army in the origin country.
+     * @throws RemoteException               When having trouble communicating with the client.
+     * @throws CountriesNotAdjacentException When the countries are not adjacent to one another.
      */
-    public void startAttack(Attack attack) throws DoNotOccupyCountryException, OccupyTargetCountry, NoArmiesLeftException, RemoteException {
+    public void startAttack(Attack attack) throws DoNotOccupyCountryException, OccupyTargetCountry, NoArmiesLeftException, RemoteException, CountriesNotAdjacentException {
         if (!getCountry(attack.getOriginCountry()).getOccupiedBy().equals(this.currentTurn.getPlayer().getUsername())) {
             throw new DoNotOccupyCountryException(getCountry(attack.getOriginCountry()));
         }
@@ -379,6 +380,9 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         }
         if (attack.getAmount() > getCountry(attack.getOriginCountry()).getArmies() - 1) {
             throw new NoArmiesLeftException(getCountry(attack.getOriginCountry()), getCountry(attack.getTargetCountry()));
+        }
+        if (!worldManager.areAdjacent(attack.getOriginCountry(), attack.getTargetCountry())) {
+            throw new CountriesNotAdjacentException();
         }
         attack.setDefendingPlayer(playerManager.getPlayer(getCountries().get(attack.getTargetCountry()).getOccupiedBy()));
         this.attack = attack;

@@ -35,7 +35,7 @@ public interface ServerRemote extends Remote {
 
     Attack getCurrentAttack() throws RemoteException;
 
-    void startAttack(Attack attack) throws DoNotOccupyCountryException, OccupyTargetCountry, NoArmiesLeftException, RemoteException;
+    void startAttack(Attack attack) throws DoNotOccupyCountryException, OccupyTargetCountry, NoArmiesLeftException, RemoteException, CountriesNotAdjacentException;
 
     void removeAttackingForcesFromOriginCountry() throws RemoteException;
 
