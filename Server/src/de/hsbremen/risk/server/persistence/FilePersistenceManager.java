@@ -4,7 +4,6 @@ import de.hsbremen.risk.common.entities.cards.Card;
 import de.hsbremen.risk.common.entities.cards.PeaceCard;
 import de.hsbremen.risk.common.entities.cards.UnitCard;
 import de.hsbremen.risk.common.entities.cards.WildCard;
-import de.hsbremen.risk.common.exceptions.NotEntitledToDrawCardException;
 import de.hsbremen.risk.server.CardManager;
 import de.hsbremen.risk.common.entities.*;
 import org.json.JSONArray;
@@ -13,11 +12,21 @@ import org.json.JSONObject;
 import java.io.*;
 import java.util.ArrayList;
 
-public class FilePersistenceManager implements PersistenceManager{
+public class FilePersistenceManager implements PersistenceManager {
 
+    /**
+     * This method stores all the data using the variables below into a JSONObject. Afterwards they'll be stored into JSONArrays and each JSONArray
+     * will be stored into the rootObject.
+     *
+     * @param playerList ArrayList of all current players.
+     * @param continentList ArrayList of Continents in which each country of each continent is stored as well.
+     * @param turn turn includes the current turn, current player as well as the current phase.
+     * @param cardManager CardManager class needed to get all the data including cards.
+     * @return
+     */
     @Override
-    public JSONObject saveGame(ArrayList<Player> playerList, ArrayList<Continent> continentList, Turn turn, ArrayList<Card> cardList, CardManager cardManager) {
-        try{
+    public JSONObject saveGame(ArrayList<Player> playerList, ArrayList<Continent> continentList, Turn turn, CardManager cardManager) {
+        try {
             JSONObject rootObject = new JSONObject();
 
             JSONArray playerArray = new JSONArray();
@@ -29,11 +38,9 @@ public class FilePersistenceManager implements PersistenceManager{
                 jsonObject.put("mission", player.getMissionString());
 
                 JSONArray jsonCardOnHand = new JSONArray();
-                for (Card card: player.getCards())
-                {
+                for (Card card : player.getCards()) {
                     JSONObject jsonCardObject = new JSONObject();
-                    if(card instanceof UnitCard)
-                    {
+                    if (card instanceof UnitCard) {
                         jsonCardObject.put("country", ((UnitCard) card).getCountry());
                     }
                     jsonCardObject.put("kind", card.getKind());
@@ -78,14 +85,11 @@ public class FilePersistenceManager implements PersistenceManager{
             System.out.println(turn.getPhase());
             jsonObject.put("phase", turn.getPhase());
             rootObject.put("turn", jsonObject);
-        //    System.out.println("JSON Object" + rootObject.toString(4));
 
             JSONArray jsonCardArray = new JSONArray();
-            for (Card card: cardList)
-            {
+            for (Card card : cardManager.getCardList()) {
                 JSONObject jsonCardObject = new JSONObject();
-                if(card instanceof UnitCard)
-                {
+                if (card instanceof UnitCard) {
                     jsonCardObject.put("country", ((UnitCard) card).getCountry());
                 }
                 jsonCardObject.put("kind", card.getKind());
@@ -107,89 +111,100 @@ public class FilePersistenceManager implements PersistenceManager{
         return null;
     }
 
+    /**
+     * Loads the file, meaning it will append all the lines of the .json file into one string.
+     *
+     * @param file Filename of the file to be loaded.
+     * @return JSONObject of the contents of the file.
+     * @throws IOException When having trouble reading or finding the file.
+     */
     @Override
     public JSONObject loadFile(String file) throws IOException {
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file + ".json"));
-            String line;
-            StringBuilder builder = new StringBuilder();
-            while ((line = br.readLine()) != null) {
-                builder.append(line);
-            }
-          //  System.out.println("JSON: " + builder);
-            br.close();
-            return new JSONObject(builder.toString());
-        } catch (FileNotFoundException ignored) {
-
+        BufferedReader br = new BufferedReader(new FileReader(file + ".json"));
+        String line;
+        StringBuilder builder = new StringBuilder();
+        while ((line = br.readLine()) != null) {
+            builder.append(line);
         }
-        return null;
+        br.close();
+        return new JSONObject(builder.toString());
     }
-    public ArrayList<Card> retrieveCardsData(JSONObject jsonObject)
-    {
+
+    /**
+     * All the card data are being retrieved and stored into the card ArrayList. Different kinds of cards are differentiated.
+     *
+     * @param jsonObject JSONObject is the loaded file.
+     * @return returns the card deck ArrayList which is filled with the retrieved cards from the saved game.
+     */
+    public ArrayList<Card> retrieveCardsData(JSONObject jsonObject) {
         ArrayList<Card> cardList = new ArrayList<>();
         JSONArray jsonArray = jsonObject.getJSONArray("cardList");
-        for(int i = 0; i < jsonArray.length(); i++)
-        {
-            if(jsonArray.getJSONObject(i).getString("kind").equals("Unit-Card"))
-            {
-                cardList.add(new UnitCard(jsonArray.getJSONObject(i).getString("units"), jsonArray.getJSONObject(i).getString("country"),jsonArray.getJSONObject(i).getInt("id")));
+        for (int i = 0; i < jsonArray.length(); i++) {
+            if (jsonArray.getJSONObject(i).getString("kind").equals("Unit-Card")) {
+                cardList.add(new UnitCard(jsonArray.getJSONObject(i).getString("units"), jsonArray.getJSONObject(i).getString("country"), jsonArray.getJSONObject(i).getInt("id")));
             }
-            if(jsonArray.getJSONObject(i).getString("kind").equals("Peace-Card"))
-            {
+            if (jsonArray.getJSONObject(i).getString("kind").equals("Peace-Card")) {
                 cardList.add(new PeaceCard(jsonArray.getJSONObject(i).getInt("id")));
             }
-            if(jsonArray.getJSONObject(i).getString("kind").equals("Wild-Card"))
-            {
+            if (jsonArray.getJSONObject(i).getString("kind").equals("Wild-Card")) {
                 cardList.add(new WildCard(jsonArray.getJSONObject(i).getInt("id")));
             }
         }
         return cardList;
     }
 
-    public ArrayList<Player> retrievePlayerData(JSONObject jsonObject) throws NotEntitledToDrawCardException {
-            ArrayList<Player> playerList = new ArrayList<>();
-            JSONArray jsonArray = jsonObject.getJSONArray("players");
-            for (int i = 0; i < jsonArray.length(); i++) {
+    /**
+     * Retrieves all the playerdata from the given JSONObject (file) and stores them into a new player ArrayList.
+     *
+     * @param jsonObject JSONObject is the loaded file.
+     * @return returns the player ArrayList which is filled with the retrieved player including all their attributes from the saved game.
+     */
+    public ArrayList<Player> retrievePlayerData(JSONObject jsonObject) {
+        ArrayList<Player> playerList = new ArrayList<>();
+        JSONArray jsonArray = jsonObject.getJSONArray("players");
+        for (int i = 0; i < jsonArray.length(); i++) {
 
-                Player player = new Player(jsonArray.getJSONObject(i).getString("username"), jsonArray.getJSONObject(i).getInt("armies"));
-                double randomNumber = jsonArray.getJSONObject(i).getDouble("rndomNmbr");
-                player.setRandomNumber(randomNumber);
+            Player player = new Player(jsonArray.getJSONObject(i).getString("username"), jsonArray.getJSONObject(i).getInt("armies"));
+            double randomNumber = jsonArray.getJSONObject(i).getDouble("rndomNmbr");
+            player.setRandomNumber(randomNumber);
 
-                JSONArray cardjsonArray = jsonArray.getJSONObject(i).getJSONArray("cards");
+            JSONArray cardJsonArray = jsonArray.getJSONObject(i).getJSONArray("cards");
 
-                for (int j = 0; j < cardjsonArray.length(); j++)
-                {
-                    if(cardjsonArray.getJSONObject(j).getString("kind").equals("Unit-Card"))
-                    {
-                        player.insertCardToHand(new UnitCard(cardjsonArray.getJSONObject(j).getString("units"), cardjsonArray.getJSONObject(j).getString("country"), cardjsonArray.getJSONObject(j).getInt("id")));
-                    }
-                    if(cardjsonArray.getJSONObject(j).getString("kind").equals("Peace-Card"))
-                    {
-                        player.insertCardToHand(new WildCard(cardjsonArray.getJSONObject(j).getInt("id")));
-                    }
-                    if(cardjsonArray.getJSONObject(j).getString("kind").equals("Wild-Card"))
-                    {
-                        player.insertCardToHand(new PeaceCard(cardjsonArray.getJSONObject(j).getInt("id")));
-                    }
-                  //  System.out.println(player.getUsername() + ": " + player.getCards().get(j));
+            for (int j = 0; j < cardJsonArray.length(); j++) {
+                if (cardJsonArray.getJSONObject(j).getString("kind").equals("Unit-Card")) {
+                    player.insertCardToHand(new UnitCard(cardJsonArray.getJSONObject(j).getString("units"), cardJsonArray.getJSONObject(j).getString("country"), cardJsonArray.getJSONObject(j).getInt("id")));
                 }
-
-                playerList.add(player);
+                if (cardJsonArray.getJSONObject(j).getString("kind").equals("Peace-Card")) {
+                    player.insertCardToHand(new WildCard(cardJsonArray.getJSONObject(j).getInt("id")));
+                }
+                if (cardJsonArray.getJSONObject(j).getString("kind").equals("Wild-Card")) {
+                    player.insertCardToHand(new PeaceCard(cardJsonArray.getJSONObject(j).getInt("id")));
+                }
             }
-            return playerList;
+
+            playerList.add(player);
+        }
+        return playerList;
     }
 
-    public Player retrieveDefeatPlayerMission(JSONObject jsonObject, Player player, ArrayList<Player> playerList) {
+    /**
+     * It gets the player username and mission.
+     * It'll be checked if the handed missionplayer is the player of the loaded file, meaning if the player has a mission to defeat a specific target.
+     *
+     * @param jsonObject JSONObject is the loaded file.
+     * @param missionPlayer Player that this mission gets assigned to.
+     * @param playerList player ArrayList from the loaded JSONObject.
+     * @return returns the targetplayer which the missionPlayer needs to defeat.
+     */
+    public Player retrieveDefeatPlayerMission(JSONObject jsonObject, Player missionPlayer, ArrayList<Player> playerList) {
         JSONArray jsonArray = jsonObject.getJSONArray("players");
         for (int i = 0; i < jsonArray.length(); i++) {
             String username = jsonArray.getJSONObject(i).getString("username");
             String mission = jsonArray.getJSONObject(i).getString("mission");
-            if (username.equals(player.getUsername())) {
-                for (Player searchPlayer : playerList) {
-                    if (mission.contains(searchPlayer.getUsername())) {
-                  //      System.out.println("Mission " + mission);
-                    //    System.out.println("Mission contains " + searchPlayer.getUsername() + " " + mission.contains(searchPlayer.getUsername()));
-                        return searchPlayer;
+            if (username.equals(missionPlayer.getUsername())) {
+                for (Player searchedTargetPlayer : playerList) {
+                    if (mission.contains(searchedTargetPlayer.getUsername())) {
+                        return searchedTargetPlayer;
                     }
                 }
             }
@@ -197,16 +212,25 @@ public class FilePersistenceManager implements PersistenceManager{
         return null;
     }
 
-    public ArrayList<Continent> retrieveContinentMission(JSONObject jsonObject, Player player, ArrayList<Continent> continentList) {
+    /**
+     * It gets the player username and mission. If the missionplayer is the player of the loaded file,
+     * it will then check which continents he needs to obtain.
+     *
+     * @param jsonObject JSONObject is the loaded file.
+     * @param missionPlayer Player that this mission gets assigned to.
+     * @param continentList ArrayList of all the continents including their countries.
+     * @return returns a continentList which the player needs to own for his mission.
+     */
+    public ArrayList<Continent> retrieveContinentMission(JSONObject jsonObject, Player missionPlayer, ArrayList<Continent> continentList) {
         ArrayList<Continent> trimmedContinentList = new ArrayList<>();
         JSONArray jsonArray = jsonObject.getJSONArray("players");
         for (int i = 0; i < jsonArray.length(); i++) {
             String username = jsonArray.getJSONObject(i).getString("username");
             String mission = jsonArray.getJSONObject(i).getString("mission");
-            if (username.equals(player.getUsername())) {
+            if (username.equals(missionPlayer.getUsername())) {
                 if (mission.contains("North America")) {
                     trimmedContinentList.add(continentList.get(0));
-                    }
+                }
                 if (mission.contains("South America")) {
                     trimmedContinentList.add(continentList.get(1));
                 }
@@ -227,24 +251,49 @@ public class FilePersistenceManager implements PersistenceManager{
         return trimmedContinentList;
     }
 
-    public void retrieveCardManagerInfo(JSONObject jsonObject, CardManager cardManager)
-    {
+    /**
+     * Gets and sets the cardManagers nthTrade count and deck position of the loaded file.
+     *
+     * @param jsonObject JSONObject is the loaded file.
+     * @param cardManager CardManager class needed to set its attributes.
+     */
+    public void retrieveCardManagerInfo(JSONObject jsonObject, CardManager cardManager) {
         JSONObject jObject = jsonObject.getJSONObject("cardManager");
         cardManager.setNthTrade(jObject.getInt("nthTrade"));
         cardManager.setDeckPosition(jObject.getInt("deckPosition"));
-
     }
 
+    /**
+     * Gets the current turn player of the loaded file and returns the player.
+     *
+     * @param jsonObject JSONObject is the loaded file.
+     * @return returns the loaded turn player.
+     */
     public String retrieveTurnPlayer(JSONObject jsonObject) {
         JSONObject jObject = jsonObject.getJSONObject("turn");
         return jObject.getString("player");
     }
 
+    /**
+     * Gets the current turn of the loaded file and returns the phase.
+     *
+     * @param jsonObject JSONObject is the loaded file.
+     * @return returns the loaded phase from the file.
+     */
     public Turn.Phase retrieveTurnPhase(JSONObject jsonObject) {
         JSONObject jObject = jsonObject.getJSONObject("turn");
         return Turn.Phase.getPhaseFromString(jObject.getString("phase"));
     }
 
+    /**
+     * Retrieves the index continent data from the given JSONObject (file) and sets the ownedBy attribute of the continent as well
+     * as the armies and occupiedBy attributes of each country within the continent of the given index.
+     *
+     * @param jsonObject JSONObject is the loaded file.
+     * @param index are the continents: 0 = North America, 1 = South America, 2 = Europe, 3 =  Africa,
+     * 4 = Asia, 5 = Australia
+     * @param continentList ArrayList of all the continents including their countries.
+     */
     public void retrieveContinentData(JSONObject jsonObject, int index, ArrayList<Continent> continentList) {
         JSONArray jsonArray = jsonObject.getJSONArray("continents");
         String continentOwnedBy = jsonArray.getJSONObject(index).getString("ownedBy");
@@ -258,9 +307,19 @@ public class FilePersistenceManager implements PersistenceManager{
         }
     }
 
-    public void writeGameIntoFile(ArrayList<Player> playerList, ArrayList<Continent> continentList, Turn turn, ArrayList<Card> card, CardManager cardManager, String datei) throws IOException {
-        FileWriter fileWriter = new FileWriter(datei + ".json");
-        fileWriter.write(saveGame(playerList, continentList, turn, card, cardManager).toString(4));
+    /**
+     * Writes all the data of the rootObject into a new file.json using a FileWriter.
+     *
+     * @param playerList ArrayList of all current players.
+     * @param continentList ArrayList of Continents in which each country of each continent is stored as well.
+     * @param turn turn includes the current turn, current player as well as the current phase.
+     * @param cardManager CardManager class needed to get all the data including cards.
+     * @param file name of file that will be saved as a  .json file.
+     * @throws IOException When there is a problem reading the file.
+     */
+    public void writeGameIntoFile(ArrayList<Player> playerList, ArrayList<Continent> continentList, Turn turn, CardManager cardManager, String file) throws IOException {
+        FileWriter fileWriter = new FileWriter(file + ".json");
+        fileWriter.write(saveGame(playerList, continentList, turn, cardManager).toString(4));
         fileWriter.close();
     }
 }

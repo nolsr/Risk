@@ -19,7 +19,7 @@ public class RiskMap extends JPanel {
     BufferedImage bufferedMapGreyscale;
     private static final double ASPECT_RATIO = 16.0 / 9.0;
 
-    private JPanel countryPanel;
+    private final JPanel countryPanel;
 
     private double scaling;
     private double offsetX;
@@ -50,6 +50,11 @@ public class RiskMap extends JPanel {
         add(this.countryPanel);
     }
 
+    /**
+     * Adds a listener for when a country was clicked on.
+     *
+     * @param listener Listener that should handle the thrown event.
+     */
     public void addCountryClickedListener(MapEventListener listener) {
         addMouseListener(new MouseAdapter() {
             @Override
@@ -80,38 +85,69 @@ public class RiskMap extends JPanel {
         });
     }
 
+    /**
+     * Retrieves the offset on the x axis of the map in its frame in pixels.
+     *
+     * @return Amount of pixels of x margin of the map.
+     */
     public double getOffsetX() {
         return offsetX;
     }
 
+    /**
+     * Retrieves the offset on the y axis of the map in its frame in pixels.
+     *
+     * @return Amount of pixels of y margin of the map.
+     */
     public double getOffsetY() {
         return offsetY;
     }
 
+    /**
+     * Retrieves the scaling factor of the original map image.
+     *
+     * @return The scaling factor of the map.
+     */
     public double getScaling() {
         return scaling;
     }
 
+    /**
+     * Retrieves the greyscale map image.
+     *
+     * @return A BufferedImage object of the greyscale map.
+     */
     public BufferedImage getBufferedMapGreyscale() {
         return bufferedMapGreyscale;
     }
 
+    /**
+     * Updates the parameters of a country and the player list for displaying the correct colors.
+     *
+     * @param players   ArrayList of players in the game.
+     * @param countries ArrayList of the current state of the countries.
+     */
     public void updateCountryInfo(ArrayList<Player> players, ArrayList<Country> countries) {
         this.players = players;
         this.countries = countries;
     }
 
+    /**
+     * Overrides the default paintComponent function to scale and center the map in its frame.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         int width = getWidth();
         int height = getHeight();
-        int calculatedWidth = (int) (height * ASPECT_RATIO);
-        int calculatedHeight = (int) (width / ASPECT_RATIO);
+        int calculatedWidth = (int) (height * ASPECT_RATIO); // Scale width
+        int calculatedHeight = (int) (width / ASPECT_RATIO); // Scale height
         int x = 0;
         int y = 0;
 
+        // Check how the image fits into the frame.
+        // Does there need to be top or left margin? How much margin to center the map?
         if (calculatedWidth > width) {
             calculatedWidth = width;
             y = (height - (int) (calculatedWidth / ASPECT_RATIO)) / 2;
@@ -127,10 +163,18 @@ public class RiskMap extends JPanel {
         this.countryPanel.setBounds(0, 0, width, height);
         paintCountries(x, y);
 
+        // Finally scale and draw the map image.
         Image scaledImage = bufferedMap.getScaledInstance(calculatedWidth, calculatedHeight, Image.SCALE_SMOOTH);
         g.drawImage(scaledImage, x, y, null);
     }
 
+    /**
+     * Paints the circles above the scaled position of the countries,
+     * containing a number representing the amount of units in that country.
+     *
+     * @param offsetX Offset of the map on the x axis.
+     * @param offsetY Offset of the map on the y axis.
+     */
     private void paintCountries(int offsetX, int offsetY) {
         this.countryPanel.removeAll();
 
@@ -189,10 +233,22 @@ public class RiskMap extends JPanel {
         this.countryPanel.add(new MapCountryCircle(offsetX, offsetY, 1831, 955, this.scaling, getArmies(41), getCountryColor(41)));
     }
 
+    /**
+     * Retrieves the information about how many units are in a specified country.
+     *
+     * @param countryId ID of the desired country
+     * @return An Integer representing the amount of units in the specified country.
+     */
     private int getArmies(int countryId) {
         return this.countries.get(countryId).getArmies();
     }
 
+    /**
+     * Determines the color a country circle should be painted in.
+     *
+     * @param countryId ID of the desired country.
+     * @return The Color the country circle should be painted in.
+     */
     private Color getCountryColor(int countryId) {
         String occupant = this.countries.get(countryId).getOccupiedBy();
         int playerId = 6;

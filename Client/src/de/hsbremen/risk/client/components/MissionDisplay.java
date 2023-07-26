@@ -4,7 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MissionDisplay extends JPanel {
-    private final JTextArea missionText;
+    /**
+     * A display of the players respective mission.
+     *
+     * @param missionString Text of the mission to be accomplished.
+     */
     public MissionDisplay(String missionString) {
         super();
         this.setOpaque(false);
@@ -14,16 +18,12 @@ public class MissionDisplay extends JPanel {
         title.setForeground(Color.WHITE);
         title.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
         this.add(title, BorderLayout.NORTH);
-        this.missionText = new JTextArea(missionString);
-        this.missionText.setForeground(Color.WHITE);
-        this.missionText.setBackground(new Color(27, 31, 36));
-        this.missionText.setLineWrap(true);
-        this.missionText.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(90, 90, 90)));
-        this.missionText.setEditable(false);
-        this.add(this.missionText, BorderLayout.CENTER);
-    }
-
-    public void updateMissionText(String missionString) {
-        this.missionText.setText(missionString);
+        JTextArea missionText = new JTextArea(missionString);
+        missionText.setForeground(Color.WHITE);
+        missionText.setBackground(new Color(27, 31, 36));
+        missionText.setLineWrap(true);
+        missionText.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(90, 90, 90)));
+        missionText.setEditable(false);
+        this.add(missionText, BorderLayout.CENTER);
     }
 }

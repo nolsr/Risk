@@ -4,15 +4,12 @@ import de.hsbremen.risk.common.entities.cards.Card;
 import de.hsbremen.risk.common.entities.cards.PeaceCard;
 import de.hsbremen.risk.common.entities.cards.UnitCard;
 import de.hsbremen.risk.common.entities.cards.WildCard;
-import de.hsbremen.risk.common.exceptions.InvalidCardCombinationException;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
 public class CardManager {
-    private final String wild = "Wild";
-    private final String peace = "Peace";
     private int nthTrade = 0;
     private int deckPosition = 0;
 
@@ -21,25 +18,33 @@ public class CardManager {
 
     public CardManager()
     {
-        creatUnitCardList();
+        createUnitCardList();
     }
 
+    /**
+     * Sets the card list of the deck. Used when loading a save file.
+     *
+     * @param cardList ArrayList of the cards in the deck.
+     */
     public void updateCardManager(ArrayList<Card> cardList)
     {
         this.cardList = cardList;
     }
 
+    /**
+     * Retrieves the card deck.
+     *
+     * @return An ArrayList of the cards in the deck.
+     */
     public ArrayList<Card> getCardList()
     {
         return cardList;
     }
 
     /**
-     * initializes cardList by filling it with all available card
-     * except for the peace card
-     *
+     * Initializes card deck by filling it with all available cards except for the peace card.
      */
-    private void creatUnitCardList()
+    private void createUnitCardList()
     {
         cardList = new ArrayList<>();
         String infantry = "Infantry";
@@ -97,6 +102,12 @@ public class CardManager {
         Collections.shuffle(cardList);
     }
 
+    /**
+     * Retrieves the card object of a card by its ID.
+     *
+     * @param cardId ID of the desired card.
+     * @return Card object of the retrieved card.
+     */
     public Card getCardById(int cardId)
     {
         for (Card card: cardList)
@@ -110,12 +121,11 @@ public class CardManager {
     }
 
     /**
-     * This Methode decides if and where within the card deck the peace card will fall,
-     * depending on the Amount of active players.
-     * This Methode should be called only once at the initialization of a game
+     * This method decides if and where within the card deck the peace card will be placed,
+     * depending on the amount of players in the game.
+     * This method should only be called once at the initialization of a game.
      *
-     * @param playerAmount number of active players in a game
-     * @return PeaceCard has been inserted if true otherwise, it hasn't been inserted
+     * @param playerAmount Number of active players in the game.
      */
     public void insertPeaceCard(int playerAmount)
     {
@@ -131,32 +141,29 @@ public class CardManager {
     }
 
     /**
-     * return the first cardList and removes it from the list
-     * @return the first card from the deck
+     * Draws a card from the deck.
+     *
+     * @return A Card object of the card drawn.
      */
     public Card drawCard()
     {
         Card tempCard = cardList.get(deckPosition);
         deckPosition++;
-        //cardList.remove(0);
         return tempCard;
     }
 
-    public int drawCardID() {
-        Card tempCard = cardList.get(deckPosition);
-        deckPosition++;
-        //cardList.remove(0);
-        return tempCard.getId();
-    }
 
+    /**
+     * Trades in three cards for additional reinforcements.
+     *
+     * @param cardIds Array containing the IDs of the cards to be traded.
+     * @return An Integer representing the amount of additional reinforcements received by the trade.
+     */
     public int tradeCards(int[] cardIds) {
 
         Card card1 = getCardById(cardIds[0]);
         Card card2 = getCardById(cardIds[1]);
         Card card3 = getCardById(cardIds[2]);
-        System.out.println("Card 1 " + card1);
-        System.out.println("Card 2 " + card2);
-        System.out.println("Card 3 " + card3);
 
         boolean allCardsAreValid = true;
         boolean atLeast1WildCard = false;

@@ -1,22 +1,18 @@
 package de.hsbremen.risk.client;
 
 import de.hsbremen.risk.client.components.LightButton;
-import de.hsbremen.risk.common.GameEventListener;
-import de.hsbremen.risk.common.events.GameEvent;
-import de.hsbremen.risk.common.events.GameLobbyEvent;
 
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * @author Raphael Tam-Dao
- */
+public class RiskStartScreen extends JPanel {
 
-public class RiskStartScreen extends JPanel implements GameEventListener {
+    private LightButton newGameButton = new LightButton("Enter Lobby");
+    private LightButton quitGameButton = new LightButton("Quit Game");
 
-    private JButton newGameButton = new LightButton("Enter Lobby");
-    private JButton quitGameButton = new LightButton("Quit Game");
-
+    /**
+     * All UI Elements are applied and set
+     */
     public RiskStartScreen() {
         super();
         this.setOpaque(false);
@@ -25,15 +21,21 @@ public class RiskStartScreen extends JPanel implements GameEventListener {
         add(quitGameButton);
     }
 
+    /**
+     * Retrieves the new game button.
+     *
+     * @return returns the LightButton newGameButton.
+     */
     public JButton getNewGameButton() {
         return newGameButton;
     }
 
+    /**
+     * Retrieves the quit game button.
+     *
+     * @return returns the LightButton quitGameButton.
+     */
     public JButton getQuitGameButton() {
         return quitGameButton;
-    }
-
-    public void handleGameEvent(GameEvent event) {
-
     }
 }

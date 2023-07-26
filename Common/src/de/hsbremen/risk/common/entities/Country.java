@@ -14,7 +14,7 @@ public class Country implements Serializable {
     private String occupiedBy;
     private boolean unitsMoved;
 
-    public Country(int adjacencyId, String name, String shortname, String continent)
+    public Country(int adjacencyId, String name, String continent)
     {
         this.adjacencyId = adjacencyId;
         this.name = name;

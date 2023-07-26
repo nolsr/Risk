@@ -8,11 +8,9 @@ import java.awt.*;
 public class PhaseInformation extends JPanel {
     private final JLabel title;
     private final JTextArea informationText;
-    private Turn currentTurn;
 
     public PhaseInformation(Turn turn) {
         super();
-        this.currentTurn = turn;
         this.setOpaque(false);
         this.setPreferredSize(new Dimension(200, 100));
         this.setLayout(new BorderLayout());
@@ -36,14 +34,23 @@ public class PhaseInformation extends JPanel {
         this.add(this.informationText, BorderLayout.CENTER);
     }
 
+    /**
+     * Updates the phase text of the current phase information panel.
+     *
+     * @param phase The Phase object of the current turns phase.
+     */
     public void updateTitle(Turn.Phase phase) {
         this.title.setText(phase.toString());
     }
 
+    /**
+     * Updates the phase description text.
+     *
+     * @param turn The Turn object of the current turn.
+     */
     public void updatePhaseInformation(Turn turn) {
         updateTitle(turn.getPhase());
-        this.currentTurn = turn;
-        switch(turn.getPhase()) {
+        switch (turn.getPhase()) {
             case REINFORCEMENT_PHASE -> this.informationText.setText("You have " + turn.getPlayer().getArmies() + " units left to place.");
             case LIBERATION_PHASE -> this.informationText.setText("Liberate a country occupied by somebody else.");
             case MOVEMENT_PHASE -> this.informationText.setText("Move units between your countries.");
