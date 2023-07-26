@@ -66,63 +66,63 @@ public class WorldManager {
         ArrayList<Country> australiaList = new ArrayList<>();
 
         /* North America */
-        northAmericaList.add(new Country(0, "Alaska", "alaska", "North America"));
-        northAmericaList.add(new Country(1, "Northwest Territory", "northwestTerritory", "North America"));
-        northAmericaList.add(new Country(2, "Greenland", "greenland", "North America"));
-        northAmericaList.add(new Country(3, "Alberta", "alberta", "North America"));
-        northAmericaList.add(new Country(4, "Ontario", "ontario", "North America"));
-        northAmericaList.add(new Country(5, "Quebec", "quebec", "North America"));
-        northAmericaList.add(new Country(6, "Western US", "westernUS", "North America"));
-        northAmericaList.add(new Country(7, "Eastern US", "easternUS", "North America"));
-        northAmericaList.add(new Country(8, "Central America", "centralAmerica", "North America"));
+        northAmericaList.add(new Country(0, "Alaska", "North America"));
+        northAmericaList.add(new Country(1, "Northwest Territory", "North America"));
+        northAmericaList.add(new Country(2, "Greenland", "North America"));
+        northAmericaList.add(new Country(3, "Alberta", "North America"));
+        northAmericaList.add(new Country(4, "Ontario", "North America"));
+        northAmericaList.add(new Country(5, "Quebec", "North America"));
+        northAmericaList.add(new Country(6, "Western US", "North America"));
+        northAmericaList.add(new Country(7, "Eastern US", "North America"));
+        northAmericaList.add(new Country(8, "Central America", "North America"));
         continentList.add(new Continent("North America", northAmericaList));
 
         /* South America */
-        southAmericaList.add(new Country(9, "Venezuela", "venezuela", "South America"));
-        southAmericaList.add(new Country(10, "Brazil", "brazil", "South America"));
-        southAmericaList.add(new Country(11, "Peru", "peru", "South America"));
-        southAmericaList.add(new Country(12, "Argentina", "argentina", "South America"));
+        southAmericaList.add(new Country(9, "Venezuela", "South America"));
+        southAmericaList.add(new Country(10, "Brazil", "South America"));
+        southAmericaList.add(new Country(11, "Peru", "South America"));
+        southAmericaList.add(new Country(12, "Argentina", "South America"));
         continentList.add(new Continent("South America", southAmericaList));
 
         /* Europe */
-        europeList.add(new Country(13, "Iceland", "iceland", "Europe"));
-        europeList.add(new Country(14, "Scandinavia", "scandinavia", "Europe"));
-        europeList.add(new Country(15, "Great Britain", "greatBritain", "Europe"));
-        europeList.add(new Country(16, "Northern Europe", "northernEurope", "Europe"));
-        europeList.add(new Country(17, "Ukraine", "ukraine", "Europe"));
-        europeList.add(new Country(18, "Western Europe", "westernEurope", "Europe"));
-        europeList.add(new Country(19, "Southern Europe", "southernEurope", "Europe"));
+        europeList.add(new Country(13, "Iceland", "Europe"));
+        europeList.add(new Country(14, "Scandinavia", "Europe"));
+        europeList.add(new Country(15, "Great Britain", "Europe"));
+        europeList.add(new Country(16, "Northern Europe", "Europe"));
+        europeList.add(new Country(17, "Ukraine", "Europe"));
+        europeList.add(new Country(18, "Western Europe", "Europe"));
+        europeList.add(new Country(19, "Southern Europe", "Europe"));
         continentList.add(new Continent("Europe", europeList));
 
         /* Africa */
-        africaList.add(new Country(20, "North Africa", "northAfrica", "Africa"));
-        africaList.add(new Country(21, "Egypt", "egypt", "Africa"));
-        africaList.add(new Country(22, "Congo", "congo", "Africa"));
-        africaList.add(new Country(23, "East Africa", "eastAfrica", "Africa"));
-        africaList.add(new Country(24, "South Africa", "southAfrica", "Africa"));
-        africaList.add(new Country(25, "Madagascar", "madagascar", "Africa"));
+        africaList.add(new Country(20, "North Africa", "Africa"));
+        africaList.add(new Country(21, "Egypt", "Africa"));
+        africaList.add(new Country(22, "Congo", "Africa"));
+        africaList.add(new Country(23, "East Africa", "Africa"));
+        africaList.add(new Country(24, "South Africa", "Africa"));
+        africaList.add(new Country(25, "Madagascar", "Africa"));
         continentList.add(new Continent("Africa", africaList));
 
         /* Asia */
-        asiaList.add(new Country(26, "Yakutsk", "yakutsk", "Asia"));
-        asiaList.add(new Country(27, "Ural", "ural", "Asia"));
-        asiaList.add(new Country(28, "Siberia", "siberia", "Asia"));
-        asiaList.add(new Country(29, "Irkutsk", "irkutsk", "Asia"));
-        asiaList.add(new Country(30, "Kamchatka", "kamchatka", "Asia"));
-        asiaList.add(new Country(31, "Afghanistan", "afghanistan", "Asia"));
-        asiaList.add(new Country(32, "China", "china", "Asia"));
-        asiaList.add(new Country(33, "Mongolia", "mongolia", "Asia"));
-        asiaList.add(new Country(34, "Japan", "japan", "Asia"));
-        asiaList.add(new Country(35, "Middle East", "middleEast", "Asia"));
-        asiaList.add(new Country(36, "India", "india", "Asia"));
-        asiaList.add(new Country(37, "Siam", "siam", "Asia"));
+        asiaList.add(new Country(26, "Yakutsk", "Asia"));
+        asiaList.add(new Country(27, "Ural", "Asia"));
+        asiaList.add(new Country(28, "Siberia", "Asia"));
+        asiaList.add(new Country(29, "Irkutsk", "Asia"));
+        asiaList.add(new Country(30, "Kamchatka", "Asia"));
+        asiaList.add(new Country(31, "Afghanistan", "Asia"));
+        asiaList.add(new Country(32, "China", "Asia"));
+        asiaList.add(new Country(33, "Mongolia", "Asia"));
+        asiaList.add(new Country(34, "Japan", "Asia"));
+        asiaList.add(new Country(35, "Middle East", "Asia"));
+        asiaList.add(new Country(36, "India", "Asia"));
+        asiaList.add(new Country(37, "Siam", "Asia"));
         continentList.add(new Continent("Asia", asiaList));
 
         /* Australia */
-        australiaList.add(new Country(38, "Indonesia", "indonesia", "Australia"));
-        australiaList.add(new Country(39, "New Guinea", "newGuinea", "Australia"));
-        australiaList.add(new Country(40, "Western Australia", "westernAustralia", "Australia"));
-        australiaList.add(new Country(41, "Eastern Australia", "easternAustralia", "Australia"));
+        australiaList.add(new Country(38, "Indonesia", "Australia"));
+        australiaList.add(new Country(39, "New Guinea", "Australia"));
+        australiaList.add(new Country(40, "Western Australia", "Australia"));
+        australiaList.add(new Country(41, "Eastern Australia", "Australia"));
         continentList.add(new Continent("Australia", australiaList));
 
         countryList.addAll(northAmericaList);

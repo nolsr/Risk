@@ -6,6 +6,9 @@ import java.awt.font.TextAttribute;
 
 public class DarkLog extends JTextArea {
 
+    /**
+     * DarkLog Constructor to set the JTextArea matching the game theme.
+     */
     public DarkLog() {
         super();
         this.setForeground(Color.WHITE);
