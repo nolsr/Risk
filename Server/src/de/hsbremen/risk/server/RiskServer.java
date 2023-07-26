@@ -87,6 +87,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         this.currentTurn.nextPhase();
         if (isMissionCompleted(this.currentTurn.getPlayer()) || playerHasPeaceCard(this.currentTurn.getPlayer())) {
             this.currentTurn.setGameEnded();
+            this.notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.GAME_OVER, getCountries()));
         }
 
         notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.NEXT_PHASE, getCountries()));
@@ -309,7 +310,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
      * @return A Boolean whether there is a legal amount of players in the lobby.
      */
     public boolean isLegalPlayerCount() {
-        return playerManager.getPlayerList().size() >= 2 && playerManager.getPlayerList().size() <= 6;
+        return playerManager.getPlayerList().size() >= 3 && playerManager.getPlayerList().size() <= 6;
     }
 
     /**
@@ -386,6 +387,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
         attack.setDefendingPlayer(playerManager.getPlayer(getCountries().get(attack.getTargetCountry()).getOccupiedBy()));
         this.attack = attack;
         this.removeAttackingForcesFromOriginCountry();
+        this.worldManager.getCountry(attack.getTargetCountry()).setUnitsMoved(true);
         notifyListeners(new GameActionEvent(
                 this.currentTurn.getPlayer(),
                 GameActionEvent.GameActionEventType.ATTACK,
