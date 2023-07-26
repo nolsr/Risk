@@ -16,6 +16,13 @@ public class GameControlEvent extends GameEvent {
     private final Turn turn;
     private final ArrayList<Country> countries;
 
+    /**
+     * Initialise and set the all values for the GameControlEvent with the given parameters.
+     *
+     * @param turn The current Turn.
+     * @param type Which type of GameControlEventType.
+     * @param countries ArrayList of all Countries
+     */
     public GameControlEvent(Turn turn, GameControlEventType type, ArrayList<Country> countries) {
         super(turn.getPlayer());
 
@@ -24,14 +31,29 @@ public class GameControlEvent extends GameEvent {
         this.countries = countries;
     }
 
+    /**
+     * Get the GameControlEventType.
+     *
+     * @return the set GameControlEventType.
+     */
     public GameControlEventType getType() {
         return type;
     }
 
+    /**
+     * Get the current Turn.
+     *
+     * @return current Turn.
+     */
     public Turn getTurn() {
         return turn;
     }
 
+    /**
+     * Get the ArrayList of all Countries.
+     *
+     * @return ArrayList of all Countries.
+     */
     public ArrayList<Country> getCountries() {
         return countries;
     }

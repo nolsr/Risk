@@ -11,11 +11,21 @@ public abstract class GameEvent implements Serializable {
 
     private Player player;
 
+    /**
+     * A Player is being passed to the GameEvent.
+     *
+     * @param player Player passed to the GameEvent.
+     */
     public GameEvent(Player player) {
         super();
         this.player = player;
     }
 
+    /**
+     * Get the Player that has been passed to the GameEvent.
+     *
+     * @return Player passed to the GameEvent.
+     */
     public Player getPlayer() {
         return player;
     }

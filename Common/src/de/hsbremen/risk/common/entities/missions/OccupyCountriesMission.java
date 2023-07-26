@@ -12,10 +12,25 @@ public class OccupyCountriesMission extends Mission implements Serializable {
     private static final long serialVersionUID = 8034919529414135908L;
 
     int amountOfCountriesToOccupy;
+
+    /**
+     * Sets how many countries a player should occupy.
+     *
+     * @param playerCount Integer amount of player inside the game.
+     */
     public OccupyCountriesMission(int playerCount) {
         this.amountOfCountriesToOccupy = 36 - (playerCount * 4);
     }
 
+    /**
+     * Checks if the Player assigned to that mission has the required amount of countries occupied.
+     *
+     * @param player Player that has the mission assigned.
+     * @param countries ArrayList of all Countries.
+     * @param players ArrayList of all Players.
+     *
+     * @return true if the conditions have been met.
+     */
     @Override
     public boolean isCompleted(Player player, ArrayList<Country> countries,
                                ArrayList<Player> players) {
@@ -28,6 +43,11 @@ public class OccupyCountriesMission extends Mission implements Serializable {
         return occupiedCountries >= this.amountOfCountriesToOccupy;
     }
 
+    /**
+     * Return a String of how many countries the Player should occupy.
+     *
+     * @return String with the missions instructions.
+     */
     @Override
     public String getPrintMissionString() {
         return "Occupy " + this.amountOfCountriesToOccupy + " countries";
