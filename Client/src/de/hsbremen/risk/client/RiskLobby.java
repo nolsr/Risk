@@ -16,7 +16,6 @@ public class RiskLobby extends JPanel implements GameEventListener {
     private final LightButton exitButton = new LightButton("Back to Main-Menu");
     private final DarkList<String> playerJList = new DarkList<>();
     private final DarkLog lobbylog = new DarkLog();
-    private JScrollPane scrollPane = new JScrollPane(lobbylog, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
     public RiskLobby() {
         super();
@@ -28,12 +27,10 @@ public class RiskLobby extends JPanel implements GameEventListener {
         controlPanel.add(startGameButton, BorderLayout.CENTER);
         controlPanel.add(loadGameButton, BorderLayout.CENTER);
         lobbylog.setColumns(1);
-        scrollPane.add(lobbylog);
 
         this.add(controlPanel, BorderLayout.NORTH);
         this.add(playerJList, BorderLayout.CENTER);
         this.add(exitButton, BorderLayout.SOUTH);
-        //this.add(scrollPane, BorderLayout.EAST);
 
         this.add(lobbylog, BorderLayout.EAST);
     }
