@@ -1,6 +1,7 @@
 package de.hsbremen.risk.client;
 
 import de.hsbremen.risk.common.ServerRemote;
+import de.hsbremen.risk.common.entities.cards.PeaceCard;
 import de.hsbremen.risk.server.RiskServer;
 import de.hsbremen.risk.common.exceptions.InvalidCardCombinationException;
 import de.hsbremen.risk.common.entities.Player;
@@ -30,12 +31,14 @@ public class ShowCardsFrame extends JPanel {
         this.setBackground(new Color(18, 20, 24));
         for (Card card : currentPlayer.getCards()) {
 
+            System.out.println("Card: " + card);
             DarkButton darkButton = new DarkButton("");
             if (card instanceof UnitCard) {
                 darkButton.setText("<html>ID: " + card.getId() + "<br/><br/><br/><br/>Country: " + ((UnitCard) card).getCountry() +  "<br/><br/><br/><br/>Kind: " + card.getKind() + "<br/><br/><br/><br/>Unit: " + card.getUnit() + "</html>");
             } else  if (card instanceof WildCard){
+
                 darkButton.setText("<html>ID: " + card.getId() + "<br/><br/><br/><br/>Kind: " + card.getKind() + "<br/><br/><br/><br/>Unit: " + card.getUnit() + "</html>");
-            } else {
+            } else if (card instanceof PeaceCard){
                 darkButton.setText("<html>ID: " + card.getId() + "<br/><br/><br/><br/>Kind: " + card.getKind() + "<br/><br/><br/><br/>Unit: " + card.getUnit() + "</html>");
             }
             this.add(jPanel);
