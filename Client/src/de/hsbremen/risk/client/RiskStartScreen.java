@@ -24,7 +24,7 @@ public class RiskStartScreen extends JPanel {
     /**
      * Retrieves the new game button.
      *
-     * @return returns the LightButton newGameButton.
+     * @return the LightButton newGameButton.
      */
     public JButton getNewGameButton() {
         return newGameButton;
@@ -33,7 +33,7 @@ public class RiskStartScreen extends JPanel {
     /**
      * Retrieves the quit game button.
      *
-     * @return returns the LightButton quitGameButton.
+     * @return the LightButton quitGameButton.
      */
     public JButton getQuitGameButton() {
         return quitGameButton;

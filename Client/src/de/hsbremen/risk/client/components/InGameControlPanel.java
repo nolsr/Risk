@@ -25,7 +25,7 @@ public class InGameControlPanel extends JPanel {
      * Additionally, the panel will be formatted to fit our game theme.
      *
      * @param turn object of the current turn
-     * @param player player Object of the client
+     * @param player Object of the client
      */
     public InGameControlPanel(Turn turn, Player player) {
         super();
@@ -119,7 +119,7 @@ public class InGameControlPanel extends JPanel {
     /**
      * Retrieves the save button.
      *
-     * @return returns the DarkButton btnSave.
+     * @return the DarkButton btnSave.
      */
     public DarkButton getBtnSave() {
         return btnSave;
@@ -128,7 +128,7 @@ public class InGameControlPanel extends JPanel {
     /**
      * Retrieves the next phase button.
      *
-     * @return returns the DarkButton btnNextPhase.
+     * @return the DarkButton btnNextPhase.
      */
     public DarkButton getBtnNextPhase() {
         return btnNextPhase;
@@ -137,7 +137,7 @@ public class InGameControlPanel extends JPanel {
     /**
      * Retrieves the action button.
      *
-     * @return returns the DarkButton btnAction.
+     * @return the DarkButton btnAction.
      */
     public DarkButton getBtnAction() {
         return btnAction;
@@ -146,7 +146,7 @@ public class InGameControlPanel extends JPanel {
     /**
      * Retrieves the trade cards button.
      *
-     * @return returns the DarkButton btnTradeCards.
+     * @return the DarkButton btnTradeCards.
      */
     public DarkButton getBtnTradeCards() {
         return btnTradeCards;
@@ -155,7 +155,7 @@ public class InGameControlPanel extends JPanel {
     /**
      * Retrieves the trade card stack button .
      *
-     * @return returns the DarkButton btnCardStack.
+     * @return the DarkButton btnCardStack.
      */
     public DarkButton getBtnCardStack() {
         return btnCardStack;
