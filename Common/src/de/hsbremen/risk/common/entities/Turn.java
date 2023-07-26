@@ -14,6 +14,11 @@ public class Turn implements Serializable {
         DRAWING_PHASE, // If liberated one or more countries
         GAME_ENDED;
 
+        /**
+         * Turns the Phase into a String.
+         *
+         * @return the String representation of the Phase.
+         */
         @Override
         public String toString() {
             return switch (this.ordinal()) {
@@ -26,6 +31,12 @@ public class Turn implements Serializable {
             };
         }
 
+        /**
+         * Turn the String representation of the Phase back to a Phase.
+         *
+         * @param phaseString String representation of the Phase.
+         * @return the Phase the String represented
+         */
         public static Phase getPhaseFromString(String phaseString) {
             return switch (phaseString) {
                 case "Reinforcement Phase" -> REINFORCEMENT_PHASE;
@@ -40,11 +51,20 @@ public class Turn implements Serializable {
     private Player player;
     private Phase phase;
 
+    /**
+     * Initialise a Turn with the Turns Player in the REINFORCEMENT_PHASE.
+     *
+     * @param player the rounds beginning Player.
+     */
     public Turn(Player player) {
         this.player = player;
         this.phase = Phase.REINFORCEMENT_PHASE;
     }
 
+    /**
+     * Switch to the next Phase
+     *
+     */
     public void nextPhase() {
         switch (phase) {
             case REINFORCEMENT_PHASE -> this.phase = Phase.LIBERATION_PHASE;
@@ -53,22 +73,44 @@ public class Turn implements Serializable {
         }
     }
 
+    /**
+     * Set the Phase to GAME_ENDED.
+     */
     public void setGameEnded() {
         this.phase = Phase.GAME_ENDED;
     }
 
+    /**
+     * Get the Turns current Player.
+     *
+     * @return the current turns Player
+     */
     public Player getPlayer() {
         return this.player;
     }
 
+    /**
+     * Get the Current Phase.
+     * @return Current Phase.
+     */
     public Phase getPhase() {
         return this.phase;
     }
 
+    /**
+     * Set the Turns Phase.
+     *
+     * @param phase Phase the Turn should change to.
+     */
     public void setPhase(Phase phase){
         this.phase = phase;
     }
 
+    /**
+     * Set the Turns current Player.
+     *
+     * @param player Player that should be set to the current turn
+     */
     public void setPlayer(Player player) {
         this.player = player;
     }
