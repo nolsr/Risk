@@ -6,6 +6,10 @@ import de.hsbremen.risk.common.entities.Player;
 import java.util.ArrayList;
 
 public class RiskMapPrinter {
+    /*
+     * Not used anymore but was a lot of work so we left it in the project.
+     *
+     */
     private static final String ANSI_RESET = "\u001B[0m";
     private static final String ANSI_RED = "\u001B[31m";
     private static final String ANSI_GREEN = "\u001B[32m";

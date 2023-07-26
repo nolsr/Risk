@@ -63,7 +63,7 @@ public class ShowCardsFrame extends JPanel {
                         JFrame thisFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
                         thisFrame.dispose();
                         riskServer.tradeCards(chosenCard);
-                        JOptionPane.showMessageDialog(null, "You have successfully traded your cards!");
+                        JOptionPane.showMessageDialog(this, "You have successfully traded your cards!");
                     } catch (InvalidCardCombinationException | RemoteException ex) {
                         JOptionPane.showMessageDialog(this, ex.getMessage());
                     }

@@ -54,6 +54,9 @@ public class RiskInGame extends JPanel {
         this.addEventListeners();
     }
 
+    /**
+     * Adds the event listeners to the different control elements.
+     */
     private void addEventListeners() {
         this.map.addCountryClickedListener(countryId -> {
             this.infoPanel.updateInfoPanel(riskServer.getCountry(countryId));
@@ -69,7 +72,7 @@ public class RiskInGame extends JPanel {
         this.controlPanel.getBtnCardStack().addActionListener(e -> {
             JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             JFrame frame = new JFrame(this.player.getUsername() + "'s Card Stack");
-            frame.setBounds(parentFrame.getX() + 50, parentFrame.getY() + 50,1500, 600);
+            frame.setBounds(parentFrame.getX() + 50, parentFrame.getY() + 50, 1500, 600);
             this.showCardsFrame = new ShowCardsFrame(this.player, riskServer, true);
             frame.add(showCardsFrame);
             frame.setVisible(true);
@@ -78,7 +81,7 @@ public class RiskInGame extends JPanel {
         this.controlPanel.getBtnTradeCards().addActionListener(e -> {
             JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             JFrame frame = new JFrame(this.player.getUsername() + "'s Card Stack");
-            frame.setBounds(parentFrame.getX() + 50, parentFrame.getY() + 50,1500, 600);
+            frame.setBounds(parentFrame.getX() + 50, parentFrame.getY() + 50, 1500, 600);
             JOptionPane.showMessageDialog(this, "Choose 3 cards you want to trade");
             this.showCardsFrame = new ShowCardsFrame(this.player, riskServer, false);
             frame.add(showCardsFrame);
@@ -103,11 +106,11 @@ public class RiskInGame extends JPanel {
                         JOptionPane.showMessageDialog(this,
                                 "Please select an origin country for your movement.");
                     }
-                case DRAWING_PHASE -> {
+                    case DRAWING_PHASE -> {
 
                         riskServer.playerDrawsCard();
                         riskServer.getCurrentTurn().getPlayer().setEntitledToDraw(false);
-                }
+                    }
                 }
             } catch (RemoteException ex) {
                 ex.printStackTrace();
@@ -117,6 +120,11 @@ public class RiskInGame extends JPanel {
         });
     }
 
+    /**
+     * Handles GameActionEvents sent from the server and passed through the RiskClientGUI.
+     *
+     * @param e GameActionEvent object of the event that should be handled.
+     */
     public void handleAttackResultEvent(GameActionEvent e) {
         AttackResult result = e.getAttackResult();
         Attack attack = e.getAttack();
@@ -171,6 +179,12 @@ public class RiskInGame extends JPanel {
         }
     }
 
+    /**
+     * Handles a country being clicked depending on what phase of the players turn it is.
+     *
+     * @param countryId ID of the country that was clicked.
+     * @throws RemoteException When having trouble communicating with the server.
+     */
     private void selectCountry(int countryId) throws RemoteException {
         switch (riskServer.getCurrentTurn().getPhase()) {
             case REINFORCEMENT_PHASE -> {
@@ -229,6 +243,11 @@ public class RiskInGame extends JPanel {
         }
     }
 
+    /**
+     * Gets the amount of dice a player defends an attack with via InputDialog.
+     *
+     * @param event GameActionEvent object containing the information of the Attack.
+     */
     public void getDefendingDice(GameActionEvent event) {
         int amountOfUnits = -1;
         while (amountOfUnits == -1) {
@@ -236,7 +255,9 @@ public class RiskInGame extends JPanel {
                 amountOfUnits = Integer.parseInt(JOptionPane.showInputDialog(
                         this,
                         "You country " + event.getCountries().get(event.getAttack().getTargetCountry()).getName() +
-                                " is being attacked with " + Math.min(event.getAttack().getAmount(), 3)
+                                " is being attacked with " + event.getAttack().getAmount()
+                                + " units, currently using "
+                                + Math.min(event.getAttack().getAmount(), 3)
                                 + " dice! How many armies do you want to defend with?"));
                 this.riskServer.defendAttack(amountOfUnits);
             } catch (NumberFormatException e) {
@@ -250,6 +271,9 @@ public class RiskInGame extends JPanel {
         }
     }
 
+    /**
+     * Notifies the server that the player wants to end the current phase and enter the next one or end the turn.
+     */
     private void onClickNextPhase() {
         this.movement.reset();
         try {
@@ -261,6 +285,12 @@ public class RiskInGame extends JPanel {
         }
     }
 
+    /**
+     * Updates the UI with the latest information about players, map data, and the current turn.
+     *
+     * @param event GameActionEvent object containing information about the current map state.
+     * @throws RemoteException When having trouble communicating with the server.
+     */
     public void updateGUI(GameActionEvent event) throws RemoteException {
         this.updateTurn(this.currentTurn);
         this.map.updateCountryInfo(event.getPlayers(), event.getCountries());
@@ -268,6 +298,11 @@ public class RiskInGame extends JPanel {
         this.redrawMap();
     }
 
+    /**
+     * Updates the current turn object and the respective UI elements.
+     *
+     * @param turn Turn object of the current turn.
+     */
     public void updateTurn(Turn turn) {
         this.currentTurn = turn;
         this.currentTurnPanel.updateTurnDisplay(this.currentTurn);
@@ -280,15 +315,28 @@ public class RiskInGame extends JPanel {
         }
     }
 
+    /**
+     * Updates the player information, especially the amount of reinforcements left to place.
+     *
+     * @param player Latest Player object from the server.
+     */
     public void updatePlayer(Player player) {
         this.player = player;
         this.currentTurn.setPlayer(player);
     }
 
+    /**
+     * Tells the map component to redraw based on the latest information.
+     */
     public void redrawMap() {
         this.map.repaint();
     }
 
+    /**
+     * Retrieves the save game button object.
+     *
+     * @return DarkButton object of the save game button.
+     */
     public DarkButton getSaveGameButton() {
         return this.controlPanel.getBtnSave();
     }
