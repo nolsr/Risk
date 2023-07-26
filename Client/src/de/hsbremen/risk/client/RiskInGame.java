@@ -336,6 +336,10 @@ public class RiskInGame extends JPanel {
         + "\n Mission was: " + missionString);
     }
 
+    public void peaceMesage(String peacePlayer) {
+        JOptionPane.showMessageDialog(this, peacePlayer + " drew the peace card. All parties signed a peace treaty!");
+    }
+
     /**
      * Tells the map component to redraw based on the latest information.
      */

@@ -69,6 +69,14 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
      * @throws RemoteException         When having trouble communicating with the client.
      */
     public void nextTurn() throws UnplacedArmiesException, GameEndedException, RemoteException {
+        if (isMissionCompleted(this.currentTurn.getPlayer())) {
+            this.currentTurn.setGameEnded();
+            this.notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.GAME_OVER, getCountries()));
+        }
+        if (playerHasPeaceCard(this.currentTurn.getPlayer())) {
+            this.currentTurn.setGameEnded();
+            this.notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.GAME_OVER, getCountries(), true));
+        }
         if (this.currentTurn.getPhase() == Turn.Phase.GAME_ENDED) {
             throw new GameEndedException();
         }
@@ -84,10 +92,6 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
             return;
         }
         this.currentTurn.nextPhase();
-        if (isMissionCompleted(this.currentTurn.getPlayer()) || playerHasPeaceCard(this.currentTurn.getPlayer())) {
-            this.currentTurn.setGameEnded();
-            this.notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.GAME_OVER, getCountries()));
-        }
 
         notifyListeners(new GameControlEvent(this.currentTurn, GameControlEvent.GameControlEventType.NEXT_PHASE, getCountries()));
     }
