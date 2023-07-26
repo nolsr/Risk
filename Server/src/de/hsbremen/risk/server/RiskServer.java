@@ -310,7 +310,7 @@ public class RiskServer extends UnicastRemoteObject implements ServerRemote {
      * @return A Boolean whether there is a legal amount of players in the lobby.
      */
     public boolean isLegalPlayerCount() {
-        return playerManager.getPlayerList().size() >= 2 && playerManager.getPlayerList().size() <= 6;
+        return playerManager.getPlayerList().size() >= 3 && playerManager.getPlayerList().size() <= 6;
     }
 
     /**
