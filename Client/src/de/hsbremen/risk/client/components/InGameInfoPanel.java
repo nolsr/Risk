@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 public class InGameInfoPanel extends JPanel {
 
-    private final JLabel playerName;
     private final JLabel countryName = new WhiteLabel("");
 
     private final JLabel countryContinent = new WhiteLabel("");;
@@ -26,7 +25,7 @@ public class InGameInfoPanel extends JPanel {
     public InGameInfoPanel(ArrayList<Player> players, Player player) {
         super();
 
-        playerName = new WhiteLabel(player.getUsername());
+        JLabel playerName = new WhiteLabel(player.getUsername());
         DarkList<String> playerList = new DarkList<>();
         DefaultListModel<String> playerListModel = new DefaultListModel<>();
         playerList.setModel(playerListModel);
@@ -46,6 +45,7 @@ public class InGameInfoPanel extends JPanel {
         this.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, new Color(90, 90, 90)));
         this.setLayout(new FlowLayout());
 
+        playerName.setPreferredSize(new Dimension(200, 25));
         countryName.setPreferredSize(new Dimension(200, 25));
         countryContinent.setPreferredSize(new Dimension(200, 25));
         countryUnits.setPreferredSize(new Dimension(200, 25));
